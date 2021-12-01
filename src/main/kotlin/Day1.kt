@@ -1,23 +1,18 @@
 class Day1 {
-    private val data: List<Int> = "day1/input".fromResource().readLines().map(String::toInt)
+    private val InputData: List<Int> = "day1/input".fromResource().readLines().map(String::toInt)
 
     fun count(): Int {
-        var lastDepth = data.first()
-        var increased = 0
-        for (depth in data) {
-            if (depth > lastDepth) {
-                increased++
-            }
-            lastDepth = depth
-        }
-        return increased
+        return count(InputData)
     }
 
     fun count3(): Int {
-        var lastDepth = data[0] + data[1] + data[2]
+        return count(InputData.windowed(3,1){it.sum()})
+    }
+
+    private fun count(values:List<Int>): Int {
+        var lastDepth = values.first()
         var increased = 0
-        for (i in 3 until data.size) {
-            val depth = data[i - 2] + data[i - 1] + data[i]
+        for (depth in values) {
             if (depth > lastDepth) {
                 increased++
             }
@@ -25,5 +20,4 @@ class Day1 {
         }
         return increased
     }
-
 }
