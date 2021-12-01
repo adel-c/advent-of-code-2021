@@ -2,7 +2,7 @@ class Day1 {
     private val data: List<Int> = "day1/input".fromResource().readLines().map(String::toInt)
 
     fun count(): Int {
-        var lastDepth = Int.MAX_VALUE
+        var lastDepth = data.first()
         var increased = 0
         for (depth in data) {
             if (depth > lastDepth) {
