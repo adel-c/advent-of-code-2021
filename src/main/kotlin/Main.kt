@@ -6,6 +6,6 @@ fun main(args: Array<String>) {
     println("Program arguments: ${args.joinToString()}")
 
     val day1 = Day1()
-    println("day1 count: ${day1.count()}")
+    println("day1 count: ${day1.count1()}")
     println("day1 count3: ${day1.count3()}")
 }
