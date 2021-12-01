@@ -17,7 +17,7 @@ class Day1 {
         var lastDepth = data[0] + data[1] + data[2]
         var increased = 0
         for (i in 3 until data.size) {
-            var depth = data[i - 2] + data[i - 1] + data[i]
+            val depth = data[i - 2] + data[i - 1] + data[i]
             if (depth > lastDepth) {
                 increased++
             }
