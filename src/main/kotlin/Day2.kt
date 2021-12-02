@@ -1,54 +1,59 @@
-data class Position(val horizontal: Long, val depth: Long) {
+enum class Movement { FORWARD, UP, DOWN }
+enum class MovementStrategy {
+    WITHOUT_AIM {
+        override fun computePosition(currentPosition: Position, movement: Movement, value: Long): Position {
+            return when (movement) {
+                Movement.FORWARD -> currentPosition.copy(horizontal = currentPosition.horizontal + value)
+                Movement.UP -> currentPosition.copy(depth = currentPosition.depth - value)
+                Movement.DOWN -> currentPosition.copy(depth = currentPosition.depth + value)
+            }
+        }
+    },
+    WITH_AIM {
+        override fun computePosition(currentPosition: Position, movement: Movement, value: Long): Position {
+            return when (movement) {
+                Movement.FORWARD -> currentPosition.copy(
+                    horizontal = currentPosition.horizontal + value,
+                    depth = currentPosition.depth + (value * currentPosition.aim)
+                )
+                Movement.UP -> currentPosition.copy(aim = currentPosition.aim - value)
+                Movement.DOWN -> currentPosition.copy(aim = currentPosition.aim + value)
+            }
+        }
+    };
 
-    fun updatePosition(order: String): Position {
-        val (movement, value) = order.split(" ")
-        return computePosition(movement, value.toLong())
-    }
-
-    private fun computePosition(movement: String, value: Long) = when (movement.trim()) {
-        "forward" -> this.copy(horizontal = this.horizontal + value)
-        "up" -> this.copy(depth = this.depth - value)
-        "down" -> this.copy(depth = this.depth + value)
-        else -> TODO("WTF")
-    }
-
-    fun factor()=horizontal*depth
+    abstract fun computePosition(currentPosition: Position, movement: Movement, value: Long): Position
 }
 
-data class Position2(val horizontal: Long,val aim:Long, val depth: Long)  {
+data class Position(
+    val movementStrategy: MovementStrategy,
+    val horizontal: Long = 0,
+    val aim: Long = 0,
+    val depth: Long = 0
+) {
 
-    fun updatePosition(order: String): Position2 {
-        val (movement, value) = order.split(" ")
-        return computePosition(movement, value.toLong())
+    fun updatePosition(order: String): Position {
+        val (movementString, value) = order.split(" ")
+        val movement = Movement.valueOf(movementString.uppercase())
+        return movementStrategy.computePosition(this, movement, value.toLong())
     }
 
-    private fun computePosition(movement: String, value: Long) = when (movement.trim()) {
-        "forward" -> this.copy(horizontal = this.horizontal + value,depth=this.depth+(value*this.aim))
-        "up" -> this.copy(aim = this.aim - value)
-        "down" -> this.copy(aim = this.aim + value)
-        else -> TODO("WTF")
-    }
-
-    fun factor()=horizontal*depth
+    fun factor() = horizontal * depth
 }
 
 class Day2 {
     private val inputData: List<String> = "day2/input".fromResource().readLines()
 
-    fun position(): Position {
-        var position = Position(0, 0)
+    fun position(): Position = positionWithStrategy(MovementStrategy.WITHOUT_AIM)
+
+    fun position2() = positionWithStrategy(MovementStrategy.WITH_AIM)
+
+    private fun positionWithStrategy(movementStrategy: MovementStrategy): Position {
+        var position = Position(movementStrategy)
         inputData.forEach {
             position = position.updatePosition(it)
         }
         return position
-    }
-
-    fun position2(): Position2 {
-        var position2 = Position2(0,0, 0)
-        inputData.forEach {
-            position2 = position2.updatePosition(it)
-        }
-        return position2
     }
 
 }
