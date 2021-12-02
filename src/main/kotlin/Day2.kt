@@ -48,12 +48,6 @@ class Day2 {
 
     fun position2() = positionWithStrategy(MovementStrategy.WITH_AIM)
 
-    private fun positionWithStrategy(movementStrategy: MovementStrategy): Position {
-        var position = Position(movementStrategy)
-        inputData.forEach {
-            position = position.updatePosition(it)
-        }
-        return position
-    }
-
+    private fun positionWithStrategy(movementStrategy: MovementStrategy) =
+        inputData.fold(Position(movementStrategy)) { acc, s -> acc.updatePosition(s) }
 }
