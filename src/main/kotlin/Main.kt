@@ -16,7 +16,9 @@ fun day3() {
     println("day3 gamma: ${diag.gamma()} / 3529")
     println("day3 epsilon: ${diag.epsilon()} / 566")
     println("day3 factor: ${diag.gamma() * diag.epsilon()} / 1997414")
-    println("day3 oxygen: ${diag.oxygen() } / ")
+    println("day3 oxygen: ${diag.oxygen()} / 3573")
+    println("day3 co2: ${diag.co2()} / 289")
+    println("day3 factor2: ${diag.oxygen() * diag.co2()} / 1032597")
 }
 
 private fun day1() {

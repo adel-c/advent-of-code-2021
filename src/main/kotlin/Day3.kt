@@ -29,7 +29,7 @@ class Stats(val totalLines: Int, val oneCounts: List<Int> = listOf()) {
     }
 
     fun mostPresent(): BinaryValue {
-        return BinaryValue(oneCounts.map { if (it >= totalLines / 2) 1 else 0 })
+        return BinaryValue(oneCounts.map { if (it >= totalLines - it) 1 else 0 })
     }
 
     fun leastPresent(): BinaryValue {
@@ -52,9 +52,25 @@ class Diagnostic(val fullData: List<BinaryValue>) {
     fun oxygen(): Int {
 
         var data = fullData
-        (0..5).forEach { index ->
+        (0..data.first().data.size).forEach { index ->
             val stats = statFor(data)
             val mostPresent = stats.mostPresent()
+            val targetValue = mostPresent[index]
+            data = data.filter {
+                it[index] == targetValue
+            }
+            if (data.size == 1) {
+                return data.first().toDecimal()
+            }
+        }
+        return 0
+    }
+    fun co2(): Int {
+
+        var data = fullData
+        (0..data.first().data.size).forEach { index ->
+            val stats = statFor(data)
+            val mostPresent = stats.leastPresent()
             val targetValue = mostPresent[index]
             data = data.filter {
                 it[index] == targetValue
@@ -73,7 +89,7 @@ class Diagnostic(val fullData: List<BinaryValue>) {
 }
 
 class Day3 {
-    private val inputData: List<String> = "day3/inputTest".fromResource().readLines()
+    private val inputData: List<String> = "day3/input".fromResource().readLines()
 
 
     fun diag(): Diagnostic {
