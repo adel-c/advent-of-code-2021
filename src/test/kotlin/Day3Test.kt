@@ -6,18 +6,19 @@ class Day3Test {
     @Test
     fun diag() {
         val actual = Day3().diag()
-        assertEquals(3529, actual.gamma())
-        assertEquals(566, actual.epsilon())
-        assertEquals(3573, actual.oxygen())
-        assertEquals(289, actual.co2())
+        assertValues(3529, 566, 3573, 289, actual)
     }
 
     @Test
     fun diag_test() {
         val actual = Day3("day3/inputTest").diag()
-        assertEquals(22, actual.gamma())
-        assertEquals(9, actual.epsilon())
-        assertEquals(23, actual.oxygen())
-        assertEquals(10, actual.co2())
+        assertValues(22, 9, 23, 10, actual)
+    }
+
+    private fun assertValues(gamma: Int, epsilon: Int, oxygen: Int, co2: Int, actual: Diagnostic) {
+        assertEquals(gamma, actual.gamma(), "gamma")
+        assertEquals(epsilon, actual.epsilon(), "epsilon")
+        assertEquals(oxygen, actual.oxygen(), "oxygen")
+        assertEquals(co2, actual.co2(), "co2")
     }
 }
