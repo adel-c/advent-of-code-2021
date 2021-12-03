@@ -18,7 +18,7 @@ data class BinaryValue(val data: List<Int>) {
         data.reversed().reduceIndexed { index, acc, i -> ((2 power index) * i) + acc }
     //fun toDecimal() = data.joinToString("").toInt(2)
 
-    fun invert() = BinaryValue(data.map { if (it == 1) 0 else 1 })
+    fun invert() = BinaryValue(data.map { 1- it })
 
     fun length() = data.size
 }
