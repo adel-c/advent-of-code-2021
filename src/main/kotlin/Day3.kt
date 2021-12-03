@@ -16,8 +16,11 @@ data class BinaryValue(val data: List<Int>) {
 
     fun toDecimal() =
         data.reversed().reduceIndexed { index, acc, i -> ((2 power index) * i) + acc }
+    //fun toDecimal() = data.joinToString("").toInt(2)
 
     fun invert() = BinaryValue(data.map { if (it == 1) 0 else 1 })
+
+    fun length() = data.size
 }
 
 class Stats(val totalLines: Int, val oneCounts: List<Int> = listOf()) {
@@ -28,62 +31,56 @@ class Stats(val totalLines: Int, val oneCounts: List<Int> = listOf()) {
         return Stats(totalLines, newOneCounts);
     }
 
-    fun mostPresent(): BinaryValue {
+    fun mostCommon(): BinaryValue {
         return BinaryValue(oneCounts.map { if (it >= totalLines - it) 1 else 0 })
     }
 
-    fun leastPresent(): BinaryValue {
-        return mostPresent().invert()
+    fun leastCommon(): BinaryValue {
+        return mostCommon().invert()
     }
 }
 
 class Diagnostic(val fullData: List<BinaryValue>) {
     fun gamma(): Int {
         val stats = statFor(fullData);
-        return stats.mostPresent().toDecimal()
+        return stats.mostCommon().toDecimal()
 
     }
 
     fun epsilon(): Int {
         val stats = statFor(fullData);
-        return stats.leastPresent().toDecimal()
+        return stats.leastCommon().toDecimal()
     }
 
     fun oxygen(): Int {
-
-        var data = fullData
-        (0..data.first().data.size).forEach { index ->
-            val stats = statFor(data)
-            val mostPresent = stats.mostPresent()
-            val targetValue = mostPresent[index]
-            data = data.filter {
-                it[index] == targetValue
-            }
-            if (data.size == 1) {
-                return data.first().toDecimal()
-            }
-        }
-        return 0
+        return recursiveFilter(fullData, 0, Stats::mostCommon)
     }
+
     fun co2(): Int {
+        return recursiveFilter(fullData, 0, Stats::leastCommon)
+    }
 
-        var data = fullData
-        (0..data.first().data.size).forEach { index ->
-            val stats = statFor(data)
-            val mostPresent = stats.leastPresent()
-            val targetValue = mostPresent[index]
-            data = data.filter {
-                it[index] == targetValue
-            }
-            if (data.size == 1) {
-                return data.first().toDecimal()
-            }
+    private fun recursiveFilter(data: List<BinaryValue>, index: Int, statFunction: (Stats) -> BinaryValue): Int {
+        if (index > data.first().length()) {
+            TODO("should not happen")
         }
-        return 0
+
+        val stats = statFor(data)
+        val mostPresent = statFunction(stats)
+        val targetValue = mostPresent[index]
+        val filtedData = data.filter {
+            it[index] == targetValue
+        }
+        if (filtedData.size == 1) {
+            return filtedData.first().toDecimal()
+        }
+        return recursiveFilter(filtedData, index + 1, statFunction)
+
+
     }
 
 
-    //fun binaryListToDecimal(bins: List<Int>) = bins.joinToString("").toInt(2)
+
 
     fun statFor(data: List<BinaryValue>) = data.fold(Stats(data.size)) { acc, s -> acc.countOnes(s) }
 }
