@@ -70,8 +70,8 @@ class Diagnostic(private val fullData: List<BinaryValue>) {
     }
 }
 
-class Day3 {
-    private val inputData: List<String> = "day3/input".fromResource().readLines()
+class Day3(path:String="day3/input") {
+    private val inputData: List<String> = path.fromResource().readLines()
 
     fun diag(): Diagnostic {
         return Diagnostic(inputData.map { line -> BinaryValue.fromString(line) });

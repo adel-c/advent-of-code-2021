@@ -12,5 +12,12 @@ class Day3Test {
         assertEquals(289, actual.co2())
     }
 
-
+    @Test
+    fun diag_test() {
+        val actual = Day3("day3/inputTest").diag()
+        assertEquals(22, actual.gamma())
+        assertEquals(9, actual.epsilon())
+        assertEquals(23, actual.oxygen())
+        assertEquals(10, actual.co2())
+    }
 }
