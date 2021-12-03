@@ -68,13 +68,13 @@ class Diagnostic(val fullData: List<BinaryValue>) {
         val stats = statFor(data)
         val mostPresent = statFunction(stats)
         val targetValue = mostPresent[index]
-        val filtedData = data.filter {
+        val filteredData = data.filter {
             it[index] == targetValue
         }
-        if (filtedData.size == 1) {
-            return filtedData.first().toDecimal()
+        if (filteredData.size == 1) {
+            return filteredData.first().toDecimal()
         }
-        return recursiveFilter(filtedData, index + 1, statFunction)
+        return recursiveFilter(filteredData, index + 1, statFunction)
 
 
     }
