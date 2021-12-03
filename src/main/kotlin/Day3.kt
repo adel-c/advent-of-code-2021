@@ -24,32 +24,34 @@ data class BinaryValue(val data: List<Int>) {
 }
 
 class Stats(val totalLines: Int, val oneCounts: List<Int> = listOf()) {
+    companion object {
+        fun fold(data: List<BinaryValue>) = data.fold(Stats(data.size)) { acc, s -> acc.countOnes(s) }
+        fun mostCommon(data: List<BinaryValue>) = fold(data).mostCommonBinary()
+        fun leastCommon(data: List<BinaryValue>) =fold(data).leastCommonBinary()
+    }
     fun countOnes(line: BinaryValue): Stats {
-
         val newOneCounts: List<Int> =
             line.data.mapIndexed { index, i -> if (oneCounts.size > index) i + oneCounts[index] else i }
         return Stats(totalLines, newOneCounts);
     }
 
-    fun mostCommon(): BinaryValue {
+    fun mostCommonBinary(): BinaryValue {
         return BinaryValue(oneCounts.map { if (it >= totalLines - it) 1 else 0 })
     }
 
-    fun leastCommon(): BinaryValue {
-        return mostCommon().invert()
+    fun leastCommonBinary(): BinaryValue {
+        return mostCommonBinary().invert()
     }
 }
 
 class Diagnostic(val fullData: List<BinaryValue>) {
     fun gamma(): Int {
-        val stats = statFor(fullData);
-        return stats.mostCommon().toDecimal()
+        return Stats.mostCommon(fullData).toDecimal()
 
     }
 
     fun epsilon(): Int {
-        val stats = statFor(fullData);
-        return stats.leastCommon().toDecimal()
+        return Stats.leastCommon(fullData).toDecimal()
     }
 
     fun oxygen(): Int {
@@ -60,21 +62,20 @@ class Diagnostic(val fullData: List<BinaryValue>) {
         return recursiveFilter(fullData, 0, Stats::leastCommon)
     }
 
-    private fun recursiveFilter(data: List<BinaryValue>, index: Int, statFunction: (Stats) -> BinaryValue): Int {
+    private fun recursiveFilter(data: List<BinaryValue>, index: Int, reducer: (List<BinaryValue>) -> BinaryValue): Int {
         if (index > data.first().length()) {
             TODO("should not happen")
         }
 
-        val stats = statFor(data)
-        val mostPresent = statFunction(stats)
-        val targetValue = mostPresent[index]
+        val reduced = reducer(data)
+        val targetValue = reduced[index]
         val filteredData = data.filter {
             it[index] == targetValue
         }
         if (filteredData.size == 1) {
             return filteredData.first().toDecimal()
         }
-        return recursiveFilter(filteredData, index + 1, statFunction)
+        return recursiveFilter(filteredData, index + 1, reducer)
 
 
     }
@@ -82,7 +83,6 @@ class Diagnostic(val fullData: List<BinaryValue>) {
 
 
 
-    fun statFor(data: List<BinaryValue>) = data.fold(Stats(data.size)) { acc, s -> acc.countOnes(s) }
 }
 
 class Day3 {
