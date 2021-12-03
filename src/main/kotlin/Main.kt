@@ -23,8 +23,8 @@ fun day3() {
 
 private fun day1() {
     val day1 = Day1()
-    println("day1 count: ${day1.count1()}")
-    println("day1 count3: ${day1.count3()}")
+    println("day1 count: ${day1.count1()} /1791")
+    println("day1 count3: ${day1.count3()} /1822")
 }
 
 private fun day2() {
