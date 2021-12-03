@@ -13,9 +13,9 @@ fun main(args: Array<String>) {
 fun day3() {
     val day3 = Day3()
     val diag = day3.diag()
-    println("day3 gamma: ${diag.gamma()}")
-    println("day3 epsilon: ${diag.epsilon()}")
-    println("day3 factor: ${diag.gamma() * diag.epsilon()}")
+    println("day3 gamma: ${diag.gamma()} / 3529")
+    println("day3 epsilon: ${diag.epsilon()} / 566")
+    println("day3 factor: ${diag.gamma() * diag.epsilon()} / 1997414")
 }
 
 private fun day1() {

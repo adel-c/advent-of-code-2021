@@ -17,21 +17,22 @@ class Stats(val totalLines: Int, val oneCounts: List<Int> = listOf()) {
     }
 }
 
-class Diagnostic(val stats: Stats) {
+class Diagnostic(val fullData: List<String>) {
     fun gamma(): Int {
-        println(stats.mostPresent())
+        val stats =statFor(fullData);
         return binaryListToDecimal(stats.mostPresent())
 
     }
 
     fun epsilon(): Int {
-        println(stats.leastPresent())
+        val stats =statFor(fullData);
         return binaryListToDecimal(stats.leastPresent())
     }
 
    fun binaryListToDecimal(binAray: List<Int>) = binAray.reversed().reduceIndexed { index, acc, i -> ((2 power index)*i)+acc }
     //fun binaryListToDecimal(bins: List<Int>) = bins.joinToString("").toInt(2)
 
+    fun statFor(data:List<String>)=  data.fold(Stats(data.size)) { acc, s -> acc.countOnes(s) }
 }
 
 class Day3 {
@@ -39,7 +40,6 @@ class Day3 {
 
 
     fun diag(): Diagnostic {
-        val stats = inputData.fold(Stats(inputData.size)) { acc, s -> acc.countOnes(s) }
-        return Diagnostic(stats);
+        return Diagnostic(inputData);
     }
 }
