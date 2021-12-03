@@ -27,8 +27,9 @@ class Stats(val totalLines: Int, val oneCounts: List<Int> = listOf()) {
     companion object {
         fun fold(data: List<BinaryValue>) = data.fold(Stats(data.size)) { acc, s -> acc.countOnes(s) }
         fun mostCommon(data: List<BinaryValue>) = fold(data).mostCommonBinary()
-        fun leastCommon(data: List<BinaryValue>) =fold(data).leastCommonBinary()
+        fun leastCommon(data: List<BinaryValue>) = fold(data).leastCommonBinary()
     }
+
     fun countOnes(line: BinaryValue): Stats {
         val newOneCounts: List<Int> =
             line.data.mapIndexed { index, i -> if (oneCounts.size > index) i + oneCounts[index] else i }
@@ -44,26 +45,21 @@ class Stats(val totalLines: Int, val oneCounts: List<Int> = listOf()) {
     }
 }
 
-class Diagnostic(val fullData: List<BinaryValue>) {
-    fun gamma(): Int {
-        return Stats.mostCommon(fullData).toDecimal()
+class Diagnostic(private val fullData: List<BinaryValue>) {
+    fun gamma() = Stats.mostCommon(fullData).toDecimal()
 
-    }
+    fun epsilon() = Stats.leastCommon(fullData).toDecimal()
 
-    fun epsilon(): Int {
-        return Stats.leastCommon(fullData).toDecimal()
-    }
+    fun oxygen() = recursiveFilter(fullData, Stats::mostCommon)
 
-    fun oxygen(): Int {
-        return recursiveFilter(fullData, 0, Stats::mostCommon)
-    }
+    fun co2() = recursiveFilter(fullData, Stats::leastCommon)
 
-    fun co2(): Int {
-        return recursiveFilter(fullData, 0, Stats::leastCommon)
-    }
-
-    private fun recursiveFilter(data: List<BinaryValue>, index: Int, reducer: (List<BinaryValue>) -> BinaryValue): Int {
-        if (index > data.first().length()) {
+    private fun recursiveFilter(
+        data: List<BinaryValue>,
+        reducer: (List<BinaryValue>) -> BinaryValue,
+        index: Int = 0
+    ): Int {
+        if (data.isEmpty() || index > data.first().length()) {
             TODO("should not happen")
         }
 
@@ -75,19 +71,12 @@ class Diagnostic(val fullData: List<BinaryValue>) {
         if (filteredData.size == 1) {
             return filteredData.first().toDecimal()
         }
-        return recursiveFilter(filteredData, index + 1, reducer)
-
-
+        return recursiveFilter(filteredData, reducer, index + 1)
     }
-
-
-
-
 }
 
 class Day3 {
     private val inputData: List<String> = "day3/input".fromResource().readLines()
-
 
     fun diag(): Diagnostic {
         return Diagnostic(inputData.map { line -> BinaryValue.fromString(line) });
