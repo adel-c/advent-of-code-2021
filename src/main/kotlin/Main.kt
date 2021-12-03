@@ -10,16 +10,6 @@ fun main(args: Array<String>) {
     day3()
 }
 
-fun day3() {
-    val day3 = Day3()
-    val diag = day3.diag()
-    println("day3 gamma: ${diag.gamma()} / 3529")
-    println("day3 epsilon: ${diag.epsilon()} / 566")
-    println("day3 factor: ${diag.gamma() * diag.epsilon()} / 1997414")
-    println("day3 oxygen: ${diag.oxygen()} / 3573")
-    println("day3 co2: ${diag.co2()} / 289")
-    println("day3 factor2: ${diag.oxygen() * diag.co2()} / 1032597")
-}
 
 private fun day1() {
     val day1 = Day1()
@@ -37,3 +27,15 @@ private fun day2() {
     println("day2 2 count: $position2 / Position2(horizontal=1895, aim=894, depth=896491)")
     println("day2 2 count: ${position2.factor()} /1698850445")
 }
+
+fun day3() {
+    val day3 = Day3()
+    val diag = day3.diag()
+    println("day3 gamma: ${diag.gamma()} / 3529")
+    println("day3 epsilon: ${diag.epsilon()} / 566")
+    println("day3 factor: ${diag.gamma() * diag.epsilon()} / 1997414")
+    println("day3 oxygen: ${diag.oxygen()} / 3573")
+    println("day3 co2: ${diag.co2()} / 289")
+    println("day3 factor2: ${diag.oxygen() * diag.co2()} / 1032597")
+}
+
