@@ -18,7 +18,7 @@ data class BinaryValue(val data: List<Int>) {
         data.reversed().reduceIndexed { index, acc, i -> ((2 power index) * i) + acc }
     //fun toDecimal() = data.joinToString("").toInt(2)
 
-    fun invert() = BinaryValue(data.map { 1- it })
+    fun invert() = BinaryValue(data.map { 1 - it })
 
     fun length() = data.size
 }
@@ -36,13 +36,9 @@ class Stats(val totalLines: Int, val oneCounts: List<Int> = listOf()) {
         return Stats(totalLines, newOneCounts);
     }
 
-    fun mostCommonBinary(): BinaryValue {
-        return BinaryValue(oneCounts.map { if (it >= totalLines - it) 1 else 0 })
-    }
+    fun mostCommonBinary() = BinaryValue(oneCounts.map { if (it >= totalLines - it) 1 else 0 })
 
-    fun leastCommonBinary(): BinaryValue {
-        return mostCommonBinary().invert()
-    }
+    fun leastCommonBinary() = mostCommonBinary().invert()
 }
 
 class Diagnostic(private val fullData: List<BinaryValue>) {
@@ -64,9 +60,8 @@ class Diagnostic(private val fullData: List<BinaryValue>) {
         }
 
         val reduced = reducer(data)
-        val targetValue = reduced[index]
         val filteredData = data.filter {
-            it[index] == targetValue
+            it[index] == reduced[index]
         }
         if (filteredData.size == 1) {
             return filteredData.first().toDecimal()
