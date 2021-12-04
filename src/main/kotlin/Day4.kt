@@ -1,29 +1,19 @@
 class Day4(path: String = "day3/input") {
     private val inputData: List<String> = path.fromResource().readLines()
     fun parse(): Bingo {
-        return BingoParser(inputData).parse()
-    }
-}
-
-class BingoParser(val data: List<String>) {
-    fun parse(): Bingo {
-        val draws = data[0].split(",").map(String::toInt)
-        val boards: List<Board> = parseBoards(data.subList(2, data.size))
+        val draws = inputData[0].split(",").map(String::toInt)
+        val boards: List<Board> = parseBoards(inputData.subList(2, inputData.size))
         return Bingo(draws, boards)
     }
 
     private fun parseBoards(matrixRows: List<String>): List<Board> {
-        return matrixRows.chunked(6) { it.filter(String::isNotBlank) }
-            .map(this::parseLineAsInts)
+        return matrixRows.chunked(6) { it.filter(String::isNotBlank) }.map(this::parseLineAsInts)
             .map { Board.fromMatrix(it) }
     }
 
     private fun parseLineAsInts(rows: List<String>): List<List<Int>> {
-        return rows.map { parseBoardRow(it) }
-
+        return rows.map { it.split(" ").filter(String::isNotBlank).map(String::toInt) }
     }
-
-    private fun parseBoardRow(row: String) = row.split(" ").filter(String::isNotBlank).map(String::toInt)
 }
 
 data class Bingo(val draws: List<Int>, val boards: List<Board>) {
@@ -45,12 +35,12 @@ data class Board(
     private val rowAndColumns: List<List<Int>>,
     val draws: Set<Int> = setOf(),
     private val lastDraw: Int = -1,
-
-    ) {
+) {
     companion object {
         fun fromMatrix(matrix: List<List<Int>>): Board {
             return Board(matrix, matrix + computeColumns(matrix))
         }
+
         private fun computeColumns(matrix: List<List<Int>>) =
             List(matrix.size) { index -> matrix.map { it[index] }.toList() }
     }
