@@ -1,4 +1,4 @@
-class Day4(path: String = "day3/input") {
+class Day4(path: String = "day4/input") {
     private val inputData: List<String> = path.fromResource().readLines()
     fun parse(): Bingo {
         val draws = inputData[0].split(",").map(String::toInt)
@@ -7,7 +7,8 @@ class Day4(path: String = "day3/input") {
     }
 
     private fun parseBoards(matrixRows: List<String>): List<Board> {
-        return matrixRows.chunked(6) { it.filter(String::isNotBlank) }.map(this::parseLineAsInts)
+        return matrixRows.chunked(6) { it.filter(String::isNotBlank) }
+            .map(this::parseLineAsInts)
             .map { Board.fromMatrix(it) }
     }
 
