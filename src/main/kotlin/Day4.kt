@@ -2,7 +2,7 @@ class Day4(path: String = "day3/input") {
     private val inputData: List<String> = path.fromResource().readLines()
 
     fun parse(): Bingo {
-        val draws = inputData.get(0).split(",").map(String::toInt)
+        val draws = inputData[0].split(",").map(String::toInt)
 
         val boards: List<Board> = parseBoards()
         val bingo = Bingo(draws, boards)
