@@ -49,7 +49,10 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
 data class Board(
     private val matrix: List<List<Int>>,
     private val rowAndColumns: List<List<Int>>,
-) {
+    val draws: Set<Int> = setOf(),
+    private val winningMove:Int = -1,
+
+    ) {
     companion object {
         fun fromMatrix(matrix: List<List<Int>>): Board {
             return Board(matrix, matrix + computeColumns(matrix))
@@ -59,18 +62,9 @@ data class Board(
             List(matrix.size) { index -> matrix.map { it[index] }.toList() }
     }
 
-    private var winningMove = -1
-
-
-    val draws: Set<Int>
-        get() = played.toSet()
-    private val played: MutableSet<Int> = mutableSetOf()
-
-
     fun play(draw: Int): Board {
         if (!win()) {
-            played.add(draw)
-            winningMove = draw
+            return this.copy(draws=draws+draw, winningMove = draw)
         }
         return this
     }
@@ -84,18 +78,18 @@ data class Board(
     }
 
     fun win(): Boolean {
-        if (played.size < matrix.size) {
+        if (draws.size < matrix.size) {
             return false
         }
 
-        return rowAndColumns.any { played.containsAll(it) }
+        return rowAndColumns.any { draws.containsAll(it) }
     }
 
     fun winningDraw(): Int {
         return winningMove
     }
 
-    fun unmarked() = (matrix.flatten() - played).sum()
+    fun unmarked() = (matrix.flatten() - draws).sum()
 
 
     fun score(): Int {
