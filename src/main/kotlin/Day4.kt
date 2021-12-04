@@ -22,7 +22,8 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
     }
 
     private fun boardsByWinOrder(): List<Board> {
-        return boards.map { it.play(*draws.toIntArray()) }.sortedBy { it.draws.size }
+        val drawsAsArray = draws.toIntArray()
+        return boards.map { it.play(*drawsAsArray) }.sortedBy { it.draws.size }
     }
 
     fun lastWin(): Int {
