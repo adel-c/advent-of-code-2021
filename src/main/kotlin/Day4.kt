@@ -3,8 +3,6 @@ class Day4(path: String = "day3/input") {
     fun parse(): Bingo {
         return BingoParser(inputData).parse()
     }
-
-
 }
 
 class BingoParser(val data: List<String>) {
@@ -58,7 +56,6 @@ data class Board(
         fun fromMatrix(matrix: List<List<Int>>): Board {
             return Board(matrix, matrix + computeColumns(matrix))
         }
-
         private fun computeColumns(matrix: List<List<Int>>) =
             List(matrix.size) { index -> matrix.map { it[index] }.toList() }
     }
@@ -72,7 +69,7 @@ data class Board(
         return rowAndColumns.any { draws.containsAll(it) }
     }
 
-    fun play(draw: Int): Board {
+    private fun play(draw: Int): Board {
         if (!win) {
             return this.copy(draws = draws + draw, lastDraw = draw)
         }
@@ -85,13 +82,11 @@ data class Board(
         }
     }
 
-
     fun winningDraw(): Int {
         return lastDraw
     }
 
     fun unmarked() = (matrix.flatten() - draws).sum()
-
 
     fun score(): Int {
         return unmarked() * winningDraw()
