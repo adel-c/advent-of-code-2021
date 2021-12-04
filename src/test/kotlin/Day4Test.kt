@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class Day4Test {
     val aBoard = Board(
@@ -53,10 +55,51 @@ class Day4Test {
 
     @Test
     fun board_should_remember_played() {
-        val board=aBoard.copy()
+        val board = aBoard.copy()
         board.play(7)
         board.play(4)
-        assertEquals(listOf(7,4),board.draws)
+        assertEquals(setOf(7, 4), board.draws)
+    }
+
+    @Test
+    fun isWin_should_be_true_if_line_is_all_played() {
+        val board = aBoard.copy()
+        board.play(12)
+        board.play(10)
+        board.play(16)
+        board.play(15)
+        board.play(9)
+        board.play(19)
+        assertTrue(board.win())
+    }
+    @Test
+    fun isWin_should_be_true_if_column_is_all_played() {
+        val board = aBoard.copy()
+        board.play(21)
+        board.play(117)
+        board.play(16)
+        board.play(8)
+        board.play(11)
+        board.play(0)
+        assertTrue(board.win())
+    }
+    @Test
+    fun isWin_should_be_false_if_less_than_5_play() {
+        val board = aBoard.copy()
+        board.play(10)
+        board.play(16)
+        board.play(19)
+        assertFalse(board.win())
+    }
+    @Test
+    fun isWin_should_be_false_if_not_line() {
+        val board = aBoard.copy()
+        board.play(10)
+        board.play(2)
+        board.play(5)
+        board.play(9)
+        board.play(19)
+        assertFalse(board.win())
     }
 
     private fun assertValues(draws: List<Int>, boards: List<Board>, actual: Bingo) {
