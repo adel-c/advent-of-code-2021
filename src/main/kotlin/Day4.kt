@@ -29,7 +29,18 @@ class Day4(path: String = "day3/input") {
 
 data class Bingo(val draws: List<Int>, val boards: List<Board>) {
     fun play(): Int {
+        draws.forEach {draw->
+            boards.forEach{it.play(draw)}
+            if(anyWin()){
+                val board: Board = boards.first(Board::win)
+                return board.unmarked() * draw
+            }
+        }
         return 0
+    }
+
+    fun anyWin(): Boolean {
+        return boards.any(Board::win)
     }
 
     override fun toString(): String {
