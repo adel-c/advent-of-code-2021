@@ -35,21 +35,15 @@ class BingoParser(val data: List<String>) {
 
 data class Bingo(val draws: List<Int>, val boards: List<Board>) {
     fun play(): Int {
-        val boardsByWinOrder = boardsByWinOrder()
-        return boardsByWinOrder.first().score()
+        return boardsByWinOrder().first().score()
     }
 
     private fun boardsByWinOrder(): List<Board> {
-        var playBoards = boards.toList()
-        draws.forEach { draw ->
-            playBoards = playBoards.map { it.play(draw) }
-        }
-        return playBoards.sortedBy { it.draws.size }
+        return boards.map { it.play(*draws.toIntArray()) }.sortedBy { it.draws.size }
     }
 
     fun lastWin(): Int {
-        val boardsByWinOrder = boardsByWinOrder()
-        return boardsByWinOrder.last().score()
+        return boardsByWinOrder().last().score()
     }
 }
 
@@ -69,7 +63,7 @@ data class Board(
             List(matrix.size) { index -> matrix.map { it[index] }.toList() }
     }
 
-    private val win=computeWin()
+    private val win = computeWin()
 
     fun computeWin(): Boolean {
         if (draws.size < matrix.size) {
@@ -86,13 +80,10 @@ data class Board(
     }
 
     fun play(vararg draws: Int): Board {
-        var b: Board = this
-        draws.forEach {
-            b = b.play(it)
+        return draws.fold(this) { acc, draw ->
+            acc.play(draw)
         }
-        return b
     }
-
 
 
     fun winningDraw(): Int {
