@@ -37,6 +37,6 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
 data class Board(val matrix: List<List<Int>>) {
     override fun toString(): String {
 
-        return matrix.joinToString("\n") { row -> row.joinToString(" ") } +"\n"
+        return matrix.joinToString("\n") { row -> row.joinToString(" ") { it.toString().padStart(2, '0') } } +"\n"
     }
 }
