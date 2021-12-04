@@ -2,7 +2,15 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Day4Test {
-
+    val aBoard = Board(
+        listOf(
+            listOf(14, 21, 17, 24, 4),
+            listOf(10, 16, 15, 9, 19),
+            listOf(18, 8, 23, 26, 20),
+            listOf(22, 11, 13, 6, 5),
+            listOf(2, 0, 12, 3, 7),
+        )
+    )
 
     @Test
     fun testParser() {
@@ -40,6 +48,15 @@ class Day4Test {
                 )
             ), actual
         )
+    }
+
+
+    @Test
+    fun board_should_remember_played() {
+        val board=aBoard.copy()
+        board.play(7)
+        board.play(4)
+        assertEquals(listOf(7,4),board.draws)
     }
 
     private fun assertValues(draws: List<Int>, boards: List<Board>, actual: Bingo) {

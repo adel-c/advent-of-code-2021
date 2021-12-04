@@ -35,8 +35,15 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
 }
 
 data class Board(val matrix: List<List<Int>>) {
+    val draws: List<Int>
+        get() = played.toList()
+    private val played: MutableList<Int> = mutableListOf()
     override fun toString(): String {
 
         return matrix.joinToString("\n") { row -> row.joinToString(" ") { it.toString().padStart(2, '0') } } +"\n"
+    }
+
+    fun play(draw: Int) {
+        played.add(draw)
     }
 }
