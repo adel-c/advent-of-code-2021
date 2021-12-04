@@ -119,11 +119,25 @@ class Day4Test {
 
         assertEquals(4512,actual.play())
     }
+
+    @Test
+    fun test_lastWin_result_should_be_4512() {
+        val actual = Day4("day4/inputTest").parse()
+
+        assertEquals(1924,actual.lastWin())
+    }
     @Test
     fun play_result_should_be_89001() {
         val actual = Day4("day4/input").parse()
 
         assertEquals(89001,actual.play())
+    }
+
+    @Test
+    fun lastWin_result_should_be_7296() {
+        val actual = Day4("day4/input").parse()
+
+        assertEquals(7296,actual.lastWin())
     }
     private fun assertValues(draws: List<Int>, boards: List<Board>, actual: Bingo) {
         assertEquals(draws, actual.draws, "draws")

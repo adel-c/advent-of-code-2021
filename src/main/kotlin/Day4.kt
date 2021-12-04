@@ -38,7 +38,23 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
         }
         return 0
     }
+    fun lastWin(): Int {
+        var playing :Set<Board> = boards.toSet()
+        var lastWon:Board? = null
+        draws.forEach {draw->
+            playing.forEach{it.play(draw)}
+            val wonBoard = playing.filter(Board::win)
+            playing = playing - wonBoard.toSet()
+            if(wonBoard.isNotEmpty()){
+                lastWon = wonBoard.last()
+            }
 
+            if(playing.isEmpty() && lastWon  != null){
+                return lastWon!!.unmarked() * draw
+            }
+        }
+        return 0
+    }
     fun anyWin(): Boolean {
         return boards.any(Board::win)
     }
@@ -46,6 +62,8 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
     override fun toString(): String {
         return "draws=$draws \n\n${boards.joinToString("\n\n")}"
     }
+
+
 }
 
 data class Board(val matrix: List<List<Int>>) {
