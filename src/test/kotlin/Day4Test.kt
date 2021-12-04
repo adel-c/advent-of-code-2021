@@ -56,74 +56,65 @@ class Day4Test {
     @Test
     fun board_should_remember_played() {
         val board = aBoard.copy()
-        board.play(7)
-        board.play(4)
-        assertEquals(setOf(7, 4), board.draws)
+        val result = board.play(7, 4)
+
+        assertEquals(setOf(7, 4), result.draws)
     }
 
     @Test
     fun board_should_not_play_if_won() {
         val board = aBoard.copy()
-        board.play(11, 18, 8, 23, 26, 20, 99, 88)
-        assertTrue(board.win())
-        assertEquals(20, board.winningDraw())
-        assertEquals(setOf(11, 18, 8, 23, 26, 20), board.draws)
+        val result = board.play(11, 18, 8, 23, 26, 20, 99, 88)
+        assertTrue(result.win())
+        assertEquals(20, result.winningDraw())
+        assertEquals(setOf(11, 18, 8, 23, 26, 20), result.draws)
     }
 
     @Test
     fun board_score_should_return_unmarked_times_winningDraw() {
         val board = aBoard.copy()
-        board.play(7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24, 30, 20, 3)
-        assertEquals(4512, board.score())
+        val result = board.play(7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24, 30, 20, 3)
+        assertEquals(4512, result.score())
     }
 
     @Test
     fun isWin_should_be_true_if_line_is_all_played() {
         val board = aBoard.copy()
-        board.play(12, 10, 16, 15, 9, 19)
-        assertTrue(board.win())
+        val result = board.play(12, 10, 16, 15, 9, 19)
+        assertTrue(result.win())
     }
 
     @Test
     fun unmarkedSum_should_return_the_sum_of_all_unmarked_board() {
         val board = aBoard.copy()
 
-        board.play(7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24)
+        val result = board.play(7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24)
 
-        assertEquals(188, board.unmarked())
+        assertEquals(188, result.unmarked())
     }
 
 
     @Test
     fun isWin_should_be_true_if_column_is_all_played() {
         val board = aBoard.copy()
-        board.play(21)
-        board.play(117)
-        board.play(16)
-        board.play(8)
-        board.play(11)
-        board.play(0)
-        assertTrue(board.win())
+        val result = board.play(21, 117, 16, 8, 11, 0)
+
+        assertTrue(result.win())
     }
 
     @Test
     fun isWin_should_be_false_if_less_than_5_play() {
         val board = aBoard.copy()
-        board.play(10)
-        board.play(16)
-        board.play(19)
-        assertFalse(board.win())
+        val result = board.play(10, 16, 19)
+        assertFalse(result.win())
     }
 
     @Test
     fun isWin_should_be_false_if_not_line() {
         val board = aBoard.copy()
-        board.play(10)
-        board.play(2)
-        board.play(5)
-        board.play(9)
-        board.play(19)
-        assertFalse(board.win())
+        val result = board.play(10, 2, 5, 9, 19)
+
+        assertFalse(result.win())
     }
 
     @Test
