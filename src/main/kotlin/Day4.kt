@@ -29,14 +29,15 @@ class Day4(path: String = "day3/input") {
 
 data class Bingo(val draws: List<Int>, val boards: List<Board>) {
     fun play(): Int {
+        val boardsByWinOrder= boardsByWinOrder()
+        return boardsByWinOrder.first().score()
+    }
+
+    private fun boardsByWinOrder(): List<Board> {
         draws.forEach { draw ->
             boards.forEach { it.play(draw) }
-            if (anyWin()) {
-                val board: Board = boards.first(Board::win)
-                return board.unmarked() * draw
-            }
         }
-        return 0
+        return boards.sortedBy { it.draws.size }
     }
 
     fun lastWin(): Int {
@@ -82,9 +83,9 @@ data class Board(val matrix: List<List<Int>>) {
     }
 
     fun play(draw: Int) {
-        if(!win()){
+        if (!win()) {
             played.add(draw)
-            winningMove=draw
+            winningMove = draw
         }
 
     }
@@ -106,4 +107,9 @@ data class Board(val matrix: List<List<Int>>) {
     }
 
     fun unmarked() = (matrix.flatten() - played).sum()
+
+
+    fun score():Int{
+        return unmarked() * winningDraw()
+    }
 }
