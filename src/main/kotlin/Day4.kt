@@ -6,7 +6,6 @@ class Day4(path: String = "day3/input") {
 
         val boards: List<Board> = parseBoards()
         val bingo = Bingo(draws, boards)
-        println(bingo)
         return bingo
     }
 
@@ -41,26 +40,11 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
     }
 
     fun lastWin(): Int {
-        var playing: Set<Board> = boards.toSet()
-        var lastWon: Board? = null
-        draws.forEach { draw ->
-            playing.forEach { it.play(draw) }
-            val wonBoard = playing.filter(Board::win)
-            playing = playing - wonBoard.toSet()
-            if (wonBoard.isNotEmpty()) {
-                lastWon = wonBoard.last()
-            }
-
-            if (playing.isEmpty() && lastWon != null) {
-                return lastWon!!.unmarked() * draw
-            }
-        }
-        return 0
+        val boardsByWinOrder= boardsByWinOrder()
+        return boardsByWinOrder.last().score()
     }
 
-    fun anyWin(): Boolean {
-        return boards.any(Board::win)
-    }
+
 
     override fun toString(): String {
         return "draws=$draws \n\n${boards.joinToString("\n\n")}"
@@ -77,8 +61,8 @@ data class Board(val matrix: List<List<Int>>) {
     val draws: Set<Int>
         get() = played.toSet()
     private val played: MutableSet<Int> = mutableSetOf()
-    override fun toString(): String {
 
+    override fun toString(): String {
         return matrix.joinToString("\n") { row -> row.joinToString(" ") { it.toString().padStart(2, '0') } } + "\n"
     }
 
