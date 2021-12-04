@@ -65,7 +65,7 @@ class Day4Test {
     fun board_should_not_play_if_won() {
         val board = aBoard.copy()
         val result = board.play(11, 18, 8, 23, 26, 20, 99, 88)
-        assertTrue(result.win())
+        assertTrue(result.computeWin())
         assertEquals(20, result.winningDraw())
         assertEquals(setOf(11, 18, 8, 23, 26, 20), result.draws)
     }
@@ -81,7 +81,7 @@ class Day4Test {
     fun isWin_should_be_true_if_line_is_all_played() {
         val board = aBoard.copy()
         val result = board.play(12, 10, 16, 15, 9, 19)
-        assertTrue(result.win())
+        assertTrue(result.computeWin())
     }
 
     @Test
@@ -99,14 +99,14 @@ class Day4Test {
         val board = aBoard.copy()
         val result = board.play(21, 117, 16, 8, 11, 0)
 
-        assertTrue(result.win())
+        assertTrue(result.computeWin())
     }
 
     @Test
     fun isWin_should_be_false_if_less_than_5_play() {
         val board = aBoard.copy()
         val result = board.play(10, 16, 19)
-        assertFalse(result.win())
+        assertFalse(result.computeWin())
     }
 
     @Test
@@ -114,7 +114,7 @@ class Day4Test {
         val board = aBoard.copy()
         val result = board.play(10, 2, 5, 9, 19)
 
-        assertFalse(result.win())
+        assertFalse(result.computeWin())
     }
 
     @Test

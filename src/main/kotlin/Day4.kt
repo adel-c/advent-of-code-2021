@@ -57,7 +57,7 @@ data class Board(
     private val matrix: List<List<Int>>,
     private val rowAndColumns: List<List<Int>>,
     val draws: Set<Int> = setOf(),
-    private val winningMove: Int = -1,
+    private val lastDraw: Int = -1,
 
     ) {
     companion object {
@@ -69,9 +69,18 @@ data class Board(
             List(matrix.size) { index -> matrix.map { it[index] }.toList() }
     }
 
+    private val win=computeWin()
+
+    fun computeWin(): Boolean {
+        if (draws.size < matrix.size) {
+            return false
+        }
+        return rowAndColumns.any { draws.containsAll(it) }
+    }
+
     fun play(draw: Int): Board {
-        if (!win()) {
-            return this.copy(draws = draws + draw, winningMove = draw)
+        if (!win) {
+            return this.copy(draws = draws + draw, lastDraw = draw)
         }
         return this
     }
@@ -84,16 +93,10 @@ data class Board(
         return b
     }
 
-    fun win(): Boolean {
-        if (draws.size < matrix.size) {
-            return false
-        }
 
-        return rowAndColumns.any { draws.containsAll(it) }
-    }
 
     fun winningDraw(): Int {
-        return winningMove
+        return lastDraw
     }
 
     fun unmarked() = (matrix.flatten() - draws).sum()
