@@ -8,17 +8,12 @@ class Day4(path: String = "day3/input") {
 class BingoParser(val data: List<String>) {
     fun parse(): Bingo {
         val draws = data[0].split(",").map(String::toInt)
-
-        val boards: List<Board> = parseBoards()
-        val bingo = Bingo(draws, boards)
-        return bingo
+        val boards: List<Board> = parseBoards(data.subList(2, data.size))
+        return Bingo(draws, boards)
     }
 
-    private fun parseBoards(): List<Board> {
-        val avoidFirstRow = data.subList(2, data.size)
-        val boardsStringChunks = avoidFirstRow.chunked(6) { it.filter(String::isNotBlank) }
-
-        return boardsStringChunks
+    private fun parseBoards(matrixRows: List<String>): List<Board> {
+        return matrixRows.chunked(6) { it.filter(String::isNotBlank) }
             .map(this::parseLineAsInts)
             .map { Board.fromMatrix(it) }
     }
