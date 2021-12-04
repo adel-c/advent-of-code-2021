@@ -33,10 +33,11 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
     }
 
     private fun boardsByWinOrder(): List<Board> {
+        var playBoards=boards.toList()
         draws.forEach { draw ->
-            boards.forEach { it.play(draw) }
+            playBoards= playBoards.map { it.play(draw) }
         }
-        return boards.sortedBy { it.draws.size }
+        return playBoards.sortedBy { it.draws.size }
     }
 
     fun lastWin(): Int {
