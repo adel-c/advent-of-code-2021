@@ -4,7 +4,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class Day4Test {
-    val aBoard = Board(
+    val aBoard = Board.fromMatrix(
         listOf(
             listOf(14, 21, 17, 24, 4),
             listOf(10, 16, 15, 9, 19),
@@ -20,7 +20,7 @@ class Day4Test {
         assertValues(
             listOf(7, 4, 9, 5, 11, 17, 23, 2, 0, 14, 21, 24, 10, 16, 13, 6, 15, 25, 12, 22, 18, 20, 8, 19, 3, 26, 1),
             listOf(
-                Board(
+                Board.fromMatrix(
                     listOf(
                         listOf(22, 13, 17, 11, 0),
                         listOf(8, 2, 23, 4, 24),
@@ -30,7 +30,7 @@ class Day4Test {
                     )
                 ),
 
-                Board(
+                Board.fromMatrix(
                     listOf(
                         listOf(3, 15, 0, 2, 22),
                         listOf(9, 18, 13, 17, 5),
@@ -39,7 +39,7 @@ class Day4Test {
                         listOf(14, 21, 16, 12, 6),
                     )
                 ),
-                Board(
+                Board.fromMatrix(
                     listOf(
                         listOf(14, 21, 17, 24, 4),
                         listOf(10, 16, 15, 9, 19),

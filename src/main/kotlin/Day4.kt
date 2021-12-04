@@ -15,7 +15,7 @@ class Day4(path: String = "day3/input") {
 
         return boardsStringChunks
             .map(this::parseLineAsInts)
-            .map { Board(it) }
+            .map { Board.fromMatrix(it) }
     }
 
     private fun parseLineAsInts(rows: List<String>): List<List<Int>> {
@@ -28,7 +28,7 @@ class Day4(path: String = "day3/input") {
 
 data class Bingo(val draws: List<Int>, val boards: List<Board>) {
     fun play(): Int {
-        val boardsByWinOrder= boardsByWinOrder()
+        val boardsByWinOrder = boardsByWinOrder()
         return boardsByWinOrder.first().score()
     }
 
@@ -40,16 +40,23 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
     }
 
     fun lastWin(): Int {
-        val boardsByWinOrder= boardsByWinOrder()
+        val boardsByWinOrder = boardsByWinOrder()
         return boardsByWinOrder.last().score()
     }
 }
 
 data class Board(val matrix: List<List<Int>>) {
+    companion object {
+        fun fromMatrix(matrix: List<List<Int>>): Board {
+            return Board(matrix)
+        }
+    }
+
     private val columns = computeColumns()
     private var winningMove = -1
 
     private fun computeColumns() = List(matrix.size) { index -> matrix.map { it[index] }.toList() }
+
     val draws: Set<Int>
         get() = played.toSet()
     private val played: MutableSet<Int> = mutableSetOf()
@@ -82,7 +89,7 @@ data class Board(val matrix: List<List<Int>>) {
     fun unmarked() = (matrix.flatten() - played).sum()
 
 
-    fun score():Int{
+    fun score(): Int {
         return unmarked() * winningDraw()
     }
 }
