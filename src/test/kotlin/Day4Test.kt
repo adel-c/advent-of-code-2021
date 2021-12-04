@@ -64,14 +64,25 @@ class Day4Test {
     @Test
     fun isWin_should_be_true_if_line_is_all_played() {
         val board = aBoard.copy()
-        board.play(12)
-        board.play(10)
-        board.play(16)
-        board.play(15)
-        board.play(9)
-        board.play(19)
+        board.play(12,10,16,15,9,19)
         assertTrue(board.win())
     }
+
+    @Test
+    fun unmarkedSum_should_return_the_sum_of_all_unmarked_board() {
+        val board = aBoard.copy()
+
+        board.play(7, 4, 9, 5, 11,17, 23, 2, 0, 14, 21,24)
+
+        assertEquals(188,board.unmarked())
+    }
+
+    @Test
+    fun last_played_should_return_the_last_draw() {
+        val board = aBoard.copy()
+        board.play(7, 4, 9, 5, 11,17, 23)
+    }
+
     @Test
     fun isWin_should_be_true_if_column_is_all_played() {
         val board = aBoard.copy()
@@ -100,6 +111,13 @@ class Day4Test {
         board.play(9)
         board.play(19)
         assertFalse(board.win())
+    }
+
+    @Test
+    fun test_play_result_should_be_4512() {
+        val actual = Day4("day4/inputTest").parse()
+
+        assertEquals(4512,actual.play())
     }
 
     private fun assertValues(draws: List<Int>, boards: List<Board>, actual: Bingo) {

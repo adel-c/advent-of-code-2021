@@ -28,6 +28,9 @@ class Day4(path: String = "day3/input") {
 }
 
 data class Bingo(val draws: List<Int>, val boards: List<Board>) {
+    fun play(): Int {
+        return 0
+    }
 
     override fun toString(): String {
         return "draws=$draws \n\n${boards.joinToString("\n\n")}"
@@ -37,7 +40,7 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
 data class Board(val matrix: List<List<Int>>) {
     private val columns = computeColumns()
 
-    private fun computeColumns()= List(matrix.size) { index -> matrix.map { it[index] }.toList() }
+    private fun computeColumns() = List(matrix.size) { index -> matrix.map { it[index] }.toList() }
     val draws: Set<Int>
         get() = played.toSet()
     private val played: MutableSet<Int> = mutableSetOf()
@@ -50,6 +53,10 @@ data class Board(val matrix: List<List<Int>>) {
         played.add(draw)
     }
 
+    fun play(vararg draws: Int) {
+        draws.forEach(this::play)
+    }
+
     fun win(): Boolean {
         if (played.size < matrix.size) {
             return false
@@ -57,4 +64,6 @@ data class Board(val matrix: List<List<Int>>) {
 
         return (matrix + columns).any { played.containsAll(it) }
     }
+
+    fun unmarked() = (matrix.flatten() - played).sum()
 }
