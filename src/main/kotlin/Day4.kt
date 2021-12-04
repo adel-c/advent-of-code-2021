@@ -29,32 +29,34 @@ class Day4(path: String = "day3/input") {
 
 data class Bingo(val draws: List<Int>, val boards: List<Board>) {
     fun play(): Int {
-        draws.forEach {draw->
-            boards.forEach{it.play(draw)}
-            if(anyWin()){
+        draws.forEach { draw ->
+            boards.forEach { it.play(draw) }
+            if (anyWin()) {
                 val board: Board = boards.first(Board::win)
                 return board.unmarked() * draw
             }
         }
         return 0
     }
+
     fun lastWin(): Int {
-        var playing :Set<Board> = boards.toSet()
-        var lastWon:Board? = null
-        draws.forEach {draw->
-            playing.forEach{it.play(draw)}
+        var playing: Set<Board> = boards.toSet()
+        var lastWon: Board? = null
+        draws.forEach { draw ->
+            playing.forEach { it.play(draw) }
             val wonBoard = playing.filter(Board::win)
             playing = playing - wonBoard.toSet()
-            if(wonBoard.isNotEmpty()){
+            if (wonBoard.isNotEmpty()) {
                 lastWon = wonBoard.last()
             }
 
-            if(playing.isEmpty() && lastWon  != null){
+            if (playing.isEmpty() && lastWon != null) {
                 return lastWon!!.unmarked() * draw
             }
         }
         return 0
     }
+
     fun anyWin(): Boolean {
         return boards.any(Board::win)
     }
@@ -68,6 +70,7 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
 
 data class Board(val matrix: List<List<Int>>) {
     private val columns = computeColumns()
+    private var winningMove = -1
 
     private fun computeColumns() = List(matrix.size) { index -> matrix.map { it[index] }.toList() }
     val draws: Set<Int>
@@ -79,7 +82,11 @@ data class Board(val matrix: List<List<Int>>) {
     }
 
     fun play(draw: Int) {
-        played.add(draw)
+        if(!win()){
+            played.add(draw)
+            winningMove=draw
+        }
+
     }
 
     fun play(vararg draws: Int) {
@@ -92,6 +99,10 @@ data class Board(val matrix: List<List<Int>>) {
         }
 
         return (matrix + columns).any { played.containsAll(it) }
+    }
+
+    fun winningDraw(): Int {
+        return winningMove
     }
 
     fun unmarked() = (matrix.flatten() - played).sum()

@@ -62,6 +62,15 @@ class Day4Test {
     }
 
     @Test
+    fun board_should_not_play_if_won() {
+        val board = aBoard.copy()
+        board.play(11,18, 8, 23, 26, 20,99,88)
+        assertTrue(board.win())
+        assertEquals(20,board.winningDraw())
+        assertEquals(setOf(11,18, 8, 23, 26, 20),board.draws)
+    }
+
+    @Test
     fun isWin_should_be_true_if_line_is_all_played() {
         val board = aBoard.copy()
         board.play(12,10,16,15,9,19)
