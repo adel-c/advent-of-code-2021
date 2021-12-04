@@ -1,8 +1,15 @@
 class Day4(path: String = "day3/input") {
     private val inputData: List<String> = path.fromResource().readLines()
-
     fun parse(): Bingo {
-        val draws = inputData[0].split(",").map(String::toInt)
+        return BingoParser(inputData).parse()
+    }
+
+
+}
+
+class BingoParser(val data: List<String>) {
+    fun parse(): Bingo {
+        val draws = data[0].split(",").map(String::toInt)
 
         val boards: List<Board> = parseBoards()
         val bingo = Bingo(draws, boards)
@@ -10,7 +17,7 @@ class Day4(path: String = "day3/input") {
     }
 
     private fun parseBoards(): List<Board> {
-        val avoidFirstRow = inputData.subList(2, inputData.size)
+        val avoidFirstRow = data.subList(2, data.size)
         val boardsStringChunks = avoidFirstRow.chunked(6) { it.filter(String::isNotBlank) }
 
         return boardsStringChunks
@@ -33,9 +40,9 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
     }
 
     private fun boardsByWinOrder(): List<Board> {
-        var playBoards=boards.toList()
+        var playBoards = boards.toList()
         draws.forEach { draw ->
-            playBoards= playBoards.map { it.play(draw) }
+            playBoards = playBoards.map { it.play(draw) }
         }
         return playBoards.sortedBy { it.draws.size }
     }
@@ -50,7 +57,7 @@ data class Board(
     private val matrix: List<List<Int>>,
     private val rowAndColumns: List<List<Int>>,
     val draws: Set<Int> = setOf(),
-    private val winningMove:Int = -1,
+    private val winningMove: Int = -1,
 
     ) {
     companion object {
@@ -64,7 +71,7 @@ data class Board(
 
     fun play(draw: Int): Board {
         if (!win()) {
-            return this.copy(draws=draws+draw, winningMove = draw)
+            return this.copy(draws = draws + draw, winningMove = draw)
         }
         return this
     }
