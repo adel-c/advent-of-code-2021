@@ -19,11 +19,11 @@ class Day4(path: String = "day3/input") {
     }
 
     private fun parseLineAsInts(rows: List<String>): List<List<Int>> {
-        return rows.map { parBoardRow(it) }
+        return rows.map { parseBoardRow(it) }
 
     }
 
-    private fun parBoardRow(row: String) = row.split(" ").filter(String::isNotBlank).map(String::toInt)
+    private fun parseBoardRow(row: String) = row.split(" ").filter(String::isNotBlank).map(String::toInt)
 }
 
 data class Bingo(val draws: List<Int>, val boards: List<Board>) {
@@ -43,14 +43,6 @@ data class Bingo(val draws: List<Int>, val boards: List<Board>) {
         val boardsByWinOrder= boardsByWinOrder()
         return boardsByWinOrder.last().score()
     }
-
-
-
-    override fun toString(): String {
-        return "draws=$draws \n\n${boards.joinToString("\n\n")}"
-    }
-
-
 }
 
 data class Board(val matrix: List<List<Int>>) {
@@ -62,9 +54,6 @@ data class Board(val matrix: List<List<Int>>) {
         get() = played.toSet()
     private val played: MutableSet<Int> = mutableSetOf()
 
-    override fun toString(): String {
-        return matrix.joinToString("\n") { row -> row.joinToString(" ") { it.toString().padStart(2, '0') } } + "\n"
-    }
 
     fun play(draw: Int) {
         if (!win()) {
