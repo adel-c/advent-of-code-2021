@@ -19,7 +19,7 @@ class Day4(path: String = "day3/input") {
             .map { Board(it) }
     }
 
-    private fun parseLineAsInts(rows:List<String>) :List<List<Int>>{
+    private fun parseLineAsInts(rows: List<String>): List<List<Int>> {
         return rows.map { parBoardRow(it) }
 
     }
@@ -30,17 +30,20 @@ class Day4(path: String = "day3/input") {
 data class Bingo(val draws: List<Int>, val boards: List<Board>) {
 
     override fun toString(): String {
-        return "draws=$draws \n\n${boards.joinToString ("\n\n")}"
+        return "draws=$draws \n\n${boards.joinToString("\n\n")}"
     }
 }
 
 data class Board(val matrix: List<List<Int>>) {
+    private val columns = computeColumns()
+
+    private fun computeColumns()= List(matrix.size) { index -> matrix.map { it[index] }.toList() }
     val draws: Set<Int>
         get() = played.toSet()
     private val played: MutableSet<Int> = mutableSetOf()
     override fun toString(): String {
 
-        return matrix.joinToString("\n") { row -> row.joinToString(" ") { it.toString().padStart(2, '0') } } +"\n"
+        return matrix.joinToString("\n") { row -> row.joinToString(" ") { it.toString().padStart(2, '0') } } + "\n"
     }
 
     fun play(draw: Int) {
@@ -48,6 +51,10 @@ data class Board(val matrix: List<List<Int>>) {
     }
 
     fun win(): Boolean {
-return false
+        if (played.size < matrix.size) {
+            return false
+        }
+
+        return (matrix + columns).any { played.containsAll(it) }
     }
 }
