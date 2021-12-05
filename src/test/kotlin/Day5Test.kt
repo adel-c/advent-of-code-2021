@@ -52,6 +52,17 @@ class Day5Test {
             line.allPoints()
         )
     }
+
+    @Test
+    fun line_allPoints_return_diagonal_lines_if_asked_2() {
+        val line = Line(Point(1,1  ), Point(3,3))
+        assertEquals(
+            setOf(
+                Point(1,1),Point( 2,2), Point( 3,3)
+            ),
+            line.allPoints(false)
+        )
+    }
     @Test
     fun line_allPoints_return_diagonal_lines_if_asked() {
         val line = Line(Point(8, 0), Point(0, 8))
