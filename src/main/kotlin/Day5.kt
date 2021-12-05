@@ -49,14 +49,8 @@ data class Line(val start: Point, val end: Point) {
         }
         val rangeX = start.rangeX(end)
         val rangeY = start.rangeY(end)
-        val points = mutableSetOf<Point>()
-        for(i in rangeX){
-            for (j in rangeY){
-                points.add(Point(i,j))
-            }
-        }
 
-        return points
+        return  rangeX.flatMap {x-> rangeY.map {y-> Point(x,y) } }.toSet()
     }
 }
 
