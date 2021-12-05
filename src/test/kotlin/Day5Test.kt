@@ -1,7 +1,5 @@
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class Day5Test {
     val Lines = listOf(
@@ -32,7 +30,7 @@ class Day5Test {
     fun line_allPoints_should_return_all_points_horizontally() {
         val line = Line(Point(0, 9), Point(5, 9))
         assertEquals(
-            setOf(Point(0, 9),Point(1, 9),Point(2, 9),Point(3, 9),Point(4, 9), Point(5, 9)),
+            setOf(Point(0, 9), Point(1, 9), Point(2, 9), Point(3, 9), Point(4, 9), Point(5, 9)),
             line.allPoints()
         )
     }
@@ -41,10 +39,11 @@ class Day5Test {
     fun line_allPoints_should_return_all_points_vertically() {
         val line = Line(Point(9, 4), Point(3, 4))
         assertEquals(
-            setOf(Point(9, 4), Point(8, 4),Point(7, 4),Point(6, 4),Point(5, 4),Point(4, 4),Point(3, 4)),
+            setOf(Point(9, 4), Point(8, 4), Point(7, 4), Point(6, 4), Point(5, 4), Point(4, 4), Point(3, 4)),
             line.allPoints()
         )
     }
+
     @Test
     fun line_allPoints_should_ignore_diagonal_lines() {
         val line = Line(Point(8, 0), Point(0, 8))
@@ -57,6 +56,12 @@ class Day5Test {
     @Test
     fun test_MostDangerous_should_be_5() {
         val actual = Day5("day5/inputTest").parse()
-        assertEquals(5,actual.mostDangerousCount())
+        assertEquals(5, actual.mostDangerousCount())
+    }
+
+    @Test
+    fun MostDangerous_should_be_7674() {
+        val actual = Day5("day5/input").parse()
+        assertEquals(7674, actual.mostDangerousCount())
     }
 }

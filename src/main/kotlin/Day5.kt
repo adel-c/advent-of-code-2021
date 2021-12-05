@@ -44,7 +44,10 @@ data class Line(val start: Point, val end: Point) {
 
 data class Puzzle(val lines: List<Line>) {
     fun mostDangerousCount(): Int {
-        lines.flatMap(Line::allPoints)
-        return 0;
+        return lines.flatMap(Line::allPoints)
+            .groupingBy { it }
+            .eachCount()
+            .filterValues { it >= 2 }
+            .count()
     }
 }
