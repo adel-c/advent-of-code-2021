@@ -1,5 +1,3 @@
-import kotlin.math.absoluteValue
-
 class Day5(path: String = "day5/input") {
     private val inputData: List<String> = path.fromResource().readLines()
     fun parse(): Puzzle {
@@ -19,20 +17,10 @@ data class Point(val x: Int, val y: Int) {
     }
 
     fun isDiagonal(p: Point): Boolean = (x != p.x) && (y != p.y)
-    fun rangeX(p: Point): IntRange{
-        return if(x<p.x){
-            x..p.x
-        }else{
-            p.x..x
-        }
-    }
-    fun rangeY(p: Point): IntRange{
-        return if(y<p.y){
-            y..p.y
-        }else{
-            p.y..y
-        }
-    }
+    fun rangeX(p: Point) = range(x, p.x)
+    fun rangeY(p: Point) = range(y, p.y)
+
+    private fun range(a: Int, b: Int) = if (a < b) a..b else b..a
 }
 
 data class Line(val start: Point, val end: Point) {
@@ -44,14 +32,19 @@ data class Line(val start: Point, val end: Point) {
     }
 
     fun allPoints(): Set<Point> {
-        if(start.isDiagonal(end)){
+        if (start.isDiagonal(end)) {
             return setOf()
         }
         val rangeX = start.rangeX(end)
         val rangeY = start.rangeY(end)
 
-        return  rangeX.flatMap {x-> rangeY.map {y-> Point(x,y) } }.toSet()
+        return rangeX.flatMap { x -> rangeY.map { y -> Point(x, y) } }.toSet()
     }
 }
 
-data class Puzzle(val lines: List<Line>)
+data class Puzzle(val lines: List<Line>) {
+    fun mostDangerousCount(): Int {
+        lines.flatMap(Line::allPoints)
+        return 0;
+    }
+}

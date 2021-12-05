@@ -53,4 +53,10 @@ class Day5Test {
             line.allPoints()
         )
     }
+
+    @Test
+    fun test_MostDangerous_should_be_5() {
+        val actual = Day5("day5/inputTest").parse()
+        assertEquals(5,actual.mostDangerousCount())
+    }
 }
