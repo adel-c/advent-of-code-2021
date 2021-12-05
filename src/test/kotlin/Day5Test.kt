@@ -45,18 +45,31 @@ class Day5Test {
     }
 
     @Test
-    fun line_allPoints_should_ignore_diagonal_lines() {
+    fun line_allPoints_should_ignore_diagonal_lines_if_asked() {
         val line = Line(Point(8, 0), Point(0, 8))
         assertEquals(
             setOf(),
             line.allPoints()
         )
     }
-
+    @Test
+    fun line_allPoints_return_diagonal_lines_if_asked() {
+        val line = Line(Point(8, 0), Point(0, 8))
+        assertEquals(
+            setOf(),
+            line.allPoints(false)
+        )
+    }
     @Test
     fun test_MostDangerous_should_be_5() {
         val actual = Day5("day5/inputTest").parse()
         assertEquals(5, actual.mostDangerousCount())
+    }
+
+    @Test
+    fun test_MostDangerous_diag_should_be_12() {
+        val actual = Day5("day5/inputTest").parse()
+        assertEquals(12, actual.mostDangerousDiagonalCount())
     }
 
     @Test

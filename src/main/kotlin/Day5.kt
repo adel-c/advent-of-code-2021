@@ -31,8 +31,8 @@ data class Line(val start: Point, val end: Point) {
         }
     }
 
-    fun allPoints(): Set<Point> {
-        if (start.isDiagonal(end)) {
+    fun allPoints(ignoreDiagonals:Boolean=true): Set<Point> {
+        if (ignoreDiagonals && start.isDiagonal(end)) {
             return setOf()
         }
         val rangeX = start.rangeX(end)
@@ -44,7 +44,13 @@ data class Line(val start: Point, val end: Point) {
 
 data class Puzzle(val lines: List<Line>) {
     fun mostDangerousCount(): Int {
-        return lines.flatMap(Line::allPoints)
+        return count()
+    }
+    fun mostDangerousDiagonalCount(): Int {
+        return count(false)
+    }
+    fun count(ignoreDiagonals:Boolean=true): Int {
+        return lines.flatMap{it.allPoints(ignoreDiagonals)}
             .groupingBy { it }
             .eachCount()
             .filterValues { it >= 2 }
