@@ -19,7 +19,7 @@ class Day5(path: String = "day5/input") {
 private infix fun Int.progressTo(b: Int) = if (this < b) this..b else this downTo b
 data class Point(val x: Int, val y: Int) {
 
-    fun isDiagonal(p: Point): Boolean = (x != p.x) && (y != p.y)
+    fun isDiagonal(p: Point): Boolean = (x != p.x) && (y != p.y)//((x - p.x).absoluteValue == (y - p.y).absoluteValue)
     fun progressionX(p: Point) = x progressTo p.x
     fun progressionY(p: Point) = y progressTo p.y
 }
