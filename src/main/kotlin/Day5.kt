@@ -4,10 +4,12 @@ class Day5(path: String = "day5/input") {
         val lines = inputData.map(this::parseLine)
         return Puzzle(lines)
     }
+
     private fun parsePoint(string: String): Point {
         val coord = string.split(",")
         return Point(coord[0].trim().toInt(), coord[1].trim().toInt())
     }
+
     private fun parseLine(string: String): Line {
         val points = string.split("->")
         return Line(parsePoint(points[0]), parsePoint(points[1]))
@@ -39,13 +41,9 @@ data class Line(val start: Point, val end: Point) {
 }
 
 data class Puzzle(val lines: List<Line>) {
-    fun mostDangerousCount(): Int {
-        return count()
-    }
+    fun mostDangerousCount(): Int = count()
 
-    fun mostDangerousDiagonalCount(): Int {
-        return count(false)
-    }
+    fun mostDangerousDiagonalCount() = count(false)
 
     private fun count(ignoreDiagonals: Boolean = true): Int {
         return lines.flatMap { it.allPoints(ignoreDiagonals) }
