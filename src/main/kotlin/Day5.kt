@@ -35,21 +35,17 @@ data class Line(val start: Point, val end: Point) {
         if (ignoreDiagonals && start.isDiagonal(end)) {
             return setOf()
         }
-        if (start.isDiagonal(end)) {
-            val rangeX = start.rangeX(end)
-            val rangeY = start.rangeY(end)
-
-            return rangeX.zip(rangeY).map { Point(it.first, it.second) }.toSet()
-        }
-
-        return horizontalAndVerticalPoints()
-    }
-
-    private fun horizontalAndVerticalPoints(): Set<Point> {
         val rangeX = start.rangeX(end)
         val rangeY = start.rangeY(end)
-        return rangeX.flatMap { x -> rangeY.map { y -> Point(x, y) } }.toSet()
+        val pairsGenerator: List<Pair<Int, Int>> = if (start.isDiagonal(end)) {
+            rangeX.zip(rangeY)
+        } else {
+            rangeX.flatMap { x -> rangeY.map { y -> Pair(x, y) } }
+        }
+
+        return pairsGenerator.map { Point(it.first, it.second) }.toSet()
     }
+
 }
 
 data class Puzzle(val lines: List<Line>) {
