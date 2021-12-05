@@ -7,7 +7,6 @@ class Day5(path: String = "day5/input") {
 
 }
 
-
 data class Point(val x: Int, val y: Int) {
     companion object {
         fun from(string: String): Point {
@@ -35,16 +34,17 @@ data class Line(val start: Point, val end: Point) {
         if (ignoreDiagonals && start.isDiagonal(end)) {
             return setOf()
         }
-        val rangeX = start.rangeX(end)
-        val rangeY = start.rangeY(end)
-        val pairsGenerator: List<Pair<Int, Int>> = if (start.isDiagonal(end)) {
-            rangeX.zip(rangeY)
-        } else {
-            rangeX.flatMap { x -> rangeY.map { y -> Pair(x, y) } }
-        }
 
-        return pairsGenerator.map { Point(it.first, it.second) }.toSet()
+        return pairGenerator(start.rangeX(end), start.rangeY(end))
+            .map { Point(it.first, it.second) }.toSet()
     }
+
+    private fun pairGenerator(rangeX: IntProgression, rangeY: IntProgression) =
+        if (start.isDiagonal(end))
+            rangeX.zip(rangeY)
+        else
+            rangeX.flatMap { x -> rangeY.map { y -> Pair(x, y) } }
+
 
 }
 
@@ -57,7 +57,7 @@ data class Puzzle(val lines: List<Line>) {
         return count(false)
     }
 
-    fun count(ignoreDiagonals: Boolean = true): Int {
+    private fun count(ignoreDiagonals: Boolean = true): Int {
         return lines.flatMap { it.allPoints(ignoreDiagonals) }
             .groupingBy { it }
             .eachCount()
