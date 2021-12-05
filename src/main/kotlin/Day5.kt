@@ -16,12 +16,12 @@ class Day5(path: String = "day5/input") {
     }
 }
 
+private infix fun Int.progressTo(b: Int) = if (this < b) this..b else this downTo b
 data class Point(val x: Int, val y: Int) {
 
     fun isDiagonal(p: Point): Boolean = (x != p.x) && (y != p.y)
-    fun rangeX(p: Point) = range(x, p.x)
-    fun rangeY(p: Point) = range(y, p.y)
-    private fun range(a: Int, b: Int) = if (a < b) a..b else a downTo b
+    fun progressionX(p: Point) = x progressTo p.x
+    fun progressionY(p: Point) = y progressTo p.y
 }
 
 data class Line(val start: Point, val end: Point) {
@@ -29,7 +29,7 @@ data class Line(val start: Point, val end: Point) {
     fun allPoints(ignoreDiagonals: Boolean = true): Set<Point> {
         if (ignoreDiagonals && start.isDiagonal(end)) return setOf()
 
-        return pairGenerator(start.rangeX(end), start.rangeY(end))
+        return pairGenerator(start.progressionX(end), start.progressionY(end))
             .map { Point(it.first, it.second) }.toSet()
     }
 
