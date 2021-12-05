@@ -31,9 +31,7 @@ data class Line(val start: Point, val end: Point) {
     }
 
     fun allPoints(ignoreDiagonals: Boolean = true): Set<Point> {
-        if (ignoreDiagonals && start.isDiagonal(end)) {
-            return setOf()
-        }
+        if (ignoreDiagonals && start.isDiagonal(end)) return setOf()
 
         return pairGenerator(start.rangeX(end), start.rangeY(end))
             .map { Point(it.first, it.second) }.toSet()
@@ -44,8 +42,6 @@ data class Line(val start: Point, val end: Point) {
             rangeX.zip(rangeY)
         else
             rangeX.flatMap { x -> rangeY.map { y -> Pair(x, y) } }
-
-
 }
 
 data class Puzzle(val lines: List<Line>) {
