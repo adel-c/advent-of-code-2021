@@ -32,7 +32,7 @@ class Day5Test {
     fun line_allPoints_should_return_all_points_horizontally() {
         val line = Line(Point(0, 9), Point(5, 9))
         assertEquals(
-            listOf(Point(0, 9),Point(1, 9),Point(2, 9),Point(3, 9),Point(4, 9), Point(5, 9)),
+            setOf(Point(0, 9),Point(1, 9),Point(2, 9),Point(3, 9),Point(4, 9), Point(5, 9)),
             line.allPoints()
         )
     }
@@ -41,7 +41,7 @@ class Day5Test {
     fun line_allPoints_should_return_all_points_vertically() {
         val line = Line(Point(9, 4), Point(3, 4))
         assertEquals(
-            listOf(Point(9, 4), Point(8, 4),Point(7, 4),Point(6, 4),Point(5, 4),Point(4, 4),Point(3, 4)),
+            setOf(Point(9, 4), Point(8, 4),Point(7, 4),Point(6, 4),Point(5, 4),Point(4, 4),Point(3, 4)),
             line.allPoints()
         )
     }
@@ -49,7 +49,7 @@ class Day5Test {
     fun line_allPoints_should_ignore_diagonal_lines() {
         val line = Line(Point(8, 0), Point(0, 8))
         assertEquals(
-            listOf(),
+            setOf(),
             line.allPoints()
         )
     }
