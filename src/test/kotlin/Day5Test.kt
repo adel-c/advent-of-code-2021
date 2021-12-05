@@ -67,7 +67,7 @@ class Day5Test {
     fun line_allPoints_return_diagonal_lines_if_asked() {
         val line = Line(Point(8, 0), Point(0, 8))
         assertEquals(
-            setOf(),
+            setOf(Point(8, 0), Point(7, 1), Point(6, 2), Point(5, 3), Point(4, 4), Point(3, 5), Point(2, 6), Point(1, 7), Point(0, 8)),
             line.allPoints(false)
         )
     }
@@ -78,13 +78,19 @@ class Day5Test {
     }
 
     @Test
+    fun mostDangerous_diag_should_be_20898() {
+        val actual = Day5("day5/input").parse()
+        assertEquals(20898, actual.mostDangerousDiagonalCount())
+    }
+
+    @Test
     fun test_MostDangerous_diag_should_be_12() {
         val actual = Day5("day5/inputTest").parse()
         assertEquals(12, actual.mostDangerousDiagonalCount())
     }
 
     @Test
-    fun MostDangerous_should_be_7674() {
+    fun mostDangerous_should_be_7674() {
         val actual = Day5("day5/input").parse()
         assertEquals(7674, actual.mostDangerousCount())
     }
