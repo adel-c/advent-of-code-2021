@@ -23,5 +23,8 @@ data class Line(val start: Point, val end: Point) {
             return Line(Point.from(points[0]), Point.from(points[1]))
         }
     }
+    fun allPoints():List<Point>{
+        return listOf()
+    }
 }
 data class Puzzle(val lines: List<Line>)
