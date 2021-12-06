@@ -19,8 +19,8 @@ data class School(val fish: List<Int>) {
         return School(newFish)
     }
 
-    fun count(): Int {
-        return fish.size
+    fun count(): Long {
+        return fish.size.toLong()
     }
 }
 

@@ -65,6 +65,13 @@ class Day6Test {
     }
 
     @Test
+    fun test_data_should_be_26984457539_after_256() {
+        val s: School = School(initialData).advance(256)
+        assertEquals(26984457539, s.count())
+    }
+
+
+    @Test
     fun data_should_be_363101_after_80() {
         val initialSchool = Day6("day6/input").parse()
         val s: School = initialSchool.advance(80)
