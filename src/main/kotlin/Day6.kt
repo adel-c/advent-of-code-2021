@@ -8,28 +8,31 @@ class Day6(path: String = "day6/input") {
 }
 
 data class School(val fish: List<Int>) {
-    fun advance(nbDay: Int): Long {
-        /*
+    fun advanceMutable(nbDay: Int): Long {
         val days= MutableList(9){0L}
         fish.forEach {
             days[it]++
         }
-         */
-        val eachCount: Map<Int, Long> = fish.groupingBy { it }.eachCount().mapValues { it.value.toLong() }
-        val days = dayList(eachCount).toMutableList()
         repeat((0 until nbDay).count()) {
             Collections.rotate(days, -1)
             days[6] += days[8]
         }
+        return days.sum()
+    }
+    fun advance(nbDay: Int): Long {
+        /*
 
-        val map = (0 until nbDay ).fold(dayList(eachCount)) {acc,_->
+         */
+        val eachCount: Map<Int, Long> = fish.groupingBy { it }.eachCount().mapValues { it.value.toLong() }
+
+        val days = (0 until nbDay ).fold(dayList(eachCount)) { acc, _->
             val reproduction = acc[0]
-            val rotatedArray = acc.slice(1 until days.size) + reproduction
+            val rotatedArray = acc.slice(1 until acc.size) + 0
             val newReproduction = dayList(mapOf(6 to reproduction, 8 to reproduction))
             rotatedArray.zip(newReproduction){ a, b->a+b}
         }
         println(days)
-        return days.sumOf { it }
+        return days.sum()
     }
 
     private fun dayList(eachCount: Map<Int, Long>): List<Long> {
