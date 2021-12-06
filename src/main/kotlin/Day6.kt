@@ -9,7 +9,7 @@ class Day6(path: String = "day6/input") {
 
 data class School(val fish: List<Int>) {
     fun advanceMutable(nbDay: Int): Long {
-        val days= MutableList(9){0L}
+        val days = MutableList(9) { 0L }
         fish.forEach {
             days[it]++
         }
@@ -19,26 +19,31 @@ data class School(val fish: List<Int>) {
         }
         return days.sum()
     }
+
     fun advance(nbDay: Int): Long {
-        /*
-
-         */
-        val eachCount: Map<Int, Long> = fish.groupingBy { it }.eachCount().mapValues { it.value.toLong() }
-
-        val days = (0 until nbDay ).fold(dayList(eachCount)) { acc, _->
+        val fishCount: Map<Int, Long> = fish.groupingBy { it }.eachCount().mapValues { it.value.toLong() }
+        val initialPopulation = dayList(fishCount)
+        val population = (0 until nbDay).fold(initialPopulation) { acc, _ ->
             val reproduction = acc[0]
-            val rotatedArray = acc.slice(1 until acc.size) + 0
-            val newReproduction = dayList(mapOf(6 to reproduction, 8 to reproduction))
-            rotatedArray.zip(newReproduction){ a, b->a+b}
+            List(acc.size) { index ->
+                when (index) {
+                    acc.size - 1 -> reproduction
+                    6 -> acc[7] + reproduction
+                    else -> acc[index + 1]
+                }
+            }
         }
-        println(days)
-        return days.sum()
+        println(population)
+        return population.sum()
     }
 
     private fun dayList(eachCount: Map<Int, Long>): List<Long> {
-        return (0..8).mapIndexed { i, _ -> eachCount.getOrDefault(i, 0) }.toList()
+        return initArray(9, 0, eachCount)
     }
 
+    private fun <T> initArray(size: Int, defaultValue: T, valuesAT: Map<Int, T> = emptyMap()): List<T> {
+        return (0 until size).mapIndexed { i, _ -> valuesAT.getOrDefault(i, defaultValue) }.toList()
+    }
 }
 
 /*
