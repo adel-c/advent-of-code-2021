@@ -92,5 +92,9 @@ class Day6Test {
         val initialSchool = Day6("day6/input").parse()
         assertEquals(363101, initialSchool.advance(80))
     }
-
+    @Test
+    fun data_should_be_363101_after_256() {
+        val initialSchool = Day6("day6/input").parse()
+        assertEquals(1644286074024, initialSchool.advance(256))
+    }
 }
