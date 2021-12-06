@@ -1,10 +1,33 @@
+import java.util.*
+
 class Day6(path: String = "day6/input") {
     private val inputData: List<String> = path.fromResource().readLines()
     fun parse(): School {
         return School(inputData.flatMap { it.split(",") }.map(String::toInt))
     }
 }
+data class School(val fish: List<Int>) {
+    fun advance(nbDay: Int): Long {
+        val days= MutableList(9){0L}
+        fish.forEach {
+            days[it]++
+        }
 
+        repeat((0 until nbDay).count()) {
+            val newSix = days[0]
+            (1..8).forEach { i ->
+                days[i - 1] = days[i]
+            }
+            days[8] = newSix
+            days[6] += newSix
+        }
+        println(days)
+        return days.sumOf { it }
+    }
+
+}
+
+/*
 data class School(val fish: List<Int>) {
     private val cache = mutableMapOf<Pair<Int, Int>, Long>()
     fun advance(nbDay: Int): Long {
@@ -22,3 +45,4 @@ data class School(val fish: List<Int>) {
         return cache[key]!!
     }
 }
+*/
