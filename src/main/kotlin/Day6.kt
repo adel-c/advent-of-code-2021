@@ -6,7 +6,7 @@ class Day6(path: String = "day6/input") {
 }
 
 data class School(val fish: List<Int>) {
-    fun advance(nbDay: Int): School {
+    fun advance(nbDay: Int): Long {
         val newFish = (0 until nbDay).fold(fish) { acc, _ ->
             acc.flatMap {
                 if (it == 0)
@@ -16,11 +16,8 @@ data class School(val fish: List<Int>) {
             }
         }
 
-        return School(newFish)
+        return newFish.size.toLong()
     }
 
-    fun count(): Long {
-        return fish.size.toLong()
-    }
 }
 
