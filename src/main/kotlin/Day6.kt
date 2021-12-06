@@ -1,11 +1,11 @@
 class Day6(path: String = "day6/input") {
     private val inputData: List<String> = path.fromResource().readLines()
     fun parse(): School {
-        return School(inputData.flatMap { it.split(",") }.map(String::toInt).toSet())
+        return School(inputData.flatMap { it.split(",") }.map(String::toInt))
     }
 }
 
-data class School(val fish: Set<Int>) {
+data class School(val fish: List<Int>) {
     fun advance(nbDay: Int): School {
         val newFish = (0 until nbDay).fold(fish) { acc, _ ->
             acc.flatMap {
@@ -13,7 +13,7 @@ data class School(val fish: Set<Int>) {
                     listOf(6, 8)
                 else
                     listOf(it - 1)
-            }.toSet()
+            }
         }
 
         return School(newFish)
