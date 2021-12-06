@@ -83,7 +83,7 @@ class Day6Test {
     @Test
     fun test_data_should_be_26984457539_after_256() {
         val s = School(initialData)
-       //   assertEquals(26984457539, s.advance(256))
+        //assertEquals(26984457539, s.advance(256))
     }
 
 

@@ -8,18 +8,12 @@ class Day6(path: String = "day6/input") {
 data class School(val fish: List<Int>) {
     fun advance(nbDay: Int): Long {
 
-        return fish.map { Fish(it) }.sumOf { it.populationAfter(nbDay) }
+        return fish.sumOf { populationAfter(it, nbDay) }
     }
 
-}
-
-data class Fish(val initAge: Int) {
-    fun populationAfter(days: Int): Long {
+    fun populationAfter(initAge: Int, days: Int): Long {
         return if (initAge >= days) {
             1
-        } else Fish(7).populationAfter(days - initAge) + Fish(9).populationAfter(days - initAge)
+        } else populationAfter(6, days - initAge - 1) + populationAfter(8, days - initAge - 1)
     }
-
-
 }
-
