@@ -1,3 +1,5 @@
+import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -47,7 +49,7 @@ class Day6Test {
     @MethodSource("squares")
     fun shouldContainsExpectedList(nbDay: Int, expected: List<Int>) {
         val s: School = School(initialData).advance(nbDay)
-        assertEquals(expected, s.fish)
+        assertThat(s.fish).containsExactlyInAnyOrderElementsOf(expected)
     }
 
     @Test
@@ -61,6 +63,14 @@ class Day6Test {
         val s: School = School(initialData).advance(80)
         assertEquals(5934, s.count())
     }
+
+    @Test
+    fun data_should_be_363101_after_80() {
+        val initialSchool = Day6("day6/input").parse()
+        val s: School = initialSchool.advance(80)
+        assertEquals(363101, s.count())
+    }
+
 
     fun schoolOf(vararg v: Int): School {
         return School(v.toList())
