@@ -17,6 +17,15 @@ class Day7Test {
             Arguments.of(listOf(1, 2, 3), 5, 9),
 
             )
+        @JvmStatic
+        fun testDataSum() = listOf(
+            Arguments.of(listOf(5), 0, 15),
+            Arguments.of(listOf(5), 1, 10),
+            Arguments.of(listOf(2), 5, 6),
+            Arguments.of(listOf(5, 6), 3, 9),
+            Arguments.of(listOf(1, 2, 3), 5, 19),
+
+            )
     }
 
     @ParameterizedTest(name = "{index} distance from {1} should be {2}  for {0}")
@@ -25,6 +34,14 @@ class Day7Test {
         val s = Crabs(data)
         assertEquals(expected, s.distanceTo(to))
     }
+
+    @ParameterizedTest(name = "{index} distance from {1} should be {2}  for {0}")
+    @MethodSource("testDataSum")
+    fun should_compute_distanceSum(data: List<Int>, to: Int, expected: Int) {
+        val s = Crabs(data)
+        assertEquals(expected, s.distanceToSum(to))
+    }
+
 
     @Test
     fun test_data_should_be_37() {
@@ -43,14 +60,14 @@ class Day7Test {
     @Test
     fun test_data_should_be_168_for_align2() {
         val crabs = Day7("day7/inputTest").parse()
-        assertEquals(168, crabs.align2())
+        assertEquals(168, crabs.alignSum())
     }
 
 
     @Test
     fun data_should_be_329389_for_align2() {
         val crabs = Day7("day7/input").parse()
-        assertEquals(329389, crabs.align2())
+        assertEquals(329389, crabs.alignSum())
     }
 
 }
