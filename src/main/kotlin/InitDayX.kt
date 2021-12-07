@@ -1,22 +1,31 @@
 import java.io.File
 
 fun main(args: Array<String>) {
-    val day = "8"
-    val className="Day$day"
-    val inputFolder="day$day"
-    File("./src/main/kotlin/$className.kt").writeText("""
+
+    FolderStruct("9").generate()
+}
+
+class FolderStruct(day: String) {
+    private val className = "Day$day"
+    private val inputFolder = "day$day"
+    fun generate() {
+
+        File("./src/main/kotlin/$className.kt").writeText(
+            """
         class $className(path: String = "$inputFolder/input") {
             private val inputData: List<String> = path.fromResource().readLines()
             fun compute(): Int {
                 return 0
             }
         }
-    """.trimIndent())
+    """.trimIndent()
+        )
 
-    blancInput(inputFolder)
+        blancInput(inputFolder)
 
 
-    File("./src/test/kotlin/${className}Test.kt").writeText("""
+        File("./src/test/kotlin/${className}Test.kt").writeText(
+            """
         import org.junit.jupiter.api.Test
         import kotlin.test.assertEquals
 
@@ -35,15 +44,18 @@ fun main(args: Array<String>) {
                 assertEquals(0, day.compute())
             }
         }
-    """.trimIndent())
-}
+    """.trimIndent()
+        )
+    }
 
-private fun blancInput(inputFolder: String) {
-    val data = File("./src/main/resources/$inputFolder")
-    data.mkdirs()
-    File(data, "input").writeText("")
+    private fun blancInput(inputFolder: String) {
+        val data = File("./src/main/resources/$inputFolder")
+        data.mkdirs()
+        File(data, "input").writeText("")
 
-    val dataTest = File("./src/test/resources/$inputFolder")
-    dataTest.mkdirs()
-    File(dataTest, "inputTest").writeText("")
+        val dataTest = File("./src/test/resources/$inputFolder")
+        dataTest.mkdirs()
+        File(dataTest, "inputTest").writeText("")
+    }
+
 }
