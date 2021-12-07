@@ -34,9 +34,23 @@ class Day7Test {
 
 
     @Test
-    fun data_should_be_363101_after_80() {
+    fun data_should_be_329389() {
         val crabs = Day7("day7/input").parse()
-        assertEquals(363101, crabs.align())
+        assertEquals(329389, crabs.align())
+    }
+
+
+    @Test
+    fun test_data_should_be_168_for_align2() {
+        val crabs = Day7("day7/inputTest").parse()
+        assertEquals(168, crabs.align2())
+    }
+
+
+    @Test
+    fun data_should_be_329389_for_align2() {
+        val crabs = Day7("day7/input").parse()
+        assertEquals(329389, crabs.align2())
     }
 
 }

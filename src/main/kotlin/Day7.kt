@@ -8,6 +8,13 @@ class Day7(path: String = "day7/input") {
 }
 
 data class Crabs(val data: List<Int>) {
-    fun align(): Int = 0
+    fun align():Int{
+        val max = data.maxOf { it }
+        val min = data.minOf { it }
+        return (min..max).map (this::distanceTo).minOf { it }
+    }
     fun distanceTo(target: Int) = data.sumOf { (it - target).absoluteValue }
+    fun align2(): Int {
+        TODO("Not yet implemented")
+    }
 }
