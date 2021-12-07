@@ -65,9 +65,9 @@ class Day7Test {
 
 
     @Test
-    fun data_should_be_329389_for_align2() {
+    fun data_should_be_86397080_for_align2() {
         val crabs = Day7("day7/input").parse()
-        assertEquals(329389, crabs.alignSum())
+        assertEquals(86397080, crabs.alignSum())
     }
 
 }
