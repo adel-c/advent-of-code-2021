@@ -27,10 +27,14 @@ enum class DIGIT(val representation: String) {
 
 
     companion object {
-        private val uniqueSizeDigit = values().groupingBy { it.representation.length }.eachCount()
+        private val uniqueSizeDigit: Map<Int, List<DIGIT>> = values().groupBy { it.representation.length }
 
         fun isUnique(value: String): Boolean {
-            return uniqueSizeDigit.getOrDefault(value.length, -1) == 1
+            return uniqueSizeDigit.getOrDefault(value.length, listOf()).size == 1
+        }
+
+        fun possibilitiesBySize(value: String): List<DIGIT> {
+            return uniqueSizeDigit.getOrDefault(value.length, listOf())
         }
     }
 
@@ -43,7 +47,7 @@ data class DataLine(val data: List<String>, val output: List<String>) {
 
     fun computeNumber(): Int {
 
-        data.filter(DIGIT::isUnique)
+        val uniqueDigit: Map<String, List<DIGIT>> = data.associateWith { DIGIT.possibilitiesBySize(it) }
         return -1
     }
 }
