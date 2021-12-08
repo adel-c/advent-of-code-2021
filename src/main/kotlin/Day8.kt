@@ -16,53 +16,53 @@ class Day8(path: String = "day8/input") {
 
 enum class DIGIT(val representation: String, val value: String) {
     ZERO("abcefg", "0") {
-        override fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            val allSixChars: List<String> = dataBySize.getOrDefault(6, listOf())
+        override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
+            val allSixChars: List<String> = dataByDigitLength.getOrDefault(6, listOf())
             return (allSixChars - setOf(acc[SIX], acc[NINE]))[0]!!
         }
     },
     ONE("cf", "1") {
-        override fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>) =
-            dataBySize.firstByDigit(this)
+        override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>) =
+            dataByDigitLength.firstByDigit(this)
     },
 
     TWO("acdeg", "2") {
-        override fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
+        override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
             //must be last
-            return (dataBySize.values.flatten() - acc.values.toSet())[0]
+            return (dataByDigitLength.values.flatten() - acc.values.toSet())[0]
         }
     },
     THREE("acdfg", "3") {
-        override fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            return findInList(acc[SEVEN]!!, dataBySize.getOrDefault(size(), listOf()))
+        override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
+            return findInList(acc[SEVEN]!!, dataByDigitLength.getOrDefault(size(), listOf()))
         }
     },
     FOUR("bcdf", "4") {
-        override fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>) =
-            dataBySize.firstByDigit(this)
+        override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>) =
+            dataByDigitLength.firstByDigit(this)
     },
     FIVE("abdfg", "5") {
-        override fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            return valueContains(acc[SIX]!!, dataBySize.getOrDefault(FIVE.size(), listOf()))
+        override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
+            return valueContains(acc[SIX]!!, dataByDigitLength.getOrDefault(FIVE.size(), listOf()))
         }
     },
     SIX("abdefg", "6") {
-        override fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            val allSixChars: List<String> = dataBySize.getOrDefault(6, listOf())
+        override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
+            val allSixChars: List<String> = dataByDigitLength.getOrDefault(6, listOf())
             return findNotInList(acc[ONE]!!, allSixChars)
         }
     },
     SEVEN("acf", "7") {
-        override fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>) =
-            dataBySize.firstByDigit(this)
+        override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>) =
+            dataByDigitLength.firstByDigit(this)
     },
     EIGHT("abcdefg", "8") {
-        override fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>) =
-            dataBySize.firstByDigit(this)
+        override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>) =
+            dataByDigitLength.firstByDigit(this)
     },
     NINE("abcdfg", "9") {
-        override fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            val allSixChars: List<String> = dataBySize.getOrDefault(6, listOf())
+        override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
+            val allSixChars: List<String> = dataByDigitLength.getOrDefault(6, listOf())
             return findInList(acc[FOUR]!!, allSixChars)
         }
     };
@@ -70,7 +70,7 @@ enum class DIGIT(val representation: String, val value: String) {
     fun size() = representation.length
 
 
-    abstract fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>): String
+    abstract fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String
 
     fun Map<Int, List<String>>.firstByDigit(key: DIGIT): String {
         return this[key.size()]!![0]
@@ -113,10 +113,10 @@ data class DataLine(val dataUnSorted: List<String>, val outputUnSorted: List<Str
     }
 
     private fun decoder(): Map<String, DIGIT> {
-        val dataBySize: Map<Int, List<String>> = possibilitiesBySize(data)
+        val dataByDigitLength: Map<Int, List<String>> = possibilitiesBySize(data)
         val resolveOrder = listOf(ONE, SEVEN, FOUR, EIGHT, NINE, SIX, ZERO, FIVE, THREE, TWO)
         val fold = resolveOrder.fold(mapOf<DIGIT, String>()) { acc, digit ->
-            acc + Pair(digit, digit.findValue(dataBySize, acc))
+            acc + Pair(digit, digit.findValue(dataByDigitLength, acc))
         }
         return fold.entries.associateBy({ it.value }) { it.key }
     }
