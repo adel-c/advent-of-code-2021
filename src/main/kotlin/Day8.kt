@@ -93,7 +93,7 @@ enum class DIGIT(val representation: String, val value: String) {
 }
 
 data class DataLine(val dataUnSorted: List<String>, val outputUnSorted: List<String>) {
-    private val data: List<String> = dataUnSorted.map { it.toSortedSet().joinToString("") }.toList()
+    private val data: List<String> = dataUnSorted.map { it.toSortedSet().joinToString("") }.filter { it.isNotBlank() }.toList()
     private val output: List<String> =
         outputUnSorted.map { it.toSortedSet().joinToString("") }.filter { it.isNotBlank() }.toList()
 
