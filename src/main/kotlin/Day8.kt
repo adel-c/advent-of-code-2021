@@ -11,14 +11,22 @@ class Day8(path: String = "day8/input") {
     }
 }
 
-enum class DIGIT(val size: Int) {
-    ONE(2),
-    FOUR(4),
-    SEVEN(3),
-    EIGHT(7);
+enum class DIGIT(val representation: String) {
+
+    ZERO("abcefg"),
+    ONE("cf"),
+    TWO("acdeg"),
+    THREE("acdfg"),
+    FOUR("bcdf"),
+    FIVE("abdfg"),
+    SIX("abdefg"),
+    SEVEN("acf"),
+    EIGHT("abcdefg"),
+    NINE("abcdfg");
+
 
     companion object {
-        val uniqueSizeDigit = values().groupingBy { it.size }.eachCount()
+        val uniqueSizeDigit = values().groupingBy { it.representation.length }.eachCount()
         fun hasUniqueSize(i: Int): Boolean {
 
             return uniqueSizeDigit.getOrDefault(i, -1) == 1
