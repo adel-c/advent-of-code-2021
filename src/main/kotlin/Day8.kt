@@ -1,5 +1,4 @@
 import DIGIT.*
-import java.util.*
 
 class Day8(path: String = "day8/input") {
     private val inputData: List<String> = path.fromResource().readLines()
@@ -73,20 +72,8 @@ enum class DIGIT(val representation: String, val value: String) {
 
     abstract fun findValue(dataBySize: Map<Int, List<String>>, acc: Map<DIGIT, String>): String
 
-    companion object {
-        private val uniqueSizeDigit: Map<Int, List<DIGIT>> = values().groupBy { it.representation.length }
-        fun isUnique(value: SortedSet<Char>): Boolean {
-            return uniqueSizeDigit.getOrDefault(value.size, listOf()).size == 1
-        }
-    }
-
     fun Map<Int, List<String>>.firstByDigit(key: DIGIT): String {
-        if (this.containsKey(key.size())) {
-            return this[key.size()]!![0]
-        } else {
-            TODO("not found")
-        }
-
+        return this[key.size()]!![0]
     }
 
     protected fun findNotInList(value: String, candidates: List<String>): String {
@@ -107,25 +94,31 @@ enum class DIGIT(val representation: String, val value: String) {
 
 data class DataLine(val dataUnSorted: List<String>, val outputUnSorted: List<String>) {
     private val data: List<String> = dataUnSorted.map { it.toSortedSet().joinToString("") }.toList()
-    private val output: List<String> = outputUnSorted.map { it.toSortedSet().joinToString("") }.toList()
+    private val output: List<String> =
+        outputUnSorted.map { it.toSortedSet().joinToString("") }.filter { it.isNotBlank() }.toList()
+
     fun numberOfOneFourSevenEight(): Int {
-        return output.count { DIGIT.isUnique(it.toSortedSet()) }
+        val decoder = decoder()
+        return output.map { decoder[it]!! }.count { setOf(ONE, FOUR, SEVEN, EIGHT).contains(it) }
     }
 
     private fun possibilitiesBySize(data: List<String>): Map<Int, List<String>> {
         return data.groupBy { it.length }
     }
 
-
     fun computeNumber(): Int {
+        val decoder = decoder()
+        return output.joinToString("") { decoder[it]!!.value }.toInt()
+
+    }
+
+    private fun decoder(): Map<String, DIGIT> {
         val dataBySize: Map<Int, List<String>> = possibilitiesBySize(data)
         val resolveOrder = listOf(ONE, SEVEN, FOUR, EIGHT, NINE, SIX, ZERO, FIVE, THREE, TWO)
         val fold = resolveOrder.fold(mapOf<DIGIT, String>()) { acc, digit ->
             acc + Pair(digit, digit.findValue(dataBySize, acc))
         }
-        val reversed = fold.entries.associateBy({ it.value }) { it.key }
-        return output.filter { it.isNotBlank() }.joinToString("") { reversed[it]!!.value }.toInt()
-
+        return fold.entries.associateBy({ it.value }) { it.key }
     }
 
 
