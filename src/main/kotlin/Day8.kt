@@ -38,16 +38,16 @@ enum class DIGIT(val representation: String, val value: String) {
 }
 
 data class DataLine(val dataUnSorted: List<String>, val outputUnSorted: List<String>) {
-    val data: List<SortedSet<Char>> = dataUnSorted.map { it.toSortedSet() }.toList()
-    val output: List<SortedSet<Char>> = outputUnSorted.map { it.toSortedSet() }.toList()
+    val data: List<String> = dataUnSorted.map { it.toSortedSet().joinToString("") }.toList()
+    val output: List<String> = outputUnSorted.map { it.toSortedSet().joinToString("") }.toList()
     fun numberOfOneFourSevenEight(): Int {
-        return output.count { DIGIT.isUnique(it) }
+        return output.count { DIGIT.isUnique(it.toSortedSet()) }
     }
 
-    fun possibilitiesBySize(data: List<SortedSet<Char>>): Map<Int, List<SortedSet<Char>>> {
-        return data.groupBy { it.size }
+    fun possibilitiesBySize(data: List<String>): Map<Int, List<String>> {
+        return data.groupBy { it.length }
     }
-
+/*
     fun computeNumber2(): Int {
         val possibilitiesBySize: Map<Int, List<SortedSet<Char>>> = possibilitiesBySize(data)
         var one = possibilitiesBySize.getOrDefault(DIGIT.ONE.size(), listOf())[0]
@@ -87,27 +87,27 @@ data class DataLine(val dataUnSorted: List<String>, val outputUnSorted: List<Str
             }
         }.map { it.toString() }.joinToString("").toInt()
     }
-
+*/
     fun computeNumber(): Int {
-        val possibilitiesBySize: Map<Int, List<SortedSet<Char>>> = possibilitiesBySize(data)
+        val possibilitiesBySize: Map<Int, List<String>> = possibilitiesBySize(data)
 
         val one = Pair(possibilitiesBySize.getOrDefault(DIGIT.ONE.size(), listOf())[0], DIGIT.ONE)
         val seven = Pair(possibilitiesBySize.getOrDefault(DIGIT.SEVEN.size(), listOf())[0], DIGIT.SEVEN)
         val four = Pair(possibilitiesBySize.getOrDefault(DIGIT.FOUR.size(), listOf())[0], DIGIT.FOUR)
         val eight = Pair(possibilitiesBySize.getOrDefault(DIGIT.EIGHT.size(), listOf())[0], DIGIT.EIGHT)
 
-        val allSixChars: List<SortedSet<Char>> = possibilitiesBySize.getOrDefault(6, listOf())
+        val allSixChars: List<String> = possibilitiesBySize.getOrDefault(6, listOf())
         val nine = Pair(findInList(four.first, allSixChars), DIGIT.NINE)
         val six = Pair(findNotInList(one.first, allSixChars), DIGIT.SIX)
-        val zero: Pair<SortedSet<Char>, DIGIT> =
+        val zero: Pair<String, DIGIT> =
             Pair((allSixChars - setOf(six.first, nine.first))[0], DIGIT.ZERO)
 
-        val five: Pair<SortedSet<Char>, DIGIT> =
+        val five =
             Pair(valueContains(six.first, possibilitiesBySize.getOrDefault(DIGIT.FIVE.size(), listOf())), DIGIT.FIVE)
-        val three: Pair<SortedSet<Char>, DIGIT> =
+        val three=
             Pair(findInList(seven.first, possibilitiesBySize.getOrDefault(DIGIT.THREE.size(), listOf())), DIGIT.THREE)
-        val first = (data - setOf(zero, one, three, four, five, six, seven, eight, nine).map { it.first }.toSet())[0] as SortedSet<Char>
-        val two: Pair<SortedSet<Char>, DIGIT> = Pair(first, DIGIT.TWO)
+        val first = (data - setOf(zero, one, three, four, five, six, seven, eight, nine).map { it.first }.toSet())[0]
+        val two= Pair(first, DIGIT.TWO)
         val valuesMap = mapOf(zero, one, two, three, four, five, six, seven, eight, nine)
 
         return output.joinToString("") { s ->
@@ -118,18 +118,18 @@ data class DataLine(val dataUnSorted: List<String>, val outputUnSorted: List<Str
         }.toInt()
     }
 
-    private fun findNotInList(value: SortedSet<Char>, candidates: List<SortedSet<Char>>): SortedSet<Char> {
-        val filter1 = candidates.filter { !it.containsAll(value) }
-        return filter1[0]
+    private fun findNotInList(value: String, candidates: List<String>): String {
+        val filter1 = candidates.map (String::toSortedSet).filter { !it.containsAll(value.toSortedSet()) }
+        return filter1[0].joinToString("")
     }
 
-    private fun valueContains(value: SortedSet<Char>, candidates: List<SortedSet<Char>>): SortedSet<Char> {
-        val filter = candidates.filter { value.containsAll(it) }
-        return filter[0]
+    private fun valueContains(value: String, candidates: List<String>): String {
+        val filter = candidates.map (String::toSortedSet).filter { value.toSortedSet().containsAll(it) }
+        return filter[0].joinToString("")
     }
 
-    private fun findInList(value: SortedSet<Char>, candidates: List<SortedSet<Char>>): SortedSet<Char> {
-        val filter = candidates.filter { it.containsAll(value) }
-        return filter[0]
+    private fun findInList(value: String, candidates: List<String>): String {
+        val filter = candidates.map (String::toSortedSet).filter { it.containsAll(value.toSortedSet()) }
+        return filter[0].joinToString("")
     }
 }
