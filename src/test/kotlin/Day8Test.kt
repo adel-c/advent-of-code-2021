@@ -33,6 +33,11 @@ class Day8Test {
         assertEquals(expected, s.numberOfOneFourSevenEight())
     }
 
+  @Test
+    fun test_line_by_line2()  {
+        val s = DataLine(listOf("be", "cfbegad", "cbdgef", "fgaecd", "cgeb", "fdcge", "agebfd", "fecdb", "fabcd", "edb"), listOf("fdgacbe", "cefdb", "cefbgd", "gcbe"))
+        assertEquals(2, s.computeNumber())
+    }
 
 
     @Test
