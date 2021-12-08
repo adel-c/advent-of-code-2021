@@ -26,6 +26,8 @@ enum class DIGIT(val size: Int) {
 data class DataLine(val data: List<String>, val output: List<String>) {
     fun numberOfOneFourSevenEight(): Int {
 
-        return output.map { it.length }.filter(DIGIT::hasUniqueSize).sum()
+        val map = output.map { it.length }
+        val filter = map.filter(DIGIT::hasUniqueSize)
+        return filter.count()
     }
 }
