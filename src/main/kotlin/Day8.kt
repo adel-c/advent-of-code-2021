@@ -1,11 +1,12 @@
 class Day8(path: String = "day8/input") {
     private val inputData: List<String> = path.fromResource().readLines()
-    private val   data = inputData.map { it.split("|") }.map { DataLine(it[0].split(" "), it[1].split(" ")) }
+    private val data = inputData.map { it.split("|") }.map { DataLine(it[0].split(" "), it[1].split(" ")) }
     fun compute(): Int {
 
         println(data)
         return data.map(DataLine::numberOfOneFourSevenEight).sum()
     }
+
     fun compute2(): Int {
         return data.map(DataLine::computeNumber).sum()
     }
@@ -26,10 +27,10 @@ enum class DIGIT(val representation: String) {
 
 
     companion object {
-        val uniqueSizeDigit = values().groupingBy { it.representation.length }.eachCount()
-        fun hasUniqueSize(i: Int): Boolean {
+        private val uniqueSizeDigit = values().groupingBy { it.representation.length }.eachCount()
 
-            return uniqueSizeDigit.getOrDefault(i, -1) == 1
+        fun isUnique(value: String): Boolean {
+            return uniqueSizeDigit.getOrDefault(value.length, -1) == 1
         }
     }
 
@@ -37,13 +38,12 @@ enum class DIGIT(val representation: String) {
 
 data class DataLine(val data: List<String>, val output: List<String>) {
     fun numberOfOneFourSevenEight(): Int {
-        val map = output.map { it.length }
-        val filter = map.filter(DIGIT::hasUniqueSize)
-        return filter.count()
+        return output.count(DIGIT::isUnique)
     }
+
     fun computeNumber(): Int {
-        val map = output.map { it.length }
-        val filter = map.filter(DIGIT::hasUniqueSize)
-        return filter.count()
+
+        data.filter(DIGIT::isUnique)
+        return -1
     }
 }
