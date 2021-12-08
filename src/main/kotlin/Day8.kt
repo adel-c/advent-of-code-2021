@@ -17,7 +17,7 @@ class Day8(path: String = "day8/input") {
 enum class DIGIT(val representation: String, val value: String) {
     ZERO("abcefg", "0") {
         override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            val allSixChars: List<String> = dataByDigitLength.getOrDefault(6, listOf())
+            val allSixChars: List<String> = dataByDigitLength[6]!!
             return (allSixChars - setOf(acc[SIX], acc[NINE]))[0]!!
         }
     },
@@ -34,7 +34,7 @@ enum class DIGIT(val representation: String, val value: String) {
     },
     THREE("acdfg", "3") {
         override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            return findInList(acc[SEVEN]!!, dataByDigitLength.getOrDefault(digitLength(), listOf()))
+            return findInList(acc[SEVEN]!!, dataByDigitLength[digitLength()]!!)
         }
     },
     FOUR("bcdf", "4") {
@@ -43,12 +43,12 @@ enum class DIGIT(val representation: String, val value: String) {
     },
     FIVE("abdfg", "5") {
         override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            return valueContains(acc[SIX]!!, dataByDigitLength.getOrDefault(FIVE.digitLength(), listOf()))
+            return valueContains(acc[SIX]!!, dataByDigitLength[FIVE.digitLength()]!!)
         }
     },
     SIX("abdefg", "6") {
         override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            val allSixChars: List<String> = dataByDigitLength.getOrDefault(6, listOf())
+            val allSixChars: List<String> = dataByDigitLength[6]!!
             return findNotInList(acc[ONE]!!, allSixChars)
         }
     },
@@ -62,7 +62,7 @@ enum class DIGIT(val representation: String, val value: String) {
     },
     NINE("abcdfg", "9") {
         override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            val allSixChars: List<String> = dataByDigitLength.getOrDefault(6, listOf())
+            val allSixChars: List<String> = dataByDigitLength[6]!!
             return findInList(acc[FOUR]!!, allSixChars)
         }
     };
