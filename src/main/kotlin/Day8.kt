@@ -47,54 +47,64 @@ data class DataLine(val dataUnSorted: List<String>, val outputUnSorted: List<Str
     fun possibilitiesBySize(data: List<String>): Map<Int, List<String>> {
         return data.groupBy { it.length }
     }
-/*
-    fun computeNumber2(): Int {
-        val possibilitiesBySize: Map<Int, List<SortedSet<Char>>> = possibilitiesBySize(data)
-        var one = possibilitiesBySize.getOrDefault(DIGIT.ONE.size(), listOf())[0]
-        var seven = possibilitiesBySize.getOrDefault(DIGIT.SEVEN.size(), listOf())[0]
-        var four: SortedSet<Char> = possibilitiesBySize.getOrDefault(DIGIT.FOUR.size(), listOf())[0]
-        var eight = possibilitiesBySize.getOrDefault(DIGIT.EIGHT.size(), listOf())[0]
 
-        val allSixChars: List<SortedSet<Char>> = possibilitiesBySize.getOrDefault(6, listOf())
-        var nine = findInList(four, allSixChars)
-        var six = findNotInList(one, allSixChars)
+    /*
+        fun computeNumber2(): Int {
+            val possibilitiesBySize: Map<Int, List<SortedSet<Char>>> = possibilitiesBySize(data)
+            var one = possibilitiesBySize.getOrDefault(DIGIT.ONE.size(), listOf())[0]
+            var seven = possibilitiesBySize.getOrDefault(DIGIT.SEVEN.size(), listOf())[0]
+            var four: SortedSet<Char> = possibilitiesBySize.getOrDefault(DIGIT.FOUR.size(), listOf())[0]
+            var eight = possibilitiesBySize.getOrDefault(DIGIT.EIGHT.size(), listOf())[0]
 
-        var zero = (allSixChars - setOf(six, nine))[0]
-        var five = valueContains(six, possibilitiesBySize.getOrDefault(DIGIT.FIVE.size(), listOf()))
-        var three = findInList(seven, possibilitiesBySize.getOrDefault(DIGIT.THREE.size(), listOf()))
-        var two = (data - setOf(zero, one, three, four, five, six, seven, eight, nine))[0]
+            val allSixChars: List<SortedSet<Char>> = possibilitiesBySize.getOrDefault(6, listOf())
+            var nine = findInList(four, allSixChars)
+            var six = findNotInList(one, allSixChars)
 
-        val valuesMap = listOf(zero, one, two, three, four, five, six, seven, eight, nine)
-        valuesMap.forEachIndexed { index, chars ->
-            println("${index} -> ${chars.joinToString("")}")
-        }
-        println()
-        println()
-        println()
-        return output.map {
-            when (it) {
-                zero -> 0
-                one -> 1
-                two -> 2
-                three -> 3
-                four -> 4
-                five -> 5
-                six -> 6
-                seven -> 7
-                eight -> 8
-                nine -> 9
-                else -> 0
+            var zero = (allSixChars - setOf(six, nine))[0]
+            var five = valueContains(six, possibilitiesBySize.getOrDefault(DIGIT.FIVE.size(), listOf()))
+            var three = findInList(seven, possibilitiesBySize.getOrDefault(DIGIT.THREE.size(), listOf()))
+            var two = (data - setOf(zero, one, three, four, five, six, seven, eight, nine))[0]
+
+            val valuesMap = listOf(zero, one, two, three, four, five, six, seven, eight, nine)
+            valuesMap.forEachIndexed { index, chars ->
+                println("${index} -> ${chars.joinToString("")}")
             }
-        }.map { it.toString() }.joinToString("").toInt()
+            println()
+            println()
+            println()
+            return output.map {
+                when (it) {
+                    zero -> 0
+                    one -> 1
+                    two -> 2
+                    three -> 3
+                    four -> 4
+                    five -> 5
+                    six -> 6
+                    seven -> 7
+                    eight -> 8
+                    nine -> 9
+                    else -> 0
+                }
+            }.map { it.toString() }.joinToString("").toInt()
+        }
+    */
+    fun Map<Int,List<String>>.firstByDigit(key: DIGIT): String {
+        if (this.containsKey(key.size())) {
+            return this[key.size()]!![0]
+        } else {
+            TODO("not found")
+        }
+
     }
-*/
+
     fun computeNumber(): Int {
         val possibilitiesBySize: Map<Int, List<String>> = possibilitiesBySize(data)
 
-        val one = Pair(possibilitiesBySize.getOrDefault(DIGIT.ONE.size(), listOf())[0], DIGIT.ONE)
-        val seven = Pair(possibilitiesBySize.getOrDefault(DIGIT.SEVEN.size(), listOf())[0], DIGIT.SEVEN)
-        val four = Pair(possibilitiesBySize.getOrDefault(DIGIT.FOUR.size(), listOf())[0], DIGIT.FOUR)
-        val eight = Pair(possibilitiesBySize.getOrDefault(DIGIT.EIGHT.size(), listOf())[0], DIGIT.EIGHT)
+        val one = Pair(possibilitiesBySize.firstByDigit(DIGIT.ONE), DIGIT.ONE)
+        val seven = Pair(possibilitiesBySize.firstByDigit(DIGIT.SEVEN), DIGIT.SEVEN)
+        val four = Pair(possibilitiesBySize.firstByDigit(DIGIT.FOUR), DIGIT.FOUR)
+        val eight = Pair(possibilitiesBySize.firstByDigit(DIGIT.EIGHT), DIGIT.EIGHT)
 
         val allSixChars: List<String> = possibilitiesBySize.getOrDefault(6, listOf())
         val nine = Pair(findInList(four.first, allSixChars), DIGIT.NINE)
@@ -104,32 +114,42 @@ data class DataLine(val dataUnSorted: List<String>, val outputUnSorted: List<Str
 
         val five =
             Pair(valueContains(six.first, possibilitiesBySize.getOrDefault(DIGIT.FIVE.size(), listOf())), DIGIT.FIVE)
-        val three=
+        val three =
             Pair(findInList(seven.first, possibilitiesBySize.getOrDefault(DIGIT.THREE.size(), listOf())), DIGIT.THREE)
         val first = (data - setOf(zero, one, three, four, five, six, seven, eight, nine).map { it.first }.toSet())[0]
-        val two= Pair(first, DIGIT.TWO)
+        val two = Pair(first, DIGIT.TWO)
         val valuesMap = mapOf(zero, one, two, three, four, five, six, seven, eight, nine)
-
+        valuesMap.forEach { (k, v) ->
+            println("$k -> $v")
+        }
         return output.joinToString("") { s ->
             if (s.isNotEmpty()) {
-                valuesMap.get(s)!!.value
+
+                val key = s.toSortedSet().joinToString("")
+                if (valuesMap.containsKey(key)) {
+                    valuesMap.get(key)!!.value
+                } else {
+                    println("$key not found")
+                    ""
+                }
+
             } else ""
 
         }.toInt()
     }
 
     private fun findNotInList(value: String, candidates: List<String>): String {
-        val filter1 = candidates.map (String::toSortedSet).filter { !it.containsAll(value.toSortedSet()) }
+        val filter1 = candidates.map(String::toSortedSet).filter { !it.containsAll(value.toSortedSet()) }
         return filter1[0].joinToString("")
     }
 
     private fun valueContains(value: String, candidates: List<String>): String {
-        val filter = candidates.map (String::toSortedSet).filter { value.toSortedSet().containsAll(it) }
+        val filter = candidates.map(String::toSortedSet).filter { value.toSortedSet().containsAll(it) }
         return filter[0].joinToString("")
     }
 
     private fun findInList(value: String, candidates: List<String>): String {
-        val filter = candidates.map (String::toSortedSet).filter { it.containsAll(value.toSortedSet()) }
+        val filter = candidates.map(String::toSortedSet).filter { it.containsAll(value.toSortedSet()) }
         return filter[0].joinToString("")
     }
 }
