@@ -34,7 +34,7 @@ enum class DIGIT(val representation: String, val value: String) {
     },
     THREE("acdfg", "3") {
         override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            return findInList(acc[SEVEN]!!, dataByDigitLength.getOrDefault(size(), listOf()))
+            return findInList(acc[SEVEN]!!, dataByDigitLength.getOrDefault(digitLength(), listOf()))
         }
     },
     FOUR("bcdf", "4") {
@@ -43,7 +43,7 @@ enum class DIGIT(val representation: String, val value: String) {
     },
     FIVE("abdfg", "5") {
         override fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String {
-            return valueContains(acc[SIX]!!, dataByDigitLength.getOrDefault(FIVE.size(), listOf()))
+            return valueContains(acc[SIX]!!, dataByDigitLength.getOrDefault(FIVE.digitLength(), listOf()))
         }
     },
     SIX("abdefg", "6") {
@@ -67,13 +67,13 @@ enum class DIGIT(val representation: String, val value: String) {
         }
     };
 
-    fun size() = representation.length
+    fun digitLength() = representation.length
 
 
     abstract fun findValue(dataByDigitLength: Map<Int, List<String>>, acc: Map<DIGIT, String>): String
 
     fun Map<Int, List<String>>.firstByDigit(key: DIGIT): String {
-        return this[key.size()]!![0]
+        return this[key.digitLength()]!![0]
     }
 
     protected fun findNotInList(value: String, candidates: List<String>): String {
