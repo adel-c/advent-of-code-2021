@@ -46,4 +46,17 @@ class Day8Test {
         val day = Day8("day8/input")
         assertEquals(409, day.compute())
     }
+
+
+    @Test
+    fun test2_compute_should_be_X() {
+        val day = Day8("day8/inputTest")
+        assertEquals(61229, day.compute2())
+    }
+
+    @Test
+    fun compute2_should_be_X() {
+        val day = Day8("day8/input")
+        assertEquals(-1, day.compute2())
+    }
 }
