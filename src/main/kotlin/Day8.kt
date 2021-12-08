@@ -89,74 +89,32 @@ enum class DIGIT(val representation: String, val value: String) {
 
     }
 
-    fun findNotInList(value: String, candidates: List<String>): String {
+    protected fun findNotInList(value: String, candidates: List<String>): String {
         val filter1 = candidates.map(String::toSortedSet).filter { !it.containsAll(value.toSortedSet()) }
         return filter1[0].joinToString("")
     }
 
-    fun valueContains(value: String, candidates: List<String>): String {
+    protected fun valueContains(value: String, candidates: List<String>): String {
         val filter = candidates.map(String::toSortedSet).filter { value.toSortedSet().containsAll(it) }
         return filter[0].joinToString("")
     }
 
-    fun findInList(value: String, candidates: List<String>): String {
+    protected fun findInList(value: String, candidates: List<String>): String {
         val filter = candidates.map(String::toSortedSet).filter { it.containsAll(value.toSortedSet()) }
         return filter[0].joinToString("")
     }
 }
 
 data class DataLine(val dataUnSorted: List<String>, val outputUnSorted: List<String>) {
-    val data: List<String> = dataUnSorted.map { it.toSortedSet().joinToString("") }.toList()
-    val output: List<String> = outputUnSorted.map { it.toSortedSet().joinToString("") }.toList()
+    private val data: List<String> = dataUnSorted.map { it.toSortedSet().joinToString("") }.toList()
+    private val output: List<String> = outputUnSorted.map { it.toSortedSet().joinToString("") }.toList()
     fun numberOfOneFourSevenEight(): Int {
         return output.count { DIGIT.isUnique(it.toSortedSet()) }
     }
 
-    fun possibilitiesBySize(data: List<String>): Map<Int, List<String>> {
+    private fun possibilitiesBySize(data: List<String>): Map<Int, List<String>> {
         return data.groupBy { it.length }
     }
-
-    /*
-        fun computeNumber2(): Int {
-            val possibilitiesBySize: Map<Int, List<SortedSet<Char>>> = possibilitiesBySize(data)
-            var one = possibilitiesBySize.getOrDefault(DIGIT.ONE.size(), listOf())[0]
-            var seven = possibilitiesBySize.getOrDefault(DIGIT.SEVEN.size(), listOf())[0]
-            var four: SortedSet<Char> = possibilitiesBySize.getOrDefault(DIGIT.FOUR.size(), listOf())[0]
-            var eight = possibilitiesBySize.getOrDefault(DIGIT.EIGHT.size(), listOf())[0]
-
-            val allSixChars: List<SortedSet<Char>> = possibilitiesBySize.getOrDefault(6, listOf())
-            var nine = findInList(four, allSixChars)
-            var six = findNotInList(one, allSixChars)
-
-            var zero = (allSixChars - setOf(six, nine))[0]
-            var five = valueContains(six, possibilitiesBySize.getOrDefault(DIGIT.FIVE.size(), listOf()))
-            var three = findInList(seven, possibilitiesBySize.getOrDefault(DIGIT.THREE.size(), listOf()))
-            var two = (data - setOf(zero, one, three, four, five, six, seven, eight, nine))[0]
-
-            val valuesMap = listOf(zero, one, two, three, four, five, six, seven, eight, nine)
-            valuesMap.forEachIndexed { index, chars ->
-                println("${index} -> ${chars.joinToString("")}")
-            }
-            println()
-            println()
-            println()
-            return output.map {
-                when (it) {
-                    zero -> 0
-                    one -> 1
-                    two -> 2
-                    three -> 3
-                    four -> 4
-                    five -> 5
-                    six -> 6
-                    seven -> 7
-                    eight -> 8
-                    nine -> 9
-                    else -> 0
-                }
-            }.map { it.toString() }.joinToString("").toInt()
-        }
-    */
 
 
     fun computeNumber(): Int {
@@ -166,20 +124,8 @@ data class DataLine(val dataUnSorted: List<String>, val outputUnSorted: List<Str
             acc + Pair(digit, digit.findValue(dataBySize, acc))
         }
         val reversed = fold.entries.associateBy({ it.value }) { it.key }
-        return output.joinToString("") { s ->
-            if (s.isNotEmpty()) {
+        return output.filter { it.isNotBlank() }.joinToString("") { reversed[it]!!.value }.toInt()
 
-                val key = s.toSortedSet().joinToString("")
-                if (reversed.containsKey(key)) {
-                    reversed.get(key)!!.value
-                } else {
-                    println("$key not found")
-                    ""
-                }
-
-            } else ""
-
-        }.toInt()
     }
 
 
