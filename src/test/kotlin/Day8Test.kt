@@ -36,7 +36,7 @@ class Day8Test {
   @Test
     fun test_line_by_line2()  {
         val s = DataLine(listOf("be", "cfbegad", "cbdgef", "fgaecd", "cgeb", "fdcge", "agebfd", "fecdb", "fabcd", "edb"), listOf("fdgacbe", "cefdb", "cefbgd", "gcbe"))
-        assertEquals(2, s.computeNumber())
+        assertEquals(8394, s.computeNumber())
     }
 
 
@@ -62,6 +62,6 @@ class Day8Test {
     @Test
     fun compute2_should_be_X() {
         val day = Day8("day8/input")
-        assertEquals(-1, day.compute2())
+        assertEquals(1024649, day.compute2())
     }
 }
