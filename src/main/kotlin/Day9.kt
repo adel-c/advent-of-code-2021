@@ -14,6 +14,7 @@ class Day9(path: String = "day9/input") {
 
 
 data class DataPoint(val i: Int, val j: Int, val value: Int)
+data class Basin(val points:List<DataPoint>)
 data class Heightmap(val data: List<List<Int>>) {
 
 
@@ -23,8 +24,15 @@ data class Heightmap(val data: List<List<Int>>) {
     }
 
     fun largestBasins(): Int {
-        val lowPoints = lowPoints()
+        val lowPoints = lowPoints().toList()
+        val basins = lowPoints.map { basinFromPoint(it) }
         return lowPoints.sumOf { it.value + 1 }
+    }
+
+
+    fun basinFromPoint(p:DataPoint):Basin{
+        val sequence: Sequence<DataPoint> = allDown(p.i, p.j) + allUp(p.i, p.j) + allLeft(p.i, p.j) + allRight(p.i, p.j)
+        return Basin(sequence.toList())
     }
 
     private fun lowPoints(): Sequence<DataPoint> = eachData().filter { point ->
@@ -42,28 +50,28 @@ data class Heightmap(val data: List<List<Int>>) {
 
 
     private fun allUp(i: Int, j: Int) = sequence {
-        for (x in i downTo 0){
+        for (x in i-1 downTo 0){
             val value = data[x][j]
             if(value == 9) return@sequence
             yield(DataPoint(x,j,value))
         }
     }
     private fun allDown(i: Int, j: Int) = sequence {
-        for (x in i until data.size){
+        for (x in i+1 until data.size){
             val value = data[x][j]
             if(value == 9) return@sequence
             yield(DataPoint(x,j,value))
         }
     }
     private fun allLeft(i: Int, j: Int) = sequence {
-        for (y in j downTo 0){
+        for (y in j-1 downTo 0){
             val value = data[i][y]
             if(value == 9) return@sequence
             yield(DataPoint(i,y,value))
         }
     }
     private fun allRight(i: Int, j: Int) = sequence {
-        for (y in j until data.size){
+        for (y in j+1 until data.size){
             val value = data[i][y]
             if(value == 9) return@sequence
             yield(DataPoint(i,y,value))
