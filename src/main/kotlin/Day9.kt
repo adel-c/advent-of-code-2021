@@ -8,34 +8,38 @@ class Day9(path: String = "day9/input") {
 }
 
 fun List<List<Int>>.up(i: Int, j: Int) = if (i > 0) this[i - 1][j] else -1
-fun List<List<Int>>.down(i: Int, j: Int) = if (i < this.size-1) this[i + 1][j] else -1
+fun List<List<Int>>.down(i: Int, j: Int) = if (i < this.size - 1) this[i + 1][j] else -1
 fun List<List<Int>>.left(i: Int, j: Int) = if (j > 0) this[i][j - 1] else -1
-fun List<List<Int>>.right(i: Int, j: Int) = if (j < this[i].size-1) this[i][j + 1] else -1
+fun List<List<Int>>.right(i: Int, j: Int) = if (j < this[i].size - 1) this[i][j + 1] else -1
 fun List<List<Int>>.allLoc(i: Int, j: Int) =
     listOf(this.up(i, j), this.down(i, j), this.left(i, j), this.right(i, j)).filter { it != -1 }
 
-fun List<List<Int>>.iterate(fn: (i: Int, j: Int, element: Int) -> Unit) {
-    for (i in this.indices) {
-        for (j in this[i].indices) {
-            val current = this[i][j]
-            fn(i, j, current)
+
+fun List<List<Int>>.seq(): Sequence<DataPoint> {
+    val d = this
+    return sequence {
+        for (i in d.indices) {
+            for (j in d[i].indices) {
+                val current = d[i][j]
+                yield(DataPoint(i, j, current))
+            }
         }
     }
+
 }
 
+data class DataPoint(val i: Int, val j: Int, val value: Int)
 data class Heightmap(val data: List<List<Int>>) {
 
 
     fun lowest(): Int {
 
-        val mins= mutableListOf<Int>()
-        data.iterate { i, j, element ->
-            val minOf = data.allLoc(i, j).minOf { it }
-            if (element < minOf) {
-                mins.add(element)
-            }
+        val lowPoints = data.seq().filter { point ->
+            val minOf = data.allLoc(point.i, point.j).minOf { it }
+            point.value < minOf
         }
-        return mins.sumOf { it + 1 }
+
+        return lowPoints.sumOf { it.value + 1 }
     }
 }
 
