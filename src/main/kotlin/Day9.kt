@@ -16,7 +16,10 @@ class Day9(path: String = "day9/input") {
 }
 
 
-data class DataPoint(val i: Int, val j: Int, val value: Int)
+data class DataPoint(val i: Int, val j: Int, val value: Int) {
+    fun isNotNine() = value != 9
+}
+
 data class Basin(val points: Set<DataPoint>)
 data class Heightmap(val data: List<List<Int>>) {
 
@@ -28,22 +31,32 @@ data class Heightmap(val data: List<List<Int>>) {
 
     fun largestBasins(): Int {
         val lowPoints = lowPoints().toList()
-        val basins = lowPoints.map { basinFromPoint(it) }
-        return lowPoints.sumOf { it.value + 1 }
+
+        val map =
+            lowPoints.map { basinFromPoint(it) }.sortedByDescending { it.points.size }.take(3).map { it.points.size }
+        return  map.reduce{ acc, i -> acc*i }
     }
 
 
     fun basinFromPoint(p: DataPoint): Basin {
-        val sequence: Sequence<DataPoint> = allDown(p.i, p.j) + allUp(p.i, p.j) + allLeft(p.i, p.j) + allRight(p.i, p.j)
 
         // allLoc(p.i,p.j).
-        return Basin(setOf())
+        return Basin(all(p))
     }
 
-    fun all(p: DataPoint): List<Point> {
+    fun all(p: DataPoint): Set<DataPoint> {
 
+        val s: Stack<DataPoint> = Stack<DataPoint>()
+        s.push(p)
+        val all = mutableSetOf<DataPoint>()
 
-        return listOf()// allLoc(p.i,p.j).filter { it }.flatMap { all(p) }
+        while (s.isNotEmpty()) {
+            val pop = s.pop()
+            all.add(pop)
+            val allLoc = allLoc(pop)
+            allLoc.filter { !all.contains(it) && it.isNotNine()}.forEach { s.push(it) }
+        }
+        return all.toSet()// allLoc(p.i,p.j).filter { it }.flatMap { all(p) }
     }
 
     private fun lowPoints(): Sequence<DataPoint> = eachData().filter { point ->
@@ -72,7 +85,11 @@ data class Heightmap(val data: List<List<Int>>) {
     private fun right(p: DataPoint) =
         if (p.j < data[p.i].size - 1) oPoint(p.i, p.j + 1) else Optional.empty()
 
+    private fun allLoc(p: DataPoint) =
+        listOf(up(p), down(p), left(p), right(p)).filter { it.isPresent }.map { it.get() }
+
     private fun oPoint(i: Int, j: Int) = Optional.of(DataPoint(i, j, data[i][j]))
+
     private fun allUp(i: Int, j: Int) = sequence {
         for (x in i - 1 downTo 0) {
             val value = data[x][j]
