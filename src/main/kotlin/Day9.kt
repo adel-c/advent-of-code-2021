@@ -15,7 +15,6 @@ class Day9(path: String = "day9/input") {
     }
 }
 
-
 data class DataPoint(val i: Int, val j: Int, val value: Int) {
     fun isNotNine() = value != 9
 }
@@ -23,50 +22,42 @@ data class DataPoint(val i: Int, val j: Int, val value: Int) {
 data class Basin(val points: Set<DataPoint>)
 data class Heightmap(val data: List<List<Int>>) {
 
-
     fun lowest(): Int {
-        val lowPoints = lowPoints()
-        return lowPoints.sumOf { it.value + 1 }
+        return lowPoints().sumOf { it.value + 1 }
     }
 
     fun largestBasins(): Int {
-        val lowPoints = lowPoints().toList()
-
-        val map =
-            lowPoints.map { basinFromPoint(it) }.sortedByDescending { it.points.size }.take(3).map { it.points.size }
-        return  map.reduce{ acc, i -> acc*i }
+        return lowPoints()
+            .map { basinFromPoint(it) }
+            .sortedByDescending { it.points.size }
+            .take(3)
+            .map { it.points.size }
+            .reduce { acc, i -> acc * i }
     }
 
 
-    fun basinFromPoint(p: DataPoint): Basin {
-
-        // allLoc(p.i,p.j).
-        return Basin(all(p))
+    private fun basinFromPoint(p: DataPoint): Basin {
+        return Basin(bassinPoint(p))
     }
 
-    fun all(p: DataPoint): Set<DataPoint> {
+    private fun bassinPoint(p: DataPoint): Set<DataPoint> {
 
         val s: Stack<DataPoint> = Stack<DataPoint>()
         s.push(p)
         val all = mutableSetOf<DataPoint>()
-
         while (s.isNotEmpty()) {
             val pop = s.pop()
             all.add(pop)
             val allLoc = allLoc(pop)
-            allLoc.filter { !all.contains(it) && it.isNotNine()}.forEach { s.push(it) }
+            allLoc.filter { !all.contains(it) && it.isNotNine() }.forEach { s.push(it) }
         }
-        return all.toSet()// allLoc(p.i,p.j).filter { it }.flatMap { all(p) }
+        return all.toSet()
     }
 
     private fun lowPoints(): Sequence<DataPoint> = eachData().filter { point ->
         val minOf = allLoc(point).minOf { it.value }
         point.value < minOf
     }
-
-
-
-
 
     private fun up(p: DataPoint) =
         if (p.i > 0) oPoint(p.i - 1, p.j) else Optional.empty<DataPoint>()
