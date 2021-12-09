@@ -61,18 +61,18 @@ data class Heightmap(val data: List<List<Int>>) {
 
 
     private fun up(p: DataPoint) =
-        if (p.i > 0) Optional.of(DataPoint(p.i - 1, p.j, data[p.i - 1][p.j])) else Optional.empty<DataPoint>()
+        if (p.i > 0) oPoint(p.i - 1, p.j) else Optional.empty<DataPoint>()
 
     private fun down(p: DataPoint) =
-        if (p.i < data.size - 1) Optional.of(DataPoint(p.i + 1, p.j, data[p.i + 1][p.j])) else Optional.empty()
+        if (p.i < data.size - 1) oPoint(p.i + 1, p.j) else Optional.empty()
 
     private fun left(p: DataPoint) =
-        if (p.j > 0) Optional.of(DataPoint(p.i, p.j - 1, data[p.i][p.j - 1])) else Optional.empty()
+        if (p.j > 0) oPoint(p.i, p.j - 1) else Optional.empty()
 
     private fun right(p: DataPoint) =
-        if (p.j < data[p.i].size - 1) Optional.of(DataPoint(p.i, p.j + 1, data[p.i][p.j + 1])) else Optional.empty()
+        if (p.j < data[p.i].size - 1) oPoint(p.i, p.j + 1) else Optional.empty()
 
-
+    private fun oPoint(i: Int, j: Int) = Optional.of(DataPoint(i, j, data[i][j]))
     private fun allUp(i: Int, j: Int) = sequence {
         for (x in i - 1 downTo 0) {
             val value = data[x][j]
