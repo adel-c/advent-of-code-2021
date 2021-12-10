@@ -2,7 +2,7 @@ import java.io.File
 
 fun main() {
 
-    FolderStruct("9").generate()
+    FolderStruct("10").generate()
 }
 
 class FolderStruct(day: String) {
