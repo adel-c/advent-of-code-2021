@@ -14,7 +14,8 @@ class SyntaxChecker(val data: List<List<Char>>) {
     val closeToOpen = openToClose.entries.associateBy({ it.value }) { it.key }
     fun firstErrors(): Int {
         val eachCount: Map<Int, Int> =
-            data.map(this::firstErrors).filter { it.isPresent }.map { charValue(it.get()) }.groupingBy { it }
+            data.map(this::firstErrors)
+                .filter { it.isPresent }.map { charValue(it.get()) }.groupingBy { it }
                 .eachCount()
         return eachCount.entries.fold(listOf<Int>()) { acc, e -> acc + listOf(e.key * e.value) }.sum()
     }
