@@ -7,9 +7,9 @@ class Day10(path: String = "day10/input") {
         return syntaxChecker.firstErrors()
     }
 
-    fun compute2(): Int {
+    fun compute2(): Long {
         val syntaxChecker = SyntaxChecker(inputData.map { it.toCharArray().toList() })
-        return syntaxChecker.firstErrors()
+        return syntaxChecker.fixLine()
     }
 }
 
@@ -24,17 +24,42 @@ data class LineFix(val wrongChar: Char?, val missingChar: List<Char>) {
             else -> 0
         }
     }
+
+    fun fixCharValue(c: Char): Int {
+        return when (c) {
+            '[', ']' -> 2
+            '{', '}' -> 3
+            '(', ')' -> 1
+            '<', '>' -> 4
+            else -> 0
+        }
+    }
+
+    fun lineScore(): Long {
+        val map = missingChar
+            .map(this::fixCharValue)
+        val reduce = map
+            .fold(0L) { acc, i -> (acc * 5) + i }
+        return reduce
+    }
 }
 class SyntaxChecker(val data: List<List<Char>>) {
 
     val openToClose = mapOf('[' to ']', '{' to '}', '(' to ')', '<' to '>')
     val closeToOpen = openToClose.entries.associateBy({ it.value }) { it.key }
     fun firstErrors(): Int {
-        val eachCount: Map<Int, Int> =
-            data.map(this::firstErrors)
-                .map { it.charValue() }.groupingBy { it }
-                .eachCount()
-        return eachCount.entries.fold(listOf<Int>()) { acc, e -> acc + listOf(e.key * e.value) }.sum()
+        return data.map(this::firstErrors)
+            .map { it.charValue() }.groupingBy { it }
+            .eachCount().entries.fold(listOf<Int>()) { acc, e -> acc + listOf(e.key * e.value) }.sum()
+    }
+
+    fun fixLine(): Long {
+        val values = data.map(this::firstErrors)
+            .filter { it.missingChar.isNotEmpty() }
+            .map { it.lineScore() }
+            .sortedDescending()
+
+        return values[values.size / 2]
     }
 
     fun charValue(c: Char): Int {
@@ -48,7 +73,7 @@ class SyntaxChecker(val data: List<List<Char>>) {
     }
 
     fun firstErrors(line: List<Char>): LineFix {
-        var s = Stack<Char>()
+        val s = Stack<Char>()
         line.forEach { c ->
             if (openToClose.contains(c)) {
                 s.push(c)
@@ -60,6 +85,8 @@ class SyntaxChecker(val data: List<List<Char>>) {
                 }
             }
         }
-        return LineFix(null, listOf())
+
+        val missingChar = s.map { openToClose[it]!! }.toList().reversed()
+        return LineFix(null, missingChar)
     }
 }
