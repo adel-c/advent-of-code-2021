@@ -6,6 +6,11 @@ class Day10(path: String = "day10/input") {
         val syntaxChecker = SyntaxChecker(inputData.map { it.toCharArray().toList() })
         return syntaxChecker.firstErrors()
     }
+
+    fun compute2(): Int {
+        val syntaxChecker = SyntaxChecker(inputData.map { it.toCharArray().toList() })
+        return syntaxChecker.firstErrors()
+    }
 }
 
 data class LineFix(val wrongChar: Char?, val missingChar: List<Char>) {
