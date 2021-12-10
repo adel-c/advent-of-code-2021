@@ -25,7 +25,7 @@ data class LineFix(val wrongChar: Char?, val missingChar: List<Char>) {
         }
     }
 
-    fun fixCharValue(c: Char): Int {
+    fun fixCharValue(c: Char): Long {
         return when (c) {
             '[', ']' -> 2
             '{', '}' -> 3
@@ -39,7 +39,7 @@ data class LineFix(val wrongChar: Char?, val missingChar: List<Char>) {
         val map = missingChar
             .map(this::fixCharValue)
         val reduce = map
-            .fold(0L) { acc, i -> (acc * 5) + i }
+            .reduce { acc, i -> (acc * 5) + i }
         return reduce
     }
 }

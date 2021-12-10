@@ -25,6 +25,6 @@ class Day10Test {
     @Test
     fun compute2_should_be_X() {
         val day = Day10("day10/input")
-        assertEquals(390993, day.compute2())
+        assertEquals(2391385187, day.compute2())
     }
 }
