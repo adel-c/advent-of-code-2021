@@ -12,18 +12,26 @@ class Day11(path: String = "day11/input") {
 data class OctoGrid(val grid: List<MutableList<Int>>) {
     private val matrix= Matrix(grid)
     fun countFlashes(): Int {
-
+        var countFlashes=0
         (1..100).forEach { _ ->
             val flashed = mutableSetOf <Point>()
-            var flashedSize = 0
+            var flashedSize:Int
             matrix.map { it.value+1 }
 
             do {
-                val flashedInIteration = matrix.eachData().filter { it.value > 9 }.map { it.point() }
+                flashedSize=flashed.size
+                val flashedInIteration = matrix.eachData().filter { it.value > 9 }.map { it.point() }.filter { !flashed.contains(it) }.toList()
 
+                flashed.addAll(flashedInIteration)
+                flashedInIteration.forEach {
+                    matrix.incAll(matrix.around(it).map (DataPoint::point))
+                }
 
             } while (flashedSize != flashed.size)
-
+            countFlashes+=flashed.size
+            flashed.forEach {
+                matrix.set(it,0)
+            }
         }
 
         return 0

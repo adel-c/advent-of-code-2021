@@ -15,26 +15,26 @@ data class Point(val i: Int, val j: Int) {
 
 data class Matrix(private val oData: List<List<Int>>) {
     val data: List<MutableList<Int>> = oData.map { it.toMutableList() }
-    fun up(p: DataPoint) = oPoint(p.i - 1, p.j)
+    fun up(p: Point) = oPoint(p.i - 1, p.j)
 
 
-    fun down(p: DataPoint) = oPoint(p.i + 1, p.j)
+    fun down(p: Point) = oPoint(p.i + 1, p.j)
 
 
-    fun left(p: DataPoint) = oPoint(p.i, p.j - 1)
+    fun left(p: Point) = oPoint(p.i, p.j - 1)
 
 
-    fun right(p: DataPoint) = oPoint(p.i, p.j + 1)
+    fun right(p: Point) = oPoint(p.i, p.j + 1)
 
 
-    fun upLeft(p: DataPoint) = oPoint(p.i - 1, p.j - 1)
-    fun upRight(p: DataPoint) = oPoint(p.i - 1, p.j + 1)
-    fun downLeft(p: DataPoint) = oPoint(p.i + 1, p.j - 1)
-    fun downRight(p: DataPoint) = oPoint(p.i + 1, p.j + 1)
-    fun aroundNoDiag(p: DataPoint) =
+    fun upLeft(p: Point) = oPoint(p.i - 1, p.j - 1)
+    fun upRight(p: Point) = oPoint(p.i - 1, p.j + 1)
+    fun downLeft(p: Point) = oPoint(p.i + 1, p.j - 1)
+    fun downRight(p: Point) = oPoint(p.i + 1, p.j + 1)
+    fun aroundNoDiag(p: Point) =
         listOf(up(p), down(p), left(p), right(p)).filter { it.isPresent }.map { it.get() }
 
-    fun around(p: DataPoint) =
+    fun around(p: Point) =
         listOf(
             up(p),
             down(p),
@@ -72,4 +72,11 @@ data class Matrix(private val oData: List<List<Int>>) {
     fun set(p: Point, value: Int) {
         data[p.i][p.j] = value
     }
+
+    fun incAll(points: List<Point>) {
+        points.forEach {
+            set(it, data[it.i][it.j] + 1)
+        }
+    }
+
 }

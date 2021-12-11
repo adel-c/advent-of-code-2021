@@ -46,14 +46,14 @@ data class Heightmap(val data: List<List<Int>>) {
         while (s.isNotEmpty()) {
             val pop = s.pop()
             all.add(pop)
-            val allLoc = matrix.aroundNoDiag(pop)
+            val allLoc = matrix.aroundNoDiag(pop.point())
             allLoc.filter { !all.contains(it) && it.isNotNine() }.forEach { s.push(it) }
         }
         return all.toSet()
     }
 
     private fun lowPoints(): Sequence<DataPoint> = matrix.eachData().filter { point ->
-        val allLocNoDiag = matrix.aroundNoDiag(point)
+        val allLocNoDiag = matrix.aroundNoDiag(point.point())
         val minOf = allLocNoDiag.minOf { it.value }
         point.value < minOf
     }
