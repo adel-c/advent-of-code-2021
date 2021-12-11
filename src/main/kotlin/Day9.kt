@@ -15,11 +15,11 @@ class Day9(path: String = "day9/input") {
     }
 }
 
-data class DataPoint(val i: Int, val j: Int, val value: Int) {
+data class DP(val i: Int, val j: Int, val value: Int) {
     fun isNotNine() = value != 9
 }
 
-data class Basin(val points: Set<DataPoint>)
+data class Basin(val points: Set<DP>)
 data class Heightmap(val data: List<List<Int>>) {
 
     fun lowest(): Int {
@@ -36,15 +36,15 @@ data class Heightmap(val data: List<List<Int>>) {
     }
 
 
-    private fun basinFromPoint(p: DataPoint): Basin {
+    private fun basinFromPoint(p: DP): Basin {
         return Basin(bassinPoint(p))
     }
 
-    private fun bassinPoint(p: DataPoint): Set<DataPoint> {
+    private fun bassinPoint(p: DP): Set<DP> {
 
-        val s: Stack<DataPoint> = Stack<DataPoint>()
+        val s: Stack<DP> = Stack<DP>()
         s.push(p)
-        val all = mutableSetOf<DataPoint>()
+        val all = mutableSetOf<DP>()
         while (s.isNotEmpty()) {
             val pop = s.pop()
             all.add(pop)
@@ -54,34 +54,34 @@ data class Heightmap(val data: List<List<Int>>) {
         return all.toSet()
     }
 
-    private fun lowPoints(): Sequence<DataPoint> = eachData().filter { point ->
+    private fun lowPoints(): Sequence<DP> = eachData().filter { point ->
         val minOf = allLoc(point).minOf { it.value }
         point.value < minOf
     }
 
-    private fun up(p: DataPoint) =
-        if (p.i > 0) oPoint(p.i - 1, p.j) else Optional.empty<DataPoint>()
+    private fun up(p: DP) =
+        if (p.i > 0) oPoint(p.i - 1, p.j) else Optional.empty<DP>()
 
-    private fun down(p: DataPoint) =
+    private fun down(p: DP) =
         if (p.i < data.size - 1) oPoint(p.i + 1, p.j) else Optional.empty()
 
-    private fun left(p: DataPoint) =
+    private fun left(p: DP) =
         if (p.j > 0) oPoint(p.i, p.j - 1) else Optional.empty()
 
-    private fun right(p: DataPoint) =
+    private fun right(p: DP) =
         if (p.j < data[p.i].size - 1) oPoint(p.i, p.j + 1) else Optional.empty()
 
-    private fun allLoc(p: DataPoint) =
+    private fun allLoc(p: DP) =
         listOf(up(p), down(p), left(p), right(p)).filter { it.isPresent }.map { it.get() }
 
-    private fun oPoint(i: Int, j: Int) = Optional.of(DataPoint(i, j, data[i][j]))
+    private fun oPoint(i: Int, j: Int) = Optional.of(DP(i, j, data[i][j]))
 
 
     private fun eachData() = sequence {
         for (i in data.indices) {
             for (j in data[i].indices) {
                 val current = data[i][j]
-                yield(DataPoint(i, j, current))
+                yield(DP(i, j, current))
             }
         }
     }
