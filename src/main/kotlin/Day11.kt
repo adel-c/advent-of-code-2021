@@ -1,7 +1,7 @@
 class Day11(path: String = "day11/input") {
     private val inputData: List<String> = path.fromResource().readLines()
     fun compute(): Int {
-        return OctoGrid(inputData.map {line-> line.split("").map { it.toInt() }.toMutableList() }).countFlashes()
+        return OctoGrid(inputData.map {line-> line.split("").filter { it.isNotBlank() }.map { it.toInt() }.toMutableList() }).countFlashes()
     }
 
     fun compute2(): Int {
@@ -34,6 +34,6 @@ data class OctoGrid(val grid: List<MutableList<Int>>) {
             }
         }
 
-        return 0
+        return countFlashes
     }
 }
