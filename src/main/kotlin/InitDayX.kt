@@ -17,6 +17,9 @@ class FolderStruct(day: String) {
             fun compute(): Int {
                 return 0
             }
+            fun compute2(): Int {
+                return 0
+            }
         }
     """.trimIndent()
         )
@@ -42,6 +45,17 @@ class FolderStruct(day: String) {
             fun compute_should_be_X() {
                 val day = $className("$inputFolder/input")
                 assertEquals(0, day.compute())
+            }
+            @Test
+            fun test2_compute_should_be_X() {
+                val day = $className("$inputFolder/inputTest")
+                assertEquals(0, day.compute2())
+            }
+
+            @Test
+            fun compute2_should_be_X() {
+                val day = $className("$inputFolder/input")
+                assertEquals(0, day.compute2())
             }
         }
     """.trimIndent()
