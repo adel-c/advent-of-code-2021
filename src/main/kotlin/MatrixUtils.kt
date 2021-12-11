@@ -22,10 +22,10 @@ data class Matrix(val data: List<List<Int>>) {
      fun upRight(p: DataPoint) = oPoint(p.i - 1, p.j + 1)
      fun downLeft(p: DataPoint) = oPoint(p.i + 1, p.j - 1)
      fun downRight(p: DataPoint) = oPoint(p.i + 1, p.j + 1)
-     fun allLocNoDiag(p: DataPoint) =
+     fun aroundNoDiag(p: DataPoint) =
         listOf(up(p), down(p), left(p), right(p)).filter { it.isPresent }.map { it.get() }
 
-     fun allLoc(p: DataPoint) =
+     fun around(p: DataPoint) =
         listOf(
             up(p),
             down(p),
