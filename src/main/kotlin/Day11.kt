@@ -14,26 +14,33 @@ data class OctoGrid(val grid: List<MutableList<Int>>) {
     fun countFlashes(): Int {
         var countFlashes=0
         (1..100).forEach { _ ->
-            val flashed = mutableSetOf <Point>()
-            var flashedSize:Int
-            matrix.map { it.value+1 }
-
-            do {
-                flashedSize=flashed.size
-                val flashedInIteration = matrix.eachData().filter { it.value > 9 }.map { it.point() }.filter { !flashed.contains(it) }.toList()
-
-                flashed.addAll(flashedInIteration)
-                flashedInIteration.forEach {
-                    matrix.incAll(matrix.around(it).map (DataPoint::point))
-                }
-
-            } while (flashedSize != flashed.size)
-            countFlashes+=flashed.size
-            flashed.forEach {
-                matrix.set(it,0)
-            }
+            countFlashes+= doFlashIteration()
         }
 
         return countFlashes
+    }
+
+    private fun doFlashIteration():Int {
+        var flashesCount = 0
+        val flashed = mutableSetOf<Point>()
+        var flashedSize: Int
+        matrix.map { it.value + 1 }
+
+        do {
+            flashedSize = flashed.size
+            val flashedInIteration =
+                matrix.eachData().filter { it.value > 9 }.map { it.point() }.filter { !flashed.contains(it) }.toList()
+
+            flashed.addAll(flashedInIteration)
+            flashedInIteration.forEach {
+                matrix.incAll(matrix.around(it).map(DataPoint::point))
+            }
+
+        } while (flashedSize != flashed.size)
+        flashesCount += flashed.size
+        flashed.forEach {
+            matrix.set(it, 0)
+        }
+        return flashesCount
     }
 }
