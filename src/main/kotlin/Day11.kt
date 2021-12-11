@@ -1,11 +1,17 @@
 class Day11(path: String = "day11/input") {
     private val inputData: List<String> = path.fromResource().readLines()
+
     fun compute(): Int {
-        return OctoGrid(inputData.map {line-> line.split("").filter { it.isNotBlank() }.map { it.toInt() }.toMutableList() }).countFlashes()
+
+        val octoGrid = OctoGrid(inputData.map { line ->
+            line.split("").filter { it.isNotBlank() }.map { it.toInt() }.toMutableList() })
+        return octoGrid.countFlashes()
     }
 
     fun compute2(): Int {
-        return 0
+        val octoGrid = OctoGrid(inputData.map { line ->
+            line.split("").filter { it.isNotBlank() }.map { it.toInt() }.toMutableList() })
+        return octoGrid.allFlashIteration()
     }
 }
 
@@ -19,7 +25,15 @@ data class OctoGrid(val grid: List<MutableList<Int>>) {
 
         return countFlashes
     }
+    fun allFlashIteration(): Int {
+        var flashIteration=0
+        do {
+            doFlashIteration()
+            flashIteration++
+        }while (matrix.eachData().any { it.value!=0 })
 
+        return flashIteration
+    }
     private fun doFlashIteration():Int {
         var flashesCount = 0
         val flashed = mutableSetOf<Point>()
