@@ -70,49 +70,53 @@ class Paths(val map: Map<String, Cave>) {
         }
         return paths.size
     }
+
     fun path1(): Int {
         val path2 = path2(listOf(map["start"]!!))
 
         val filter = path2.filter { it.last() == map["end"]!! }
         return filter.size
     }
-    private fun path2(currentPath:List<Cave> ):List<List<Cave>>{
+
+    private fun path2(currentPath: List<Cave>): List<List<Cave>> {
         val lastElement = currentPath.last()
 
         val filter = lastElement.pathTo.filter {
-            canVisit2(currentPath,it)
+            canVisit2(currentPath, it)
         }
         val nextPaths = filter.map { currentPath + it }
         val map1: List<List<Cave>> = nextPaths.flatMap { path2(it) }
         val toMutableList = map1.toMutableList()
         toMutableList.add(currentPath)
-        return  toMutableList.toList()
+        return toMutableList.toList()
     }
+
     private fun multiple(toVisit: Cave): Boolean {
         return toVisit.big
     }
-    private fun canVisit1(currentPath:List<Cave>,toVisit: Cave): Boolean {
+
+    private fun canVisit1(currentPath: List<Cave>, toVisit: Cave): Boolean {
         val currentPath = !currentPath.contains(toVisit)
         val big = toVisit.big
-       return currentPath || big
+        return currentPath || big
     }
 
-    private fun canVisit2(currentPath:List<Cave>,toVisit: Cave): Boolean {
-        if(toVisit.big){
+    private fun canVisit2(currentPath: List<Cave>, toVisit: Cave): Boolean {
+        if (toVisit.big) {
             return true
         }
-        if(toVisit == startCave ){
+        if (toVisit == startCave) {
             return false
         }
-        if(currentPath.contains(endCave) ){
-            return  false
+        if (currentPath.contains(endCave)) {
+            return false
         }
         val groupingBy =
-            currentPath.filter { !it.big  }.groupingBy { it }  .eachCount()
+            currentPath.filter { !it.big }.groupingBy { it }.eachCount()
 
         val duplicatedSmall =
             groupingBy
-                .filter { it.value>1}
+                .filter { it.value > 1 }
 
         return duplicatedSmall.isEmpty()
     }
