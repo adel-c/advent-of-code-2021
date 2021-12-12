@@ -7,7 +7,7 @@ class Day12(path: String = "day12/input") {
     }
 
     fun compute2(): Int {
-        return 0
+        return Paths(parse()).path1()
     }
 
     fun parse(): Map<String, Cave> {
@@ -38,8 +38,9 @@ data class Cave(val name: String) {
 }
 
 class Paths(val map: Map<String, Cave>) {
+    val endCave = map["end"]!!
+    val startCave = map["start"]!!
     fun pathStack(): Int {
-        val endCave = map["end"]!!
         val paths = mutableListOf<List<Cave>>()
         val stack = Stack<Cave>()
         val deadEnd = mutableSetOf<Cave>()
@@ -73,15 +74,13 @@ class Paths(val map: Map<String, Cave>) {
         val path2 = path2(listOf(map["start"]!!))
 
         val filter = path2.filter { it.last() == map["end"]!! }
-        return      filter.size
+        return filter.size
     }
     private fun path2(currentPath:List<Cave> ):List<List<Cave>>{
         val lastElement = currentPath.last()
 
-        val filter = lastElement.pathTo.filter{
-            val currentPath = !currentPath.contains(it)
-            val big = it.big
-            currentPath || big
+        val filter = lastElement.pathTo.filter {
+            canVisit2(currentPath,it)
         }
         val nextPaths = filter.map { currentPath + it }
         val map1: List<List<Cave>> = nextPaths.flatMap { path2(it) }
@@ -91,6 +90,31 @@ class Paths(val map: Map<String, Cave>) {
     }
     private fun multiple(toVisit: Cave): Boolean {
         return toVisit.big
+    }
+    private fun canVisit1(currentPath:List<Cave>,toVisit: Cave): Boolean {
+        val currentPath = !currentPath.contains(toVisit)
+        val big = toVisit.big
+       return currentPath || big
+    }
+
+    private fun canVisit2(currentPath:List<Cave>,toVisit: Cave): Boolean {
+        if(toVisit.big){
+            return true
+        }
+        if(toVisit == startCave ){
+            return false
+        }
+        if(currentPath.contains(endCave) ){
+            return  false
+        }
+        val groupingBy =
+            currentPath.filter { !it.big  }.groupingBy { it }  .eachCount()
+
+        val duplicatedSmall =
+            groupingBy
+                .filter { it.value>1}
+
+        return duplicatedSmall.isEmpty()
     }
 
     private fun canMove(stack: Stack<Cave>): Boolean {
