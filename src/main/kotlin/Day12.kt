@@ -52,17 +52,18 @@ class Paths(val map: Map<String, Cave>) {
     private fun countEndPaths(visitPredicate:( List<Cave>,Cave)->Boolean) =
         pathRec(listOf(map["start"]!!), visitPredicate).filter { it.last() == map["end"]!! }.size
 
-    private fun pathRec(currentPath: List<Cave>,visitPredicate:( List<Cave>,Cave)->Boolean): List<List<Cave>> {
+    private fun pathRec(currentPath: List<Cave>,visitPredicate:( List<Cave>,Cave)->Boolean): MutableList<List<Cave>> {
         val lastElement = currentPath.last()
 
-        val filter = lastElement.pathTo.filter {
+        val nextCaves = lastElement.pathTo.filter {
             visitPredicate(currentPath, it)
         }
-        val nextPaths = filter.map { currentPath + it }
-        val map1: List<List<Cave>> = nextPaths.flatMap { pathRec(it,visitPredicate) }
-        val toMutableList = map1.toMutableList()
-        toMutableList.add(currentPath)
-        return toMutableList.toList()
+        val map1: MutableList<List<Cave>> = nextCaves
+            .flatMap {
+                pathRec((currentPath + it), visitPredicate)
+            }.toMutableList()
+        map1.add(currentPath)
+        return map1
     }
 
 
