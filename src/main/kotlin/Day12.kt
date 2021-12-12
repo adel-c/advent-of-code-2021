@@ -26,6 +26,7 @@ class Day12(path: String = "day12/input") {
             }
 
             acc[pair.first.name]!!.pathTo.add(acc[pair.second.name]!!)
+            acc[pair.second.name]!!.pathTo.add(acc[pair.first.name]!!)
             acc
         }
     }
@@ -37,7 +38,7 @@ data class Cave(val name: String) {
 }
 
 class Paths(val map: Map<String, Cave>) {
-    fun path1(): Int {
+    fun pathStack(): Int {
         val endCave = map["end"]!!
         val paths = mutableListOf<List<Cave>>()
         val stack = Stack<Cave>()
@@ -68,12 +69,28 @@ class Paths(val map: Map<String, Cave>) {
         }
         return paths.size
     }
+    fun path1(): Int {
+        val path2 = path2(listOf(map["start"]!!))
 
-    private fun path2(){
+        val filter = path2.filter { it.last() == map["end"]!! }
+        return      filter.size
+    }
+    private fun path2(currentPath:List<Cave> ):List<List<Cave>>{
+        val lastElement = currentPath.last()
 
+        val filter = lastElement.pathTo.filter{
+            val currentPath = !currentPath.contains(it)
+            val big = it.big
+            currentPath || big
+        }
+        val nextPaths = filter.map { currentPath + it }
+        val map1: List<List<Cave>> = nextPaths.flatMap { path2(it) }
+        val toMutableList = map1.toMutableList()
+        toMutableList.add(currentPath)
+        return  toMutableList.toList()
     }
     private fun multiple(toVisit: Cave): Boolean {
-        return !toVisit.big || toVisit.name == "start" || toVisit.name == "end"
+        return toVisit.big
     }
 
     private fun canMove(stack: Stack<Cave>): Boolean {
