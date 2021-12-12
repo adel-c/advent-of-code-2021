@@ -37,22 +37,21 @@ data class Cave(val name: String) {
 }
 
 class Paths(val map: Map<String, Cave>) {
-    val endCave = map["end"]!!
-    val startCave = map["start"]!!
+    private val endCave = map["end"]!!
+    private val startCave = map["start"]!!
 
 
     fun path1(): Int {
-        val path2 = pathRec(listOf(map["start"]!!),this::canVisit1)
-
-        val filter = path2.filter { it.last() == map["end"]!! }
-        return filter.size
+        return countEndPaths(this::canVisit1)
     }
+
     fun path2(): Int {
-        val path2 = pathRec(listOf(map["start"]!!),this::canVisit2)
-
-        val filter = path2.filter { it.last() == map["end"]!! }
-        return filter.size
+        return countEndPaths(this::canVisit2)
     }
+
+    private fun countEndPaths(visitPredicate:( List<Cave>,Cave)->Boolean) =
+        pathRec(listOf(map["start"]!!), visitPredicate).filter { it.last() == map["end"]!! }.size
+
     private fun pathRec(currentPath: List<Cave>,visitPredicate:( List<Cave>,Cave)->Boolean): List<List<Cave>> {
         val lastElement = currentPath.last()
 
@@ -68,9 +67,7 @@ class Paths(val map: Map<String, Cave>) {
 
 
     private fun canVisit1(currentPath: List<Cave>, toVisit: Cave): Boolean {
-        val currentPath = !currentPath.contains(toVisit)
-        val big = toVisit.big
-        return currentPath || big
+        return !currentPath.contains(toVisit) || toVisit.big
     }
 
     private fun canVisit2(currentPath: List<Cave>, toVisit: Cave): Boolean {
