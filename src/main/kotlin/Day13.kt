@@ -6,7 +6,8 @@ class Day13(path: String = "day13/input") {
     }
 
     fun compute2(): Int {
-        return 0
+        val (matrix, instructions) = parse()
+        return MatFolder(matrix, instructions).foldAll()
     }
 
     fun parse(): Pair<Set<Point>, List<FoldInst>> {
@@ -37,7 +38,25 @@ class Day13(path: String = "day13/input") {
             val sortedBy = splitX.sortedWith(compareBy({ it.i }, { it.j }))
             return a.size
         }
+        fun foldAll(): Int {
+            val foldedPoints = inst.fold(points) { acc, foldInst ->
+                val a = when (foldInst.axe) {
+                    "x" -> splitX(acc, foldInst.value)
+                    "y" -> splitY(acc, foldInst.value)
+                    else -> setOf()
+                }
+                a
+            }
+            val maxSize = foldedPoints.fold(Pair(0, 0)) { acc, point -> Pair(acc.first.max(point.i), acc.second.max(point.j)) }
+            val matrix = List(maxSize.first+1) { x -> List(maxSize.second+1) { y -> if (foldedPoints.contains(Point(x, y))) "#" else " " } }
 
+            matrix.map { it.reversed().joinToString ("") }.forEach { println(it) }
+
+
+            val matrix1 = List(maxSize.second+1) { x -> List(maxSize.first+1) { y -> if (foldedPoints.contains(Point(y, x))) "#" else " " } }
+            matrix1.map { it.joinToString ("") }.forEach { println(it) }
+            return foldedPoints.size
+        }
         fun splitY(source: Set<Point>, y: Int): Set<Point> {
             val toFold = source.filter { it.j > y }
             val converted = toFold.map { Point(it.i, y - (it.j - y)) }
