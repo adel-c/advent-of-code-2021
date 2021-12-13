@@ -79,4 +79,11 @@ data class Matrix(private val oData: List<List<Int>>) {
         }
     }
 
+    fun splitY(y: Int): Pair<Matrix, Matrix> {
+        return Pair(
+            Matrix(data.subList(0, y)),
+            Matrix(data.subList(y, data.size))
+        )
+    }
+
 }
