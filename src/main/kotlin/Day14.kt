@@ -28,17 +28,23 @@ class Day14(path: String = "day14/input") {
         private fun iteration(iteration: Int = 10): Int {
             var ori = template
             for (i in 1..iteration) {
-                var temp =
-                    ori.windowed(2).map { convert(it) }.mapIndexed { index, s -> if (index != 0) s.substring(1) else s }
-                        .joinToString("")
-
-                ori = temp
+                ori = it1(ori)
             }
             val charCounts = ori.toCharArray().groupBy { it }.mapValues { it.value.count() }.values
             val (min, max) = charCounts.fold(Pair(Int.MAX_VALUE, Int.MIN_VALUE)) { acc, i -> i.minMax(acc) }
 
 
             return max - min
+        }
+
+        private fun it1(ori: String): String {
+            var ori1 = ori
+            var temp =
+                ori1.windowed(2).map { convert(it) }.mapIndexed { index, s -> if (index != 0) s.substring(1) else s }
+                    .joinToString("")
+
+            ori1 = temp
+            return ori1
         }
 
         private fun convert(value: String): String {
