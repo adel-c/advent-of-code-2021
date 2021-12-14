@@ -20,22 +20,19 @@ class Day14(path: String = "day14/input") {
 
     data class Polym(val template: String, val R: Map<String, Char>) {
         fun count2(): Long {
-            return iteration(40)
+            return iterations(40)
         }
 
         fun count1(): Long {
-            return iteration()
+            return iterations()
         }
 
-        private fun iteration(iteration: Int = 10): Long {
-            var pairCounter = template.windowed(2).groupingBy { it }.eachCount().mapValues { it.value.toLong() }
-
-            for (i in 1..iteration) {
-                pairCounter = it1(pairCounter)
-            }
+        private fun iterations(nbIteration: Int = 10): Long {
+            val pairCounter = template.windowed(2).groupingBy { it }.eachCount().mapValues { it.value.toLong() }
+            val result = (1..nbIteration).fold(pairCounter) { acc, _ -> iteration(acc) }
 
             val charCounter = mutableMapOf<Char, Long>()
-            pairCounter.forEach {
+            result.forEach {
                 val key = it.key[0]
                 charCounter[key] = (charCounter[key] ?: 0L) + it.value
             }
@@ -45,7 +42,7 @@ class Day14(path: String = "day14/input") {
             return max - min
         }
 
-        private fun it1(PairCounter: Map<String, Long>): Map<String, Long> {
+        private fun iteration(PairCounter: Map<String, Long>): Map<String, Long> {
             val newPairCounter = mutableMapOf<String, Long>()
             PairCounter.forEach { entry ->
                 val newChar = R.getOrDefault(entry.key, "")
