@@ -18,11 +18,34 @@ class Day14(path: String = "day14/input") {
 
     data class Polym(val template: String, val map: Map<String, String>) {
         fun count2(): Int {
-            return 0
+            return iteration(40)
         }
 
         fun count1(): Int {
-            return 0
+            return iteration()
+        }
+
+        private fun iteration(iteration: Int = 10): Int {
+            var ori = template
+            for (i in 1..iteration) {
+                var temp =
+                    ori.windowed(2).map { convert(it) }.mapIndexed { index, s -> if (index != 0) s.substring(1) else s }
+                        .joinToString("")
+
+                ori = temp
+            }
+            val charCounts = ori.toCharArray().groupBy { it }.mapValues { it.value.count() }.values
+            val (min, max) = charCounts.fold(Pair(Int.MAX_VALUE, Int.MIN_VALUE)) { acc, i -> i.minMax(acc) }
+
+
+            return max - min
+        }
+
+        private fun convert(value: String): String {
+
+            return if (map.containsKey(value)) value[0] + map.getOrDefault(value, "") + value[1]
+            else value
+
         }
     }
 }
