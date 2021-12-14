@@ -10,17 +10,17 @@ class Day14(path: String = "day14/input") {
         return Polym(template, map).count2()
     }
 
-    fun parse(): Pair<String, Map<Pair<Char, Char>, Char>> {
+    fun parse(): Pair<String, Map<String, Char>> {
         val template = inputData[0]
         val toMap = inputData.filter { it.contains("->") }.map { it.split(" -> ") }
             .associate { it[0] to it[1].toCharArray()[0] }
         val mapKeys = toMap.mapKeys { Pair(it.key.toCharArray()[0], it.key.toCharArray()[1]) }
-        return Pair(template, mapKeys)
+        return Pair(template, toMap)
     }
 
-    data class Polym(val template: String, val map: Map<Pair<Char, Char>, Char>) {
+    data class Polym(val template: String, val R: Map<String, Char>) {
         fun count2(): Long {
-            return iteration(25)
+            return iteration(40)
         }
 
         fun count1(): Long {
@@ -28,51 +28,43 @@ class Day14(path: String = "day14/input") {
         }
 
         private fun iteration(iteration: Int = 10): Long {
-            var ori = template.toCharArray().toList()
-            var ori2 = template
+            var PairCount = mutableMapOf<String, Long>()
+            template.windowed(2).forEach { PairCount.put(it, PairCount.getOrDefault(it, 0L) + 1) }
+            val sortedMap = PairCount.toList().sortedByDescending { (k, v) -> v }.toMap()
+            println(sortedMap)
             for (i in 1..iteration) {
-                ori = it1(ori)
-                //ori2 = it2(ori2)
-                //println("$i \n$ori\n$ori2")
+                PairCount = it1(PairCount)
             }
-            val charCounts = ori.groupBy { it }.mapValues { it.value.count().toLong() }.values
-            val (min, max) = charCounts.fold(Pair(Long.MAX_VALUE, Long.MIN_VALUE)) { acc, i -> i.minMax(acc) }
+
+
+            val CharCounter = mutableMapOf<Char, Long>()
+
+            PairCount.forEach {
+                val key = it.key[0]
+                CharCounter[key] = CharCounter.getOrDefault(key, 0) + it.value
+            }
+            CharCounter[template.last()] = CharCounter[template.last()]!! + 1L
+            val (min, max) = CharCounter.values.fold(Pair(Long.MAX_VALUE, Long.MIN_VALUE)) { acc, i -> i.minMax(acc) }
 
             return max - min
         }
 
-        private fun it1(ori: List<Char>): List<Char> {
-            val result: ArrayList<Char> = ArrayList(ori.size + (ori.size / 3))
-            result.add(ori[0])
-            for (i in 1..ori.lastIndex) {
-                val firstChar = ori[i]
-                val secondChar = ori[i - 1]
-                val key = Pair(secondChar, firstChar)
-                if (map.containsKey(key)) {
-                    result.add(map[key]!!)
-                }
-                result.add(firstChar)
+        private fun it1(PairCounter: MutableMap<String, Long>): MutableMap<String, Long> {
+            val newPairCounter = mutableMapOf<String, Long>()
+            PairCounter.forEach { entry ->
+
+                val newChar = R.getOrDefault(entry.key, "")
+
+                val key1 = "${entry.key[0]}$newChar"
+                val key2 = "$newChar${entry.key[1]}"
+                newPairCounter.put(key1, newPairCounter.getOrDefault(key1, 0) + entry.value)
+                newPairCounter.put(key2, newPairCounter.getOrDefault(key2, 0) + entry.value)
+
             }
-            return result
+
+            return newPairCounter
         }
 
-        private fun it2(ori: String): String {
-            var ori1 = ori
-            var temp =
-                ori1.windowed(2).map { convert(it) }.mapIndexed { index, s -> if (index != 0) s.substring(1) else s }
-                    .joinToString("")
-
-            ori1 = temp
-            return ori1
-        }
-
-        private fun convert(value: String): String {
-
-            val key = Pair(value[0], value[1])
-            return if (map.containsKey(key)) "${value[0]}${map.get(key)!!}${value[1]}"
-            else value
-
-        }
 
     }
 }
