@@ -28,37 +28,31 @@ class Day14(path: String = "day14/input") {
         }
 
         private fun iteration(iteration: Int = 10): Long {
-            var PairCount = mutableMapOf<String, Long>()
-            template.windowed(2).forEach { PairCount.put(it, PairCount.getOrDefault(it, 0L) + 1) }
-            val sortedMap = PairCount.toList().sortedByDescending { (k, v) -> v }.toMap()
-            println(sortedMap)
+            var pairCounter = template.windowed(2).groupingBy { it }.eachCount().mapValues { it.value.toLong() }
+
             for (i in 1..iteration) {
-                PairCount = it1(PairCount)
+                pairCounter = it1(pairCounter)
             }
 
-
-            val CharCounter = mutableMapOf<Char, Long>()
-
-            PairCount.forEach {
+            val charCounter = mutableMapOf<Char, Long>()
+            pairCounter.forEach {
                 val key = it.key[0]
-                CharCounter[key] = CharCounter.getOrDefault(key, 0) + it.value
+                charCounter[key] = (charCounter[key] ?: 0L) + it.value
             }
-            CharCounter[template.last()] = CharCounter[template.last()]!! + 1L
-            val (min, max) = CharCounter.values.fold(Pair(Long.MAX_VALUE, Long.MIN_VALUE)) { acc, i -> i.minMax(acc) }
+            charCounter[template.last()] = charCounter[template.last()]!! + 1L
+            val (min, max) = charCounter.values.fold(Pair(Long.MAX_VALUE, Long.MIN_VALUE)) { acc, i -> i.minMax(acc) }
 
             return max - min
         }
 
-        private fun it1(PairCounter: MutableMap<String, Long>): MutableMap<String, Long> {
+        private fun it1(PairCounter: Map<String, Long>): Map<String, Long> {
             val newPairCounter = mutableMapOf<String, Long>()
             PairCounter.forEach { entry ->
-
                 val newChar = R.getOrDefault(entry.key, "")
-
                 val key1 = "${entry.key[0]}$newChar"
                 val key2 = "$newChar${entry.key[1]}"
-                newPairCounter.put(key1, newPairCounter.getOrDefault(key1, 0) + entry.value)
-                newPairCounter.put(key2, newPairCounter.getOrDefault(key2, 0) + entry.value)
+                newPairCounter.put(key1, (newPairCounter[key1] ?: 0L) + entry.value)
+                newPairCounter.put(key2, (newPairCounter[key2] ?: 0L) + entry.value)
 
             }
 
