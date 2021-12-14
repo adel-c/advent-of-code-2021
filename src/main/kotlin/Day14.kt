@@ -1,4 +1,4 @@
-import java.util.*
+import kotlin.collections.ArrayList
 
 class Day14(path: String = "day14/input") {
     private val inputData: List<String> = path.fromResource().readLines()
@@ -25,37 +25,36 @@ class Day14(path: String = "day14/input") {
         }
 
         fun count1(): Long {
-            return iteration(20)
+            return iteration()
         }
 
         private fun iteration(iteration: Int = 10): Long {
-            var ori = template
+            var ori = template.toCharArray().toList()
             var ori2 = template
             for (i in 1..iteration) {
                 ori = it1(ori)
-                //ori2 = it2(ori2)
-                //println("$i \n$ori\n$ori2")
+                ori2 = it2(ori2)
+                println("$i \n$ori\n$ori2")
             }
-            val charCounts = ori.toCharArray().groupBy { it }.mapValues { it.value.count().toLong() }.values
+            val charCounts = ori.groupBy { it }.mapValues { it.value.count().toLong() }.values
             val (min, max) = charCounts.fold(Pair(Long.MAX_VALUE, Long.MIN_VALUE)) { acc, i -> i.minMax(acc) }
 
             return max - min
         }
 
-        private fun it1(ori: String): String {
-            val queue = ArrayDeque(ori.toCharArray().toList())
-            val result = Stack<Char>()
-            result.push(queue.pop())
-            while (queue.isNotEmpty()) {
-                val firstChar = queue.pop()
-                val secondChar = result.peek()
+        private fun it1(ori: List<Char>): List<Char> {
+            val result: ArrayList<Char> = ArrayList(ori.size + (ori.size / 3))
+            result.add(ori[0])
+            for (i in 1..ori.lastIndex) {
+                val firstChar = ori[i]
+                val secondChar = result.last()
                 val key = "$secondChar$firstChar"
                 if (map.containsKey(key)) {
-                    result.push(map[key])
+                    result.add(map[key]!!)
                 }
-                result.push(firstChar)
+                result.add(firstChar)
             }
-            return result.joinToString("")
+            return result
         }
 
         private fun it2(ori: String): String {
