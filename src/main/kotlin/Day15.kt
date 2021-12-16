@@ -1,3 +1,5 @@
+import java.util.*
+
 class Day15(path: String = "day15/input") {
     private val inputData: List<String> = path.fromResource().readLines()
     fun compute(): Int {
@@ -13,48 +15,56 @@ class Day15(path: String = "day15/input") {
             .map { it.map { v -> v.toInt() } })
     }
 
+    data class PathHead(val dataPoint: DataPoint, val totalValue: Int) : Comparable<PathHead> {
+        override fun compareTo(other: PathHead): Int = this.totalValue - other.totalValue
+
+    }
 
     data class ShortestPath(val matrix: Matrix) {
         fun shortPath1(): Int {
             val targetPoint = matrix.last()
-            val get = matrix.get(0, 0)
-            val paths = mutableListOf<List<DataPoint>>()
-            val path = mutableListOf(get)
-            val visited = mutableSetOf(get)
+            val start = matrix.get(0, 0)
+            val path = PriorityQueue<PathHead>().apply { add(PathHead(start, 0)) }
+            val visited = mutableSetOf<DataPoint>()
             while (path.isNotEmpty()) {
-
-                val aroundNoDiag = matrix.aroundNoDiag(path.last().point())
-                val candidate = aroundNoDiag - path.toSet() - visited
-                val closest = candidate.minByOrNull { it.value }
-                if (candidate.contains(targetPoint)) {
-                    paths.add(path.toList() + targetPoint)
-                    path.removeLast()
-                } else if (closest != null) {
-                    visited.add(closest)
-                    path.add(closest)
-                } else {
-                    path.removeLast()
+                val poll = path.poll()
+                if (poll.dataPoint == targetPoint) {
+                    return poll.totalValue
                 }
+                if (poll.dataPoint !in visited) {
+                    visited.add(poll.dataPoint)
+                    val aroundNoDiag = matrix.aroundNoDiag(poll.dataPoint.point())
+                    aroundNoDiag.map { PathHead(it, poll.totalValue + it.value) }.forEach (path::offer)
+                }
+
+
             }
 
-        return paths.map{ it.sumOf { it.value } - get.value }.minOrNull() ?: 0
-    }
+            TODO("should not happen")
+        }
 
-    fun shortRec(path: List<DataPoint>):List<List<DataPoint>>{
-        val targetPoint = matrix.last()
-        val start = matrix.get(0, 0)
-        val aroundNoDiag = matrix.aroundNoDiag(path.last().point())
-        val candidates = aroundNoDiag - path.toSet()
-        if (candidates.contains(targetPoint)){
-            return listOf(path+targetPoint)
-        }else{
-            return candidates.flatMap { shortRec(path+it) }
+        fun shortPath1O(): Int {
+            val start = matrix.get(0, 0)
+            val paths = shortRec(listOf(start))
+            return paths.map { it.sumOf { it.value } - start.value }.minOrNull() ?: 0
+        }
+
+        fun shortRec(path: List<DataPoint>): List<List<DataPoint>> {
+            val targetPoint = matrix.last()
+            val start = matrix.get(0, 0)
+            val aroundNoDiag = matrix.aroundNoDiag(path.last().point())
+            val candidates = aroundNoDiag - path.toSet()
+            if (candidates.contains(targetPoint)) {
+                return listOf(path + targetPoint)
+            } else {
+                return candidates.flatMap { shortRec(path + it) }
+            }
+
+        }
+
+        fun shortPath2(): Int {
+            return 0
         }
 
     }
-    fun shortPath2(): Int {
-        return 0
-    }
-
-}
 }
