@@ -39,8 +39,7 @@ class Day15(path: String = "day15/input") {
                 }
                 if (poll.dataPoint !in visited) {
                     visited.add(poll.dataPoint)
-                    val aroundNoDiag = poll.dataPoint.aroundNoDiag(maxI = map.sizeX(), maxJ = map.sizeY())
-
+                    val aroundNoDiag = poll.dataPoint.aroundNoDiag(maxI = targetPoint.i + 1, maxJ = targetPoint.j + 1)
                     aroundNoDiag.map { PathHead(it, poll.totalValue + pointRisk(it, map)) }.forEach(path::offer)
                 }
 
@@ -50,20 +49,16 @@ class Day15(path: String = "day15/input") {
             TODO("should not happen")
         }
 
-        fun pointRisk(p: Point, map: Matrix): Int {
-          /*  val di: Int = p.i / map.sizeX()
+        private fun pointRisk(p: Point, map: Matrix): Int {
+            val di: Int = p.i / map.sizeX()
             val dj: Int = p.j / map.sizeY()
-            val originalValue: Int = map.get(p.i%map.sizeX(),p.j%map.sizeY()).value
+            val originalValue: Int = map.get(p.i % map.sizeX(), p.j % map.sizeY()).value
             val newRisk = (originalValue + di + dj)
-            return newRisk.takeIf { it < 10 } ?: (newRisk - 9)*/
-
-            return map.get(p.i,p.j).value
+            return newRisk.takeIf { it < 10 } ?: (newRisk - 9)
         }
 
         fun shortPath2(): Int {
-            val newData = ArrayList<ArrayList<Int>>()
-
-            return 0
+            return shortPath(matrix, Point(matrix.sizeX() * 5 - 1, matrix.sizeY() * 5 - 1))
         }
 
     }

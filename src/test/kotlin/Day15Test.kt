@@ -18,12 +18,12 @@ class Day15Test {
     @Test
     fun test2_compute_should_be_X() {
         val day = Day15("day15/inputTest")
-        assertEquals(0, day.compute2())
+        assertEquals(315, day.compute2())
     }
 
     @Test
     fun compute2_should_be_X() {
         val day = Day15("day15/input")
-        assertEquals(0, day.compute2())
+        assertEquals(3040, day.compute2())
     }
 }
