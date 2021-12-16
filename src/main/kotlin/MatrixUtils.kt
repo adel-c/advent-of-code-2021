@@ -11,6 +11,13 @@ data class Point(val i: Int, val j: Int) {
     fun isDiagonal(p: Point): Boolean = (i != p.i) && (j != p.j)//((x - p.x).absoluteValue == (y - p.y).absoluteValue)
     fun progressionX(p: Point) = i progressTo p.i
     fun progressionY(p: Point) = j progressTo p.j
+
+    fun aroundNoDiag(maxI:Int= Int.MAX_VALUE,maxJ:Int=Int.MAX_VALUE):List<Point> = listOf(
+        this.copy(i=i+1),
+        this.copy(i=i-1),
+        this.copy(j=j+1),
+        this.copy(j=j-1)
+    ).filter { it.i in 0 until maxI && it.j in 0 until maxJ }
 }
 
 data class Matrix(private val oData: List<List<Int>>) {
@@ -91,4 +98,6 @@ data class Matrix(private val oData: List<List<Int>>) {
         )
     }
 
+    fun sizeX():Int= data.size
+    fun sizeY():Int= data[0].size
 }
