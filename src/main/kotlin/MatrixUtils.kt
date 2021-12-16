@@ -72,7 +72,12 @@ data class Matrix(private val oData: List<List<Int>>) {
     fun set(p: Point, value: Int) {
         data[p.i][p.j] = value
     }
-
+    fun get(i:Int,j:Int):DataPoint {
+      return  DataPoint(i,j,data[i][j])
+    }
+    fun last():DataPoint{
+       return get(data.lastIndex, data[0].lastIndex)
+    }
     fun incAll(points: List<Point>) {
         points.forEach {
             set(it, data[it.i][it.j] + 1)

@@ -9,17 +9,33 @@ class Day15(path: String = "day15/input") {
     }
 
     fun parse(): Matrix {
-        return Matrix(inputData.filter { it.isNotBlank() }.map { it.split("") }.map { it.map { v -> v.toInt() } })
+        return Matrix(inputData.filter { it.isNotBlank() }.map { it.split("").filter { it.isNotBlank() } }.map { it.map { v -> v.toInt() } })
     }
 
 
-    data class ShortestPath(val matrix:Matrix){
+    data class ShortestPath(val matrix: Matrix) {
         fun shortPath1(): Int {
-           return 0
+            val targetPoint = matrix.last()
+            val get = matrix.get(0, 0)
+            val path = mutableListOf(get)
+            val visited = mutableSetOf(get)
+            while (path.last() != targetPoint) {
+                val aroundNoDiag = matrix.aroundNoDiag(path.last().point())
+                val candidate = aroundNoDiag - path.toSet() - visited
+                val closest = candidate.minByOrNull { it.value }
+                if (closest != null) {
+                    path.add(closest)
+                } else {
+                    visited.add(path.removeLast())
+                }
+
+            }
+
+            return path.sumOf { it.value } - get.value
         }
 
         fun shortPath2(): Int {
-          return 0
+            return 0
         }
 
     }
