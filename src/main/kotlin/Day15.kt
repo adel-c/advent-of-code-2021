@@ -9,7 +9,8 @@ class Day15(path: String = "day15/input") {
     }
 
     fun parse(): Matrix {
-        return Matrix(inputData.filter { it.isNotBlank() }.map { it.split("").filter { it.isNotBlank() } }.map { it.map { v -> v.toInt() } })
+        return Matrix(inputData.filter { it.isNotBlank() }.map { it.split("").filter { it.isNotBlank() } }
+            .map { it.map { v -> v.toInt() } })
     }
 
 
@@ -17,26 +18,43 @@ class Day15(path: String = "day15/input") {
         fun shortPath1(): Int {
             val targetPoint = matrix.last()
             val get = matrix.get(0, 0)
+            val paths = mutableListOf<List<DataPoint>>()
             val path = mutableListOf(get)
             val visited = mutableSetOf(get)
-            while (path.last() != targetPoint) {
+            while (path.isNotEmpty()) {
+
                 val aroundNoDiag = matrix.aroundNoDiag(path.last().point())
                 val candidate = aroundNoDiag - path.toSet() - visited
                 val closest = candidate.minByOrNull { it.value }
-                if (closest != null) {
+                if (candidate.contains(targetPoint)) {
+                    paths.add(path.toList() + targetPoint)
+                    path.removeLast()
+                } else if (closest != null) {
+                    visited.add(closest)
                     path.add(closest)
                 } else {
-                    visited.add(path.removeLast())
+                    path.removeLast()
                 }
-
             }
 
-            return path.sumOf { it.value } - get.value
-        }
+        return paths.map{ it.sumOf { it.value } - get.value }.minOrNull() ?: 0
+    }
 
-        fun shortPath2(): Int {
-            return 0
+    fun shortRec(path: List<DataPoint>):List<List<DataPoint>>{
+        val targetPoint = matrix.last()
+        val start = matrix.get(0, 0)
+        val aroundNoDiag = matrix.aroundNoDiag(path.last().point())
+        val candidates = aroundNoDiag - path.toSet()
+        if (candidates.contains(targetPoint)){
+            return listOf(path+targetPoint)
+        }else{
+            return candidates.flatMap { shortRec(path+it) }
         }
 
     }
+    fun shortPath2(): Int {
+        return 0
+    }
+
+}
 }
