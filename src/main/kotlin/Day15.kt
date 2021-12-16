@@ -22,8 +22,12 @@ class Day15(path: String = "day15/input") {
 
     data class ShortestPath(val matrix: Matrix) {
         fun shortPath1(): Int {
-            val targetPoint = matrix.last()
-            val start = matrix.get(0, 0)
+            return shortPath(matrix)
+        }
+
+        private fun shortPath(map: Matrix): Int {
+            val targetPoint = map.last()
+            val start = map.get(0, 0)
             val path = PriorityQueue<PathHead>().apply { add(PathHead(start, 0)) }
             val visited = mutableSetOf<DataPoint>()
             while (path.isNotEmpty()) {
@@ -33,8 +37,8 @@ class Day15(path: String = "day15/input") {
                 }
                 if (poll.dataPoint !in visited) {
                     visited.add(poll.dataPoint)
-                    val aroundNoDiag = matrix.aroundNoDiag(poll.dataPoint.point())
-                    aroundNoDiag.map { PathHead(it, poll.totalValue + it.value) }.forEach (path::offer)
+                    val aroundNoDiag = map.aroundNoDiag(poll.dataPoint.point())
+                    aroundNoDiag.map { PathHead(it, poll.totalValue + it.value) }.forEach(path::offer)
                 }
 
 
@@ -43,24 +47,6 @@ class Day15(path: String = "day15/input") {
             TODO("should not happen")
         }
 
-        fun shortPath1O(): Int {
-            val start = matrix.get(0, 0)
-            val paths = shortRec(listOf(start))
-            return paths.map { it.sumOf { it.value } - start.value }.minOrNull() ?: 0
-        }
-
-        fun shortRec(path: List<DataPoint>): List<List<DataPoint>> {
-            val targetPoint = matrix.last()
-            val start = matrix.get(0, 0)
-            val aroundNoDiag = matrix.aroundNoDiag(path.last().point())
-            val candidates = aroundNoDiag - path.toSet()
-            if (candidates.contains(targetPoint)) {
-                return listOf(path + targetPoint)
-            } else {
-                return candidates.flatMap { shortRec(path + it) }
-            }
-
-        }
 
         fun shortPath2(): Int {
             return 0
