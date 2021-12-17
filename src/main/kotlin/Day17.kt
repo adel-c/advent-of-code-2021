@@ -59,18 +59,18 @@ class Day17(path: String = "day17/input") {
     data class TrickShot(val targetArea: Area) {
         fun distinct(): Int {
 
-            var highestY = 0
+            var okSpeed = mutableSetOf<Speed>()
             (0..targetArea.x2).forEach { x ->
                 (targetArea.y1..targetArea.y1.absoluteValue).forEach { y ->
                     val shootTo = Probe(Speed(x, y)).shootTo(targetArea)
                     val maxPosition = shootTo.maxPosition
                     val inArea = shootTo.position.inArea(targetArea)
                     if (inArea) {
-                        highestY = max(highestY, maxPosition)
+                        okSpeed.add(Speed(x,y))
                     }
                 }
             }
-            return highestY
+            return okSpeed.size
         }
         fun high(): Int {
             println(targetArea)
