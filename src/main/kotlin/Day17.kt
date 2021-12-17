@@ -46,7 +46,7 @@ class Day17(path: String = "day17/input") {
 
         fun shootTo(area: Area): Probe {
             var lastProb = this
-            var previous = this
+            var previous :Probe
             do {
                 previous = lastProb
                 lastProb = lastProb.step()
@@ -58,36 +58,22 @@ class Day17(path: String = "day17/input") {
 
     data class TrickShot(val targetArea: Area) {
         fun distinct(): Int {
+            return tryAll().map { it.first }.toSet().size
+        }
+        fun high(): Int {
+            return  tryAll().map {it.second}.maxOf { it.maxPosition }
+        }
 
-            var okSpeed = mutableSetOf<Speed>()
+        private fun tryAll():Sequence<Pair<Speed,Probe>> = sequence {
             (0..targetArea.x2).forEach { x ->
                 (targetArea.y1..targetArea.y1.absoluteValue).forEach { y ->
                     val shootTo = Probe(Speed(x, y)).shootTo(targetArea)
-                    val maxPosition = shootTo.maxPosition
-                    val inArea = shootTo.position.inArea(targetArea)
-                    if (inArea) {
-                        okSpeed.add(Speed(x,y))
+                    if (shootTo.position.inArea(targetArea)) {
+                        yield(Pair(Speed(x, y), shootTo))
                     }
                 }
             }
-            return okSpeed.size
         }
-        fun high(): Int {
-            println(targetArea)
-            var highestY = 0
-                (0..targetArea.x2).forEach { x ->
-                    (targetArea.y1..targetArea.y1.absoluteValue).forEach { y ->
-                        val shootTo = Probe(Speed(x, y)).shootTo(targetArea)
-                        val maxPosition = shootTo.maxPosition
-                        val inArea = shootTo.position.inArea(targetArea)
-                        if (inArea) {
-                            highestY = max(highestY, maxPosition)
-                        }
-                    }
-                }
-            return highestY
-        }
-
 
     }
 
