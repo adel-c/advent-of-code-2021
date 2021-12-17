@@ -23,7 +23,9 @@ class Day16(path: String = "day16/input") {
     }
 
 
-    open class Packet(open val version: Int, open val typeId: Int, open val length: Int)
+    open class Packet(open val version: Int, open val typeId: Int, open val length: Int){
+        open fun versionCount():Int = version
+    }
     data class LiteralPacket(
         override val version: Int,
         override val typeId: Int,
@@ -37,7 +39,11 @@ class Day16(path: String = "day16/input") {
         override val typeId: Int,
         override val length: Int,
         val subPacket: List<Packet>
-    ) : Packet(version, typeId, length)
+    ) : Packet(version, typeId, length){
+        override fun versionCount(): Int {
+            return  version + subPacket.sumOf { it.versionCount() }
+        }
+    }
 
     data class PacketParser(val binaryMessage: String) {
         fun String.binToInt() = this.toInt(2)
@@ -56,7 +62,7 @@ class Day16(path: String = "day16/input") {
 
             val packet = parse()
             println("${packet.version} ${packet.typeId}")
-            return 0
+            return packet.versionCount()
         }
 
         private fun parseLiteralPacket(version: Int, typeId: Int, binaryMessage: String): Packet {

@@ -30,6 +30,11 @@ class Day16Test {
             Day16.LiteralPacket(1,4,11,"3")
         )), day.parse())
     }
+    @Test
+    fun test_compute_should_be_31() {
+        val day = Day16.PacketParser(Day16.hexToBin("A0016C880162017C3686B18A3D4780"))
+        assertEquals(31, day.count())
+    }
 
     @Test
     fun test_compute_should_be_X() {
