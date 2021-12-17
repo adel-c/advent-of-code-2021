@@ -68,7 +68,7 @@ class Day16(path: String = "day16/input") {
         }
 
         private fun parseOperatorPacket(version: Int, typeId: Int, binaryMessage: String): Packet {
-            val packetsCount = binaryMessage[7] == '1'
+            val packetsCount = binaryMessage[6] == '1'
             val messageLengthBitCount = if (packetsCount) 11 else 15
             val substring = binaryMessage.substring(8, 8 + messageLengthBitCount - 1)
             var packetsSize = substring.binToInt()
@@ -83,6 +83,24 @@ class Day16(path: String = "day16/input") {
                     ).parse()
                     subBinary = subBinary.substring(packet.length)
                     packetsSize -= packet.length
+                    subPacket.add(packet)
+                }
+                return OperatorPacket(
+                    version,
+                    typeId,
+                    8 + messageLengthBitCount + subPacket.sumOf { it.length },
+                    subPacket
+                )
+            }else{
+                var subBinary = binaryMessage.substring(8 + messageLengthBitCount - 1)
+                val subPacket = mutableListOf<Packet>()
+                while (subBinary.length > 6 && packetsSize > 0) {
+                    val packetBinaryMsg = subBinary
+                    val packet = PacketParser(
+                        packetBinaryMsg
+                    ).parse()
+                    subBinary = subBinary.substring(packet.length)
+                    packetsSize -= 1
                     subPacket.add(packet)
                 }
                 return OperatorPacket(
