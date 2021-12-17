@@ -64,15 +64,34 @@ class Day16(path: String = "day16/input") {
             val chunked = packets.chunked(5)
             val count = chunked.takeWhile { it[0] != '0' }.size + 1
             val value = chunked.subList(0, count).joinToString("") { it.substring(1) }.binToInt().toString()
-            return LiteralPacket(version, typeId, binaryMessage.length, value)
+            return LiteralPacket(version, typeId, (count * 5) + 6, value)
         }
 
         private fun parseOperatorPacket(version: Int, typeId: Int, binaryMessage: String): Packet {
             val packetsCount = binaryMessage[7] == '1'
             val messageLengthBitCount = if (packetsCount) 11 else 15
             val substring = binaryMessage.substring(8, 8 + messageLengthBitCount - 1)
-            val packetsSize = substring.binToInt()
+            var packetsSize = substring.binToInt()
             println(packetsSize)
+            if (!packetsCount) {
+                var subBinary = binaryMessage.substring(8 + messageLengthBitCount - 1)
+                val subPacket = mutableListOf<Packet>()
+                while (subBinary.length > 6 && packetsSize > 0) {
+                    val packetBinaryMsg = subBinary.substring(0, packetsSize - 1)
+                    val packet = PacketParser(
+                        packetBinaryMsg
+                    ).parse()
+                    subBinary = subBinary.substring(packet.length)
+                    packetsSize -= packet.length
+                    subPacket.add(packet)
+                }
+                return OperatorPacket(
+                    version,
+                    typeId,
+                    8 + messageLengthBitCount + subPacket.sumOf { it.length },
+                    subPacket
+                )
+            }
             TODO()
         }
 
