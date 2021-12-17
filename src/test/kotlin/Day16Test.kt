@@ -14,7 +14,7 @@ class Day16Test {
     fun parseOperator() {
 
         val day = Day16.PacketParser(Day16.hexToBin("38006F45291200"))
-        assertEquals(Day16.OperatorPacket(1,6, 0,listOf(
+        assertEquals(Day16.OperatorPacket(1,6, 50,listOf(
             Day16.LiteralPacket(6,4,11,"10"),
             Day16.LiteralPacket(2,4,16,"20")
         )), day.parse())

@@ -77,7 +77,7 @@ class Day16(path: String = "day16/input") {
                 var subBinary = binaryMessage.substring(8 + messageLengthBitCount - 1)
                 val subPacket = mutableListOf<Packet>()
                 while (subBinary.length > 6 && packetsSize > 0) {
-                    val packetBinaryMsg = subBinary.substring(0, packetsSize - 1)
+                    val packetBinaryMsg = subBinary.substring(0, packetsSize )
                     val packet = PacketParser(
                         packetBinaryMsg
                     ).parse()
