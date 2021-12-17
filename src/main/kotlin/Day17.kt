@@ -40,10 +40,18 @@ class Day17(path: String = "day17/input") {
         }
 
         fun overShot(area: Area): Boolean {
-            return position.i.absoluteValue > max(
-                area.x1.absoluteValue,
-                area.x2.absoluteValue
-            ) || position.j.absoluteValue > max(area.y1.absoluteValue, area.y2.absoluteValue)
+
+            return position.i > area.x2 || position.j < area.y1
+        }
+
+        fun shootTo(area: Area): Probe {
+            var lastProb = this
+            var previous = this
+            do {
+                previous = lastProb
+                lastProb = lastProb.step()
+            } while (!lastProb.overShot(area) || lastProb.position.inArea(area))
+            return previous
         }
     }
 
@@ -51,28 +59,40 @@ class Day17(path: String = "day17/input") {
     data class TrickShot(val targetArea: Area) {
         fun high(): Int {
             println(targetArea)
-            var probe = Probe(Speed(7, 2))
+
             var ProbeOk = mutableListOf<Speed>()
+            /*
+            var probe = Probe(Speed(7, 2))
             (1..10).forEach {
-                val inArea = probe.position.inArea(targetArea)
-                if (inArea) {
-                    println("$it $probe in area $inArea")
+                       val inArea = probe.position.inArea(targetArea)
+                       if (inArea) {
+                           println("$it $probe in area $inArea")
 
-                }
-                println("$it $probe in area $inArea overShot ${probe.overShot(targetArea)}")
-                probe = probe.step()
+                       }
+                       println("$it $probe in area $inArea overShot ${probe.overShot(targetArea)}")
+                       probe = probe.step()
 
-            }
-
-
+                   }
+       */
+            var highestY = 0
             (0..targetArea.x2.absoluteValue).forEach { x ->
                 (targetArea.y1..targetArea.y1.absoluteValue).forEach { y ->
+                    val shootTo = Probe(Speed(x, y)).shootTo(targetArea)
+                    val maxPosition = shootTo.maxPosition
+                    val inArea = shootTo.position.inArea(targetArea)
+                    if (inArea) {
+                        println(" $shootTo in area while x=$x,y=$y and max $maxPosition ")
+                        highestY = max(highestY, maxPosition)
+                    }
+
 
                 }
             }
-
-            return 0
+            println(highestY)
+            return highestY
         }
+
+
     }
 
 }
