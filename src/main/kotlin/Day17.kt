@@ -22,12 +22,11 @@ class Day17(path: String = "day17/input") {
     }
 
     data class Speed(val x: Int, val y: Int) {
-        fun Int.stepToZero() = if (this < 0) this + 1 else this - 1
+        private fun Int.stepToZero() = if (this < 0) this + 1 else this - 1
         fun step() = Speed(x.stepToZero(), y - 1)
     }
 
     data class Probe(val speed: Speed, val position: Point = Point(0, 0)) {
-        fun Int.stepToZero() = if (this < 0) this + 1 else this - 1
         fun step() = Probe(speed.step(), position.copy(i = position.i + speed.x, j = position.j + speed.y))
     }
 
