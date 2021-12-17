@@ -6,8 +6,8 @@ class Day16(path: String = "day16/input") {
         return PacketParser(hexToBin(inputData[0])).count()
     }
 
-    fun compute2(): Int {
-        return 0
+    fun compute2(): Long {
+        return PacketParser(hexToBin(inputData[0])).count2()
     }
 
     companion object {
@@ -26,6 +26,9 @@ class Day16(path: String = "day16/input") {
 
     open class Packet(open val version: Int, open val typeId: Int, open val length: Int) {
         open fun versionCount(): Int = version
+        open fun typedCount(): Long {
+            TODO("Not yet implemented")
+        }
     }
 
     data class LiteralPacket(
@@ -34,7 +37,11 @@ class Day16(path: String = "day16/input") {
         override val length: Int,
         val value: String
     ) :
-        Packet(version, typeId, length)
+        Packet(version, typeId, length) {
+        override fun typedCount(): Long {
+            return value.toLong()
+        }
+    }
 
     data class OperatorPacket(
         override val version: Int,
@@ -44,6 +51,19 @@ class Day16(path: String = "day16/input") {
     ) : Packet(version, typeId, length) {
         override fun versionCount(): Int {
             return version + subPacket.sumOf { it.versionCount() }
+        }
+
+        override fun typedCount(): Long {
+            return when (typeId) {
+                0 -> subPacket.sumOf { it.typedCount() }
+                1 -> subPacket.fold(1) { acc, next -> acc * next.typedCount() }
+                2 -> subPacket.minOf { it.typedCount() }
+                3 -> subPacket.maxOf { it.typedCount() }
+                5 -> if (subPacket.first().typedCount() > subPacket.last().typedCount()) 1 else 0
+                6 -> if (subPacket.first().typedCount() < subPacket.last().typedCount()) 1 else 0
+                7 -> if (subPacket.first().typedCount() == subPacket.last().typedCount()) 1 else 0
+                else -> error("Invalid Operator type")
+            }
         }
     }
 
@@ -66,6 +86,12 @@ class Day16(path: String = "day16/input") {
             return packet.versionCount()
         }
 
+        fun count2(): Long {
+
+            val packet = parse()
+            return packet.typedCount()
+        }
+
         private fun parseLiteralPacket(version: Int, typeId: Int, binaryMessage: String): Packet {
             val packets = binaryMessage.substring(6)
             val chunked = packets.chunked(5)
@@ -86,7 +112,7 @@ class Day16(path: String = "day16/input") {
             return OperatorPacket(
                 version,
                 typeId,
-                8 + messageLengthBitCount + subPacket.sumOf { it.length }-1,
+                8 + messageLengthBitCount + subPacket.sumOf { it.length } - 1,
                 subPacket
             )
 
