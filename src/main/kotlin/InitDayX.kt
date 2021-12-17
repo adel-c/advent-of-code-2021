@@ -14,10 +14,10 @@ class FolderStruct(day: String) {
             """
         class $className(path: String = "$inputFolder/input") {
             private val inputData: List<String> = path.fromResource().readLines()
-            fun compute(): Int {
+            fun compute(): Long {
                 return 0
             }
-            fun compute2(): Int {
+            fun compute2(): Long {
                 return 0
             }
         }
