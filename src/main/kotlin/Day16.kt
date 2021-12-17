@@ -11,8 +11,8 @@ class Day16(path: String = "day16/input") {
         return 0
     }
 
-    companion object{
-        fun hexToBin(input:String): String {
+    companion object {
+        fun hexToBin(input: String): String {
             return input.toCharArray().map { hexCharToBinary(it.toString()) }.joinToString("")
         }
 
@@ -23,15 +23,21 @@ class Day16(path: String = "day16/input") {
     }
 
 
-    open class Packet(open val version: Int, open val typeId: Int)
-    data class LiteralPacket(override val version: Int, override val typeId: Int, val value: String) :
-        Packet(version, typeId)
+    open class Packet(open val version: Int, open val typeId: Int, open val length: Int)
+    data class LiteralPacket(
+        override val version: Int,
+        override val typeId: Int,
+        override val length: Int,
+        val value: String
+    ) :
+        Packet(version, typeId, length)
 
     data class OperatorPacket(
         override val version: Int,
         override val typeId: Int,
+        override val length: Int,
         val subPacket: List<Packet>
-    ) : Packet(version, typeId)
+    ) : Packet(version, typeId, length)
 
     data class PacketParser(val binaryMessage: String) {
         fun String.binToInt() = this.toInt(2)
@@ -58,11 +64,16 @@ class Day16(path: String = "day16/input") {
             val chunked = packets.chunked(5)
             val count = chunked.takeWhile { it[0] != '0' }.size + 1
             val value = chunked.subList(0, count).joinToString("") { it.substring(1) }.binToInt().toString()
-           return LiteralPacket(version,typeId,value)
+            return LiteralPacket(version, typeId, binaryMessage.length, value)
         }
 
         private fun parseOperatorPacket(version: Int, typeId: Int, binaryMessage: String): Packet {
-            TODO("Not yet implemented")
+            val packetsCount = binaryMessage[7] == '1'
+            val messageLengthBitCount = if (packetsCount) 11 else 15
+            val substring = binaryMessage.substring(8, 8 + messageLengthBitCount - 1)
+            val packetsSize = substring.binToInt()
+            println(packetsSize)
+            TODO()
         }
 
 
