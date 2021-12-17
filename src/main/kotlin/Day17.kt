@@ -8,7 +8,8 @@ class Day17(path: String = "day17/input") {
         return 0
     }
 
-    fun parse(): TargetArea {
+
+    fun parse(): Area {
         //target area: x=137..171, y=-98..-73
         val flatMap = inputData[0].replace("target area: x=", "")
             .replace("y=", "")
@@ -17,15 +18,36 @@ class Day17(path: String = "day17/input") {
             .map { it.trim() }
             .map { it.toInt() }
 
-        return TargetArea(flatMap[0], flatMap[1], flatMap[2], flatMap[3])
+        return Area(flatMap[0], flatMap[1], flatMap[2], flatMap[3])
     }
 
-    data class TargetArea(val x1: Int, val x2: Int, val y1: Int, val y2: Int)
+    data class Speed(val x: Int, val y: Int) {
+        fun Int.stepToZero() = if (this < 0) this + 1 else this - 1
+        fun step() = Speed(x.stepToZero(), y - 1)
+    }
 
-    data class TrickShot(val targetArea: TargetArea) {
+    data class Probe(val speed: Speed, val position: Point = Point(0, 0)) {
+        fun Int.stepToZero() = if (this < 0) this + 1 else this - 1
+        fun step() = Probe(speed.step(), position.copy(i = position.i + speed.x, j = position.j + speed.y))
+    }
+
+
+    data class TrickShot(val targetArea: Area) {
         fun high(): Int {
             println(targetArea)
+            var probe = Probe(Speed(7, 2))
+            (1..10).forEach {
+                val inArea = probe.position.inArea(targetArea)
+                if (inArea) {
+                    println("$it $probe in area $inArea")
+
+                }
+                println("$it $probe in area $inArea")
+                probe = probe.step()
+
+            }
             return 0
         }
     }
+
 }

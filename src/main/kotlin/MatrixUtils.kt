@@ -5,6 +5,8 @@ data class DataPoint(val i: Int, val j: Int, val value: Int) {
     fun point() = Point(i, j)
 }
 
+data class Area(val x1: Int, val x2: Int, val y1: Int, val y2: Int)
+
 private infix fun Int.progressTo(b: Int) = if (this < b) this..b else this downTo b
 data class Point(val i: Int, val j: Int) {
 
@@ -12,12 +14,16 @@ data class Point(val i: Int, val j: Int) {
     fun progressionX(p: Point) = i progressTo p.i
     fun progressionY(p: Point) = j progressTo p.j
 
-    fun aroundNoDiag(maxI:Int= Int.MAX_VALUE,maxJ:Int=Int.MAX_VALUE):List<Point> = listOf(
-        this.copy(i=i+1),
-        this.copy(i=i-1),
-        this.copy(j=j+1),
-        this.copy(j=j-1)
+    fun aroundNoDiag(maxI: Int = Int.MAX_VALUE, maxJ: Int = Int.MAX_VALUE): List<Point> = listOf(
+        this.copy(i = i + 1),
+        this.copy(i = i - 1),
+        this.copy(j = j + 1),
+        this.copy(j = j - 1)
     ).filter { it.i in 0 until maxI && it.j in 0 until maxJ }
+
+    fun inArea(area: Area): Boolean {
+        return i >= area.x1 && i <= area.x2 && j >= area.y1 && j <= area.y2
+    }
 }
 
 data class Matrix(private val oData: List<List<Int>>) {
@@ -79,12 +85,15 @@ data class Matrix(private val oData: List<List<Int>>) {
     fun set(p: Point, value: Int) {
         data[p.i][p.j] = value
     }
-    fun get(i:Int,j:Int):DataPoint {
-      return  DataPoint(i,j,data[i][j])
+
+    fun get(i: Int, j: Int): DataPoint {
+        return DataPoint(i, j, data[i][j])
     }
-    fun last():DataPoint{
-       return get(data.lastIndex, data[0].lastIndex)
+
+    fun last(): DataPoint {
+        return get(data.lastIndex, data[0].lastIndex)
     }
+
     fun incAll(points: List<Point>) {
         points.forEach {
             set(it, data[it.i][it.j] + 1)
@@ -98,6 +107,6 @@ data class Matrix(private val oData: List<List<Int>>) {
         )
     }
 
-    fun sizeX():Int= data.size
-    fun sizeY():Int= data[0].size
+    fun sizeX(): Int = data.size
+    fun sizeY(): Int = data[0].size
 }
