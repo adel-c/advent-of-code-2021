@@ -11,15 +11,9 @@ class Day17(path: String = "day17/input") {
         return TrickShot(parse()).distinct().toLong()
     }
 
-
     fun parse(): Area {
-        //target area: x=137..171, y=-98..-73
         val flatMap = inputData[0].replace("target area: x=", "")
-            .replace("y=", "")
-            .split(",")
-            .flatMap { it.split("..") }
-            .map { it.trim() }
-            .map { it.toInt() }
+            .replace("y=", "").split(",").flatMap { it.split("..") }.map { it.trim().toInt() }
 
         return Area(flatMap[0], flatMap[1], flatMap[2], flatMap[3])
     }
@@ -30,7 +24,7 @@ class Day17(path: String = "day17/input") {
     }
 
     data class Probe(val speed: Speed, val maxPosition: Int = 0, val position: Point = Point(0, 0)) {
-        fun step(): Probe {
+        private fun step(): Probe {
             val newJ = position.j + speed.y
             return Probe(
                 speed.step(),
@@ -39,14 +33,13 @@ class Day17(path: String = "day17/input") {
             )
         }
 
-        fun overShot(area: Area): Boolean {
-
+        private fun overShot(area: Area): Boolean {
             return position.i > area.x2 || position.j < area.y1
         }
 
         fun shootTo(area: Area): Probe {
             var lastProb = this
-            var previous :Probe
+            var previous: Probe
             do {
                 previous = lastProb
                 lastProb = lastProb.step()
@@ -60,11 +53,12 @@ class Day17(path: String = "day17/input") {
         fun distinct(): Int {
             return tryAll().map { it.first }.toSet().size
         }
+
         fun high(): Int {
-            return  tryAll().map {it.second}.maxOf { it.maxPosition }
+            return tryAll().map { it.second }.maxOf { it.maxPosition }
         }
 
-        private fun tryAll():Sequence<Pair<Speed,Probe>> = sequence {
+        private fun tryAll(): Sequence<Pair<Speed, Probe>> = sequence {
             (0..targetArea.x2).forEach { x ->
                 (targetArea.y1..targetArea.y1.absoluteValue).forEach { y ->
                     val shootTo = Probe(Speed(x, y)).shootTo(targetArea)
