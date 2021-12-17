@@ -72,33 +72,23 @@ class Day16(path: String = "day16/input") {
             val messageLengthBitCount = if (packetsCount) 11 else 15
             val headerPlusOperatorLength = 8 + messageLengthBitCount - 1
             val substring = binaryMessage.substring(8, headerPlusOperatorLength)
-            var packetsSize = substring.binToInt()
-            println(packetsSize)
+            val packetsSize = substring.binToInt()
             val subPacketsBinary = binaryMessage.substring(headerPlusOperatorLength)
-            if (!packetsCount) {
-                val subPacket = parseSubPackets(subPacketsBinary, packetsSize){it.length}
-                return OperatorPacket(
-                    version,
-                    typeId,
-                    8 + messageLengthBitCount + subPacket.sumOf { it.length },
-                    subPacket
-                )
-            }else{
-                val subPacket = parseSubPackets(subPacketsBinary, packetsSize){1}
-                return OperatorPacket(
-                    version,
-                    typeId,
-                    8 + messageLengthBitCount + subPacket.sumOf { it.length },
-                    subPacket
-                )
-            }
-            TODO()
+            val decrement: (p: Packet) -> Int = if (packetsCount) { _ -> 1 } else { p -> p.length }
+            val subPacket = parseSubPackets(subPacketsBinary, packetsSize,decrement)
+            return OperatorPacket(
+                version,
+                typeId,
+                8 + messageLengthBitCount + subPacket.sumOf { it.length },
+                subPacket
+            )
+
         }
 
         private fun parseSubPackets(
             binaryMessage: String,
             initialPacketsSize: Int,
-            packetSizeDec:(p:Packet)->Int
+            packetSizeDec: (p: Packet) -> Int
         ): MutableList<Packet> {
             var packetsSize = initialPacketsSize
             var subBinary = binaryMessage
