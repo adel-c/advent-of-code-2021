@@ -3,7 +3,6 @@ class Day16(path: String = "day16/input") {
 
 
     fun compute(): Int {
-        println(hexToBin(inputData[0]))
         return PacketParser(hexToBin(inputData[0])).count()
     }
 
@@ -64,7 +63,6 @@ class Day16(path: String = "day16/input") {
         fun count(): Int {
 
             val packet = parse()
-            println("${packet.version} ${packet.typeId}")
             return packet.versionCount()
         }
 

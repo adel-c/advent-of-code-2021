@@ -14,7 +14,7 @@ class Day16Test {
     fun parseOperator() {
 
         val day = Day16.PacketParser(Day16.hexToBin("38006F45291200"))
-        assertEquals(Day16.OperatorPacket(1,6, 50,listOf(
+        assertEquals(Day16.OperatorPacket(1,6, 49,listOf(
             Day16.LiteralPacket(6,4,11,"10"),
             Day16.LiteralPacket(2,4,16,"20")
         )), day.parse())
@@ -24,7 +24,7 @@ class Day16Test {
     fun parseOperator2() {
 
         val day = Day16.PacketParser(Day16.hexToBin("EE00D40C823060"))
-        assertEquals(Day16.OperatorPacket(7,3, 52,listOf(
+        assertEquals(Day16.OperatorPacket(7,3, 51,listOf(
             Day16.LiteralPacket(2,4,11,"1"),
             Day16.LiteralPacket(4,4,11,"2"),
             Day16.LiteralPacket(1,4,11,"3")
@@ -60,7 +60,7 @@ class Day16Test {
     @Test
     fun compute_should_be_X() {
         val day = Day16("day16/input")
-        assertEquals(0, day.compute())
+        assertEquals(920, day.compute())
     }
     @Test
     fun test2_compute_should_be_X() {
