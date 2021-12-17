@@ -69,7 +69,8 @@ class Day16(path: String = "day16/input") {
             val packets = binaryMessage.substring(6)
             val chunked = packets.chunked(5)
             val count = chunked.takeWhile { it[0] != '0' }.size + 1
-            val value = chunked.subList(0, count).joinToString("") { it.substring(1) }.binToInt().toString()
+            val literral = chunked.subList(0, count).joinToString("") { it.substring(1) }
+            val value = literral.toLong(2).toString()
             return LiteralPacket(version, typeId, (count * 5) + 6, value)
         }
 
@@ -99,13 +100,24 @@ class Day16(path: String = "day16/input") {
             var packetsSize = initialPacketsSize
             var subBinary = binaryMessage
             val subPacket = mutableListOf<Packet>()
-            while (packetsSize > 0) {
+            var packetShift=0
+            while (packetsSize > 0 && subBinary.length>packetShift+8) {
+                subBinary = subBinary.substring(packetShift)
                 val packet = PacketParser(
                     subBinary
                 ).parse()
-                subBinary = subBinary.substring(packet.length)
-                packetsSize -= packetSizeDec(packet)
-                subPacket.add(packet)
+                if(packet.length== -1){
+                    System.err.println("HAHAHAHAHA")
+                }
+                try{
+
+                    packetShift = packet.length
+                    packetsSize -= packetSizeDec(packet)
+                    subPacket.add(packet)
+                }catch (e:Exception){
+                    System.err.println("HAHAHAHAHA")
+                }
+
             }
             return subPacket
         }

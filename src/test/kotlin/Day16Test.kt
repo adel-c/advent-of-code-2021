@@ -31,11 +31,26 @@ class Day16Test {
         )), day.parse())
     }
     @Test
+    fun test_compute_should_be_16() {
+        val day = Day16.PacketParser(Day16.hexToBin("8A004A801A8002F478"))
+        assertEquals(16, day.count())
+    }
+
+    @Test
+    fun test_compute_should_be_12() {
+        val day = Day16.PacketParser(Day16.hexToBin("620080001611562C8802118E34"))
+        assertEquals(12, day.count())
+    }
+    @Test
+    fun test_compute_should_be_23() {
+        val day = Day16.PacketParser(Day16.hexToBin("C0015000016115A2E0802F182340"))
+        assertEquals(23, day.count())
+    }
+    @Test
     fun test_compute_should_be_31() {
         val day = Day16.PacketParser(Day16.hexToBin("A0016C880162017C3686B18A3D4780"))
         assertEquals(31, day.count())
     }
-
     @Test
     fun test_compute_should_be_X() {
         val day = Day16("day16/inputTest")
