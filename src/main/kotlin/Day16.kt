@@ -13,7 +13,9 @@ class Day16(path: String = "day16/input") {
 
     companion object {
         fun hexToBin(input: String): String {
-            return input.toCharArray().map { hexCharToBinary(it.toString()) }.joinToString("")
+            val joinToString = input.toCharArray().map { hexCharToBinary(it.toString()) }.joinToString("")
+            println(joinToString)
+            return joinToString
         }
 
         fun hexCharToBinary(hex: String): String {
@@ -23,9 +25,10 @@ class Day16(path: String = "day16/input") {
     }
 
 
-    open class Packet(open val version: Int, open val typeId: Int, open val length: Int){
-        open fun versionCount():Int = version
+    open class Packet(open val version: Int, open val typeId: Int, open val length: Int) {
+        open fun versionCount(): Int = version
     }
+
     data class LiteralPacket(
         override val version: Int,
         override val typeId: Int,
@@ -39,9 +42,9 @@ class Day16(path: String = "day16/input") {
         override val typeId: Int,
         override val length: Int,
         val subPacket: List<Packet>
-    ) : Packet(version, typeId, length){
+    ) : Packet(version, typeId, length) {
         override fun versionCount(): Int {
-            return  version + subPacket.sumOf { it.versionCount() }
+            return version + subPacket.sumOf { it.versionCount() }
         }
     }
 
@@ -78,15 +81,14 @@ class Day16(path: String = "day16/input") {
             val packetsCount = binaryMessage[6] == '1'
             val messageLengthBitCount = if (packetsCount) 11 else 15
             val headerPlusOperatorLength = 8 + messageLengthBitCount - 1
-            val substring = binaryMessage.substring(8, headerPlusOperatorLength)
-            val packetsSize = substring.binToInt()
+            val packetsSize = binaryMessage.substring(8, headerPlusOperatorLength).binToInt()
             val subPacketsBinary = binaryMessage.substring(headerPlusOperatorLength)
             val decrement: (p: Packet) -> Int = if (packetsCount) { _ -> 1 } else { p -> p.length }
-            val subPacket = parseSubPackets(subPacketsBinary, packetsSize,decrement)
+            val subPacket = parseSubPackets(subPacketsBinary, packetsSize, decrement)
             return OperatorPacket(
                 version,
                 typeId,
-                8 + messageLengthBitCount + subPacket.sumOf { it.length },
+                8 + messageLengthBitCount + subPacket.sumOf { it.length }-1,
                 subPacket
             )
 
@@ -100,23 +102,16 @@ class Day16(path: String = "day16/input") {
             var packetsSize = initialPacketsSize
             var subBinary = binaryMessage
             val subPacket = mutableListOf<Packet>()
-            var packetShift=0
-            while (packetsSize > 0 && subBinary.length>packetShift+8) {
+            var packetShift = 0
+            while (packetsSize > 0) {
                 subBinary = subBinary.substring(packetShift)
                 val packet = PacketParser(
                     subBinary
                 ).parse()
-                if(packet.length== -1){
-                    System.err.println("HAHAHAHAHA")
-                }
-                try{
+                packetShift = packet.length
+                packetsSize -= packetSizeDec(packet)
+                subPacket.add(packet)
 
-                    packetShift = packet.length
-                    packetsSize -= packetSizeDec(packet)
-                    subPacket.add(packet)
-                }catch (e:Exception){
-                    System.err.println("HAHAHAHAHA")
-                }
 
             }
             return subPacket
