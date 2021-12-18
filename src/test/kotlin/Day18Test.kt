@@ -70,14 +70,7 @@ class Day18Test {
 
     }
 
-    @Test
-    fun left() {
-        val day = Day18()
-        val init = day.numberParser("[[[[[9,8],1],2],3],4]") as Day18.SnailPair
 
-        val expected = day.numberParser("1")
-        assertEquals(expected, init.left4()!!)
-    }
 
     @Test
     fun testExplode() {

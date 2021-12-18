@@ -119,7 +119,7 @@ class Day18(path: String = "day18/input") {
         }
     }
 
-    class SnailNumber(val v: Int, parent_: SnailPair? = null) : SnailValue(parent_){
+    class SnailNumber(var v: Int, parent_: SnailPair? = null) : SnailValue(parent_){
         override fun toString(): String {
             return "$v"
         }
@@ -150,9 +150,31 @@ class Day18(path: String = "day18/input") {
         }
 
         fun explode() {
+            val firstLevel4 = this.firstLevel4()
+            if(firstLevel4 != null){
+                val leftValue = firstLevel4.firstLeftValue()
+                val rightValue = firstLevel4.firstRightValue()
 
+                if(leftValue!=null){
+                    leftValue.v=leftValue.v+(firstLevel4.left as SnailNumber).v
+                }
+                if(rightValue!=null){
+                    rightValue.v=rightValue.v+(firstLevel4.right as SnailNumber).v
+                }
+
+                firstLevel4.parent?.replaceBy(firstLevel4,SnailNumber(0,firstLevel4.parent))
+            }
         }
-
+        fun replaceBy(a:SnailValue,b:SnailValue){
+            if(right== a){
+                right=b
+                b.parent=this
+            }
+            if(left== a){
+                left=b
+                b.parent=this
+            }
+        }
         fun left4(): SnailValue? {
             TODO("Not yet implemented")
         }
