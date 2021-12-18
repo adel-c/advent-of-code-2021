@@ -22,7 +22,8 @@ class Day18T(path: String = "day18/input") {
             }
     }
     fun magnitude(v :List<SnailPair>):Long{
-        var p = sum(v)
+
+        var p = sum(v.map { numberParser(it.toString()) as SnailPair})
         return p.magnetude()
     }
 
