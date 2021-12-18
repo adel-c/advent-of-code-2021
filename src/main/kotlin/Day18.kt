@@ -14,6 +14,15 @@ class Day18(path: String = "day18/input") {
         if (number.isNumeric()) {
             return SnailNumber(number.toInt())
         }
+        val result = splitValues(number)
+        val tmp = SnailNumber(1)
+        val snailPair = SnailPair(tmp, tmp, parent)
+        snailPair.left = numberParser(result.first, snailPair)
+        snailPair.right = numberParser(result.second, snailPair)
+        return snailPair
+    }
+
+    private fun splitValues(number: String): Pair<String, String> {
         var level = 0
         var list = mutableListOf<Char>()
         var leftValue = ""
@@ -47,11 +56,8 @@ class Day18(path: String = "day18/input") {
 
             }
         }
-        val tmp = SnailNumber(1)
-        val snailPair = SnailPair(tmp, tmp, parent)
-        snailPair.left = numberParser(leftValue, snailPair)
-        snailPair.right = numberParser(rightValue, snailPair)
-        return snailPair
+        val result = Pair(leftValue, rightValue)
+        return result
     }
 
     open class SnailValue( open var parent: SnailPair? = null) {
