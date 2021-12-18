@@ -5,7 +5,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import kotlin.test.assertEquals
 
 
-class Day18Test {
+class Day18TTest {
 
     companion object {
         @JvmStatic
@@ -119,55 +119,65 @@ class Day18Test {
 
     }
 
-    @ParameterizedTest(name = "18 sum {index} {0}")
+    @ParameterizedTest(name = "18T sum {index}")
     @MethodSource("sumTestData")
     fun testSum(v1: String, v2: String, expected: String) {
-        val day = Day18()
-        val n1 = day.numberParser(v1) as Day18.SnailPair
-        val n2 = day.numberParser(v2) as Day18.SnailPair
+        val day = Day18T()
+        val n1 = day.numberParser(v1) as Day18T.SnailPair
+        val n2 = day.numberParser(v2) as Day18T.SnailPair
         val expected = day.numberParser(expected)
 
         val sum = day.sum(listOf(n1, n2))
         assertEquals(expected, sum)
     }
-    @ParameterizedTest(name = "{index} {0}   =  {1}")
+    @ParameterizedTest(name = "18T explode {index}")
     @MethodSource("explodeTestData")
     fun testExplode(v1: String, expected: String) {
-        val day = Day18()
-        val init = day.numberParser(v1) as Day18.SnailPair
+        val day = Day18T()
+        val init = day.numberParser(v1) as Day18T.SnailPair
         val result = init.explode()
         val expected = day.numberParser(expected)
-        assertEquals(expected, result)
+        assertEquals(expected, init)
     }
 
 
     @ParameterizedTest(name = "{index} {0}   =  {1}")
     @MethodSource("level4TestData")
     fun testLevel4(v1: String, expected: String) {
-        val day = Day18()
-        val init = day.numberParser(v1) as Day18.SnailPair
+        val day = Day18T()
+        val init = day.numberParser(v1) as Day18T.SnailPair
         val result = init.firstLevel4()
-        val expected = day.numberParser(expected) as Day18.SnailPair
+        val expected = day.numberParser(expected) as Day18T.SnailPair
         assertEquals(expected, result)
     }
 
 
     @Test
+    fun testSplit333() {
+        val day = Day18T()
+        val init = day.numberParser("[[[[[6,7],[6,7]],[[7,7],[0,7]]],[[[8,7],[7,7]],[[8,8],[8,0]]]],[[[[2,4],7],[6,[0,5]]],[[[6,8],[2,8]],[[2,1],[4,5]]]]]") as Day18T.SnailPair
+        val result = init.firstLevel4()!!
+        val expected = day.numberParser("[6,7]")
+        val firstLeftValue = result.firstRightValue()!!
+        assertEquals(expected, result)
+        assertEquals(expected.firstLeftValueDescend(), firstLeftValue)
+    }
+    @Test
     fun testSplit() {
-        val day = Day18()
-        val init = day.numberParser("[[[[0,7],4],[15,[0,13]]],[1,1]]") as Day18.SnailPair
+        val day = Day18T()
+        val init = day.numberParser("[[[[0,7],4],[15,[0,13]]],[1,1]]") as Day18T.SnailPair
         val result = init.split()
         val expected = day.numberParser("[[[[0,7],4],[[7,8],[0,13]]],[1,1]]")
-        assertEquals(expected, result)
+        assertEquals(expected, init)
     }
 
     @Test
     fun testSplit2() {
-        val day = Day18()
-        val init = day.numberParser("[[[[0,7],4],[[7,8],[0,13]]],[1,1]]") as Day18.SnailPair
+        val day = Day18T()
+        val init = day.numberParser("[[[[0,7],4],[[7,8],[0,13]]],[1,1]]") as Day18T.SnailPair
         val result = init.split()
         val expected = day.numberParser("[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]")
-        assertEquals(expected, result)
+        assertEquals(expected, init)
     }
 
 
@@ -176,61 +186,61 @@ class Day18Test {
 
     @Test
     fun test_compute_should_be_X() {
-        val day = Day18("day18/inputTest")
+        val day = Day18T("day18/inputTest")
         assertEquals(4140, day.compute())
     }
 
     @Test
     fun compute_should_be_X() {
-        val day = Day18("day18/input")
+        val day = Day18T("day18/input")
         assertEquals(4641, day.compute())
     }
 
     @Test
     fun test2_compute_should_be_X() {
-        val day = Day18("day18/inputTest")
+        val day = Day18T("day18/inputTest")
         assertEquals(3993, day.compute2())
     }
 
     @Test
     fun compute2_should_be_X() {
-        val day = Day18("day18/input")
+        val day = Day18T("day18/input")
         assertEquals(4624, day.compute2())
     }
 
 
     @Test
     fun parseSimplePair() {
-        val day = Day18()
-        assertEquals(Day18.SnailPair.of(1, 2), day.numberParser("[1,2]"))
+        val day = Day18T()
+        assertEquals(Day18T.SnailPair.of(1, 2), day.numberParser("[1,2]"))
     }
 
     @Test
     fun parseSimplePair2() {
-        val day = Day18()
+        val day = Day18T()
         val actual = day.numberParser("[[1,2],3]")
-        val expected = Day18.SnailPair(Day18.SnailPair.of(1, 2), Day18.SnailNumber(3))
+        val expected = Day18T.SnailPair(Day18T.SnailPair.of(1, 2), Day18T.SnailNumber(3))
         assertEquals(expected, actual)
     }
 
     @Test
     fun parseSimplePair3() {
-        val day = Day18()
+        val day = Day18T()
         assertEquals(
-            Day18.SnailPair(Day18.SnailPair.of(1, 9), Day18.SnailPair.of(8, 5)),
+            Day18T.SnailPair(Day18T.SnailPair.of(1, 9), Day18T.SnailPair.of(8, 5)),
             day.numberParser("[[1,9],[8,5]]")
         )
     }
 
     @Test
     fun parseSimplePair4() {
-        val day = Day18()
+        val day = Day18T()
         assertEquals(
-            Day18.SnailPair(
-                Day18.SnailPair(
-                    Day18.SnailPair(Day18.SnailPair.of(1, 2), Day18.SnailPair.of(3, 4)),
-                    Day18.SnailPair(Day18.SnailPair.of(5, 6), Day18.SnailPair.of(7, 8)),
-                ), Day18.SnailNumber(9)
+            Day18T.SnailPair(
+                Day18T.SnailPair(
+                    Day18T.SnailPair(Day18T.SnailPair.of(1, 2), Day18T.SnailPair.of(3, 4)),
+                    Day18T.SnailPair(Day18T.SnailPair.of(5, 6), Day18T.SnailPair.of(7, 8)),
+                ), Day18T.SnailNumber(9)
             ), day.numberParser("[[[[1,2],[3,4]],[[5,6],[7,8]]],9]")
         )
     }

@@ -14,11 +14,16 @@ class Day18T(path: String = "day18/input") {
     }
 
     fun compute2(): Long {
-        return 0
+        val map = inputData.filter { it.isNotBlank() }.map { numberParser(it) as SnailPair }
+
+        return permutations(map, length = 2)
+            .maxOf {
+                magnitude(it)
+            }
     }
     fun magnitude(v :List<SnailPair>):Long{
         var p = sum(v)
-        return 0
+        return p.magnetude()
     }
 
     fun sum(v: List<SnailPair>): SnailPair {
@@ -26,7 +31,10 @@ class Day18T(path: String = "day18/input") {
         for (s in v.drop(1)) {
             p = SnailPair(p, s)
             var action = false
+            var i =0
             do {
+                i++
+                //println("$i -> $p")
                 action = p.explode()
                 if(!action){
                     action=  p.split()
@@ -89,7 +97,13 @@ class Day18T(path: String = "day18/input") {
         return result
     }
 
-    open class SnailValue( var parent: SnailPair? = null) {
+    sealed abstract class SnailValue( var parent: SnailPair? = null) {
+        open fun magnetude():Long {
+            return when(this){
+                is SnailNumber -> v.toLong()
+                is SnailPair -> left.magnetude() * 3 + right.magnetude() *2
+            }
+        }
         open fun firstLevel(level: Int): SnailValue? {
             return null
         }
@@ -123,7 +137,7 @@ class Day18T(path: String = "day18/input") {
             }
         }
         fun firstLeftValue(): SnailNumber? {
-            return if(parent != null &&  parent?.left != this ){
+            return if(parent != null &&  parent?.left !== this ){
                 return if(parent?.left is SnailNumber) {
                     parent?.left as SnailNumber
                 } else{
@@ -135,7 +149,7 @@ class Day18T(path: String = "day18/input") {
             }
         }
         fun firstRightValue(): SnailNumber? {
-            return if(parent != null && parent?.right != this ){
+            return if(parent != null && parent?.right !== this ){
                 return if(parent?.right is SnailNumber) {
                     parent?.right as SnailNumber
                 } else{
@@ -213,11 +227,11 @@ class Day18T(path: String = "day18/input") {
             return false
         }
         fun replaceBy(a:SnailValue,b:SnailValue){
-            if(right== a){
+            if(right=== a){
                 right=b
                 b.parent=this
             }
-            if(left== a){
+            if(left=== a){
                 left=b
                 b.parent=this
             }
