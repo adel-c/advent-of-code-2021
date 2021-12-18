@@ -1,3 +1,4 @@
+import com.sun.org.apache.xpath.internal.operations.Bool
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -152,7 +153,7 @@ class Day18(path: String = "day18/input") {
             fun of(a: Int, b: Int) = SnailPair(SnailNumber(a), SnailNumber(b))
         }
 
-        fun split() {
+        fun split():Boolean {
             val firstMoreThan10 = firstMoreThan10()
             println(firstMoreThan10)
             if(firstMoreThan10 != null){
@@ -161,10 +162,12 @@ class Day18(path: String = "day18/input") {
                 val rightV=ceil(v/2.0).toInt()
                 val of = SnailPair.of(leftV, rightV)
                 firstMoreThan10.parent?.replaceBy(firstMoreThan10,of)
+                return true
             }
+            return false
         }
 
-        fun explode() {
+        fun explode():Boolean {
             val firstLevel4 = this.firstLevel4()
             if(firstLevel4 != null){
                 val leftValue = firstLevel4.firstLeftValue()
@@ -178,7 +181,9 @@ class Day18(path: String = "day18/input") {
                 }
 
                 firstLevel4.parent?.replaceBy(firstLevel4,SnailNumber(0,firstLevel4.parent))
+                return true
             }
+            return false
         }
         fun replaceBy(a:SnailValue,b:SnailValue){
             if(right== a){
