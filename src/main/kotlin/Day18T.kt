@@ -24,7 +24,7 @@ class Day18T(path: String = "day18/input") {
     fun magnitude(v :List<NodePair>):Long{
 
         var p = sum(v.map { numberParser(it.toString()) as NodePair})
-        return p.magnetude()
+        return p.magnitude()
     }
 
     fun sum(v: List<NodePair>): NodePair {
@@ -99,10 +99,10 @@ class Day18T(path: String = "day18/input") {
     }
 
     sealed class Node(var parent: NodePair? = null) {
-        open fun magnetude():Long {
+        open fun magnitude():Long {
             return when(this){
                 is Leaf -> v.toLong()
-                is NodePair -> left.magnetude() * 3 + right.magnetude() *2
+                is NodePair -> left.magnitude() * 3 + right.magnitude() *2
             }
         }
         open fun firstLevel(level: Int): Node? {

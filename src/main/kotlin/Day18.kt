@@ -24,7 +24,7 @@ class Day18(path: String = "day18/input") {
 
     fun magnitude(v: List<SnailPair>): Long {
         var p = sum(v)
-        return p.magnetude()
+        return p.magnitude()
     }
 
     fun sum(v: List<SnailPair>): SnailPair {
@@ -99,7 +99,7 @@ class Day18(path: String = "day18/input") {
     }
 
     open class SnailValue {
-        open fun magnetude() = 0L
+        open fun magnitude() = 0L
     }
 
     class SnailNumber(var v: Int) : SnailValue() {
@@ -107,7 +107,7 @@ class Day18(path: String = "day18/input") {
             return "$v"
         }
 
-        override fun magnetude() = v.toLong()
+        override fun magnitude() = v.toLong()
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
@@ -297,6 +297,6 @@ class Day18(path: String = "day18/input") {
             return result
         }
 
-        override fun magnetude() = 3 * left.magnetude() + 2 * right.magnetude()
+        override fun magnitude() = 3 * left.magnitude() + 2 * right.magnitude()
     }
 }
