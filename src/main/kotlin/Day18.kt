@@ -14,7 +14,12 @@ class Day18(path: String = "day18/input") {
     }
 
     fun compute2(): Long {
-        return 0
+        val map = inputData.filter { it.isNotBlank() }.map { numberParser(it) as SnailPair }
+
+        return permutations(map, length = 2)
+            .maxOf {
+                magnitude(it)
+            }
     }
 
     fun magnitude(v: List<SnailPair>): Long {
@@ -29,6 +34,8 @@ class Day18(path: String = "day18/input") {
             var action = false
             do {
                 val ora = p.toString()
+
+                val firstLevel4 = p.firstLevel4()
                 p = p.explode()
                 val ore = p.toString()
                 action = ora != ore
@@ -148,19 +155,22 @@ class Day18(path: String = "day18/input") {
             return day18.numberParser(pair) as SnailPair
         }
 
-        private fun level4Range(number: String): IntRange {
+        private fun level4Range(pair: String): IntRange {
+         return levelRange(pair,5)
+        }
+        private fun levelRange(pair: String,targetLevel:Int): IntRange {
             var level = 0
             var list = mutableListOf<Char>()
             var leftValue = ""
             var rightValue = ""
             var startIndex = -1
             var endIndex = -1
-            for (i in number.indices) {
-                val c: Char = number[i]
+            for (i in pair.indices) {
+                val c: Char = pair[i]
                 when (c) {
                     '[' -> {
                         level++
-                        if (level == 5) {
+                        if (level == targetLevel) {
                             startIndex = i
                             list.clear()
 
@@ -169,7 +179,7 @@ class Day18(path: String = "day18/input") {
                     }
                     ']' -> {
                         list.add(c)
-                        if (level == 5) {
+                        if (level == targetLevel) {
                             val inside = list.drop(1).dropLast(1)
 
                             val hasSubElement = inside.any { it == '[' || it == ']' } || list.isNotEmpty()
@@ -189,49 +199,65 @@ class Day18(path: String = "day18/input") {
             }
             return startIndex..endIndex
         }
-
-
+        fun IntRange.isValid()=start > -1 && last > -1
         fun explode(): SnailPair {
             val day18 = Day18()
 
             val pair = this.toString()
-            //val toRegex = "^(\\[[\\d,\\]]*){4}(\\[\\d+,\\d+])".toRegex()
-            val toRegex = "^(\\[[\\d,\\]]*){4,}?(\\[\\d+,\\d+])".toRegex()
-            val level4Range = level4Range(pair)
-            val matches = toRegex.find(pair)
-            if (level4Range.start > -1 && level4Range.last > -1) {
+            var range = level4Range(pair)
 
-                val range = level4Range
-                val v = pair.substring(level4Range)
-                val toExplode = day18.numberParser(v) as SnailPair
-                val leftAdd = (toExplode.left as SnailNumber).v
-                val rightAdd = (toExplode.right as SnailNumber).v
-                var leftSide = pair.substring(0, range.first)
-                val leftFirstDigitsRegExp = ".*(\\d+)".toRegex()
-                val leftDigits = leftFirstDigitsRegExp.find(leftSide)
-                if (leftDigits != null && leftDigits.groups.isNotEmpty()) {
-                    val digitToReplace = leftDigits.groups[1]!!
-                    val replaceBy = digitToReplace.value.toInt() + leftAdd
-                    leftSide = leftSide.substring(0, digitToReplace.range.first) + replaceBy + leftSide.substring(
-                        digitToReplace.range.last + 1
-                    )
-                }
-                var rightSide = pair.substring(range.last)
-                val rightFirstDigitsRegExp = "(\\d+)".toRegex()
-                val rightDigits = rightFirstDigitsRegExp.find(rightSide)
-                if (rightDigits != null && rightDigits.groups.isNotEmpty()) {
-                    val digitToReplace = rightDigits.groups[1]!!
-                    val replaceBy = digitToReplace.value.toInt() + rightAdd
-                    rightSide = rightSide.substring(1, digitToReplace.range.first) + replaceBy + rightSide.substring(
-                        digitToReplace.range.last + 1
-                    )
-                }
+            if (range.isValid()) {
 
-                val result = leftSide + "0" + rightSide
-                return day18.numberParser(result) as SnailPair
+                val snailPair = explodeInRange(range, pair)
+                return snailPair
 
             }
             return day18.numberParser(pair) as SnailPair
+        }
+    private fun leftDigits(s:String):IntRange{
+        var startIndex=-1
+        var endIndex=-1
+        for(i in s.length-1 downTo  0){
+            val c =s[i]
+            if(c.isDigit() && endIndex==-1){
+                endIndex=i
+            }
+            if(!c.isDigit() && endIndex!=-1){
+                startIndex=i+1
+                break
+            }
+        }
+        return startIndex .. endIndex
+    }
+        private fun explodeInRange(level4Range: IntRange, pair: String): SnailPair {
+            val day18 = Day18()
+            val range = level4Range
+            val v = pair.substring(level4Range)
+            val toExplode = day18.numberParser(v) as SnailPair
+            val leftAdd = (toExplode.left as SnailNumber).v
+            val rightAdd = (toExplode.right as SnailNumber).v
+            var leftSide = pair.substring(0, range.first)
+            val leftDigits1 = leftDigits(leftSide)
+            if (leftDigits1.isValid()) {
+                val replaceBy = leftSide.substring(leftDigits1).toInt() + leftAdd
+                leftSide = leftSide.substring(0, leftDigits1.first) + replaceBy + leftSide.substring(
+                    leftDigits1.last + 1
+                )
+            }
+            var rightSide = pair.substring(range.last)
+            val rightFirstDigitsRegExp = "(\\d+)".toRegex()
+            val rightDigits = rightFirstDigitsRegExp.find(rightSide)
+            if (rightDigits != null && rightDigits.groups.isNotEmpty()) {
+                val digitToReplace = rightDigits.groups[1]!!
+                val replaceBy = digitToReplace.value.toInt() + rightAdd
+                rightSide = rightSide.substring(1, digitToReplace.range.first) + replaceBy + rightSide.substring(
+                    digitToReplace.range.last + 1
+                )
+            }
+
+            val result = leftSide + "0" + rightSide
+            val snailPair = day18.numberParser(result) as SnailPair
+            return snailPair
         }
 
 

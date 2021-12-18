@@ -96,18 +96,12 @@ class Day18Test {
                 "[[[[[9,8],1],2],3],4]",
                 "[9,8]"
             ),
-            Arguments.of(
-                "[[[[6,0],[6,6]],[[6,7],[7,7]]],[[[7,7],[8,8]],[[8,8],[7,7]]]]",
-                "[6,6]"
-            ),
+
             Arguments.of(
                 "[[6,[5,[4,[3,2]]]],1]",
                 "[3,2]"
             ),
-            Arguments.of(//pas sur
-                "[[[[0,[[17,8],0]],[[[5,6],3],[0,6]]],[[[7,0],[6,6]],[[7,7],[0,9]]]],[6,[[[6,2],[5,6]],[[7,6],[4,7]]]]]",
-                "[17,8]"
-            ),
+
             Arguments.of(
                 "[7,[6,[5,[4,[3,2]]]]]",
                 "[3,2]"
@@ -158,13 +152,6 @@ class Day18Test {
     }
 
 
-
-
-
-
-
-
-
     @Test
     fun testSplit() {
         val day = Day18()
@@ -186,15 +173,6 @@ class Day18Test {
 
 
 
-
-    @Test
-    fun test_compute_should_sum() {
-        val day = Day18("day18/inputTest")
-        val v = day.parsedData()
-        val sum = day.sum(v)
-        val exprected = day.numberParser("[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]")
-        assertEquals(exprected, sum)
-    }
 
     @Test
     fun test_compute_should_be_X() {
