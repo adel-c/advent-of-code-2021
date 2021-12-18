@@ -50,11 +50,40 @@ class Day18(path: String = "day18/input") {
        return SnailPair(numberParser(leftValue),numberParser(rightValue))
     }
 
-    open class SnailValue()
+    open class SnailValue(){
+        open fun firstLevel(level:Int): SnailValue? {
+            return null
+        }
+    }
     data class SnailNumber(val v: Int) : SnailValue()
-    data class SnailPair(val right: SnailValue, val left: SnailValue) : SnailValue() {
+    data class SnailPair(var right: SnailValue, var left: SnailValue) : SnailValue() {
         companion object {
             fun of(a: Int, b: Int) = SnailPair(SnailNumber(a), SnailNumber(b))
+        }
+
+        fun explode(){
+
+        }
+
+        fun firstLevel4(): SnailPair? {
+            val firstLevel = firstLevel(4)
+            if(firstLevel != null && firstLevel is SnailPair){
+                return firstLevel
+            }
+            return null
+        }
+        override fun firstLevel(level:Int): SnailValue? {
+           if(level == 1){
+               if(right is SnailPair){
+                  return right
+               }
+               if(left is SnailPair){
+                   return left
+               }
+           }else{
+                   return right.firstLevel(level-1)?:left.firstLevel(level-1)
+           }
+           return null
         }
     }
 }

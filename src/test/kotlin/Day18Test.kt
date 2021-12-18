@@ -18,7 +18,23 @@ class Day18Test {
         val day = Day18()
         assertEquals(Day18.SnailPair(Day18.SnailPair.of(1,9), Day18.SnailPair.of(8,5)), day.numberParser("[[1,9],[8,5]]"))
     }
+    @Test
+    fun testHas4Level() {
+        val day = Day18()
+        val init = day.numberParser("[[[[[9,8],1],2],3],4]") as Day18.SnailPair
 
+        val expected = day.numberParser("[9,8]")
+        assertEquals(expected, init.firstLevel4()!!)
+    }
+
+    @Test
+    fun testExplode() {
+        val day = Day18()
+        val init = day.numberParser("[[[[[9,8],1],2],3],4]") as Day18.SnailPair
+        init.explode()
+        val expected = day.numberParser("[[[[0,9],2],3],4]")
+        assertEquals(expected, init)
+    }
     @Test
     fun parseSimplePair4() {
         val day = Day18()
