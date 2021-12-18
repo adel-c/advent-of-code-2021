@@ -1,8 +1,40 @@
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import kotlin.test.assertEquals
 
 
 class Day18Test {
+
+    companion object {
+        @JvmStatic
+        fun testData() = listOf(
+            Arguments.of("[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]","[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]","[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]"),
+            Arguments.of("[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]","[[2,[[0,8],[3,4]]],[[[6,7],1],[7,[1,6]]]]","[[[[6,7],[6,7]],[[7,7],[0,7]]],[[[8,7],[7,7]],[[8,8],[8,0]]]]"),
+            Arguments.of("[[[[6,7],[6,7]],[[7,7],[0,7]]],[[[8,7],[7,7]],[[8,8],[8,0]]]]","[[[[2,4],7],[6,[0,5]]],[[[6,8],[2,8]],[[2,1],[4,5]]]]","[[[[7,0],[7,7]],[[7,7],[7,8]]],[[[7,7],[8,8]],[[7,7],[8,7]]]]"),
+            Arguments.of("[[[[7,0],[7,7]],[[7,7],[7,8]]],[[[7,7],[8,8]],[[7,7],[8,7]]]]","[7,[5,[[3,8],[1,4]]]]","[[[[7,7],[7,8]],[[9,5],[8,7]]],[[[6,8],[0,8]],[[9,9],[9,0]]]]"),
+            Arguments.of("[[[[7,7],[7,8]],[[9,5],[8,7]]],[[[6,8],[0,8]],[[9,9],[9,0]]]]","[[2,[2,2]],[8,[8,1]]]","[[[[6,6],[6,6]],[[6,0],[6,7]]],[[[7,7],[8,9]],[8,[8,1]]]]"),
+            Arguments.of("[[[[6,6],[6,6]],[[6,0],[6,7]]],[[[7,7],[8,9]],[8,[8,1]]]]","[2,9]","[[[[6,6],[7,7]],[[0,7],[7,7]]],[[[5,5],[5,6]],9]]"),
+            Arguments.of("[[[[6,6],[7,7]],[[0,7],[7,7]]],[[[5,5],[5,6]],9]]","[1,[[[9,3],9],[[9,0],[0,7]]]]","[[[[7,8],[6,7]],[[6,8],[0,8]]],[[[7,7],[5,0]],[[5,5],[5,6]]]]"),
+            Arguments.of("[[[[7,8],[6,7]],[[6,8],[0,8]]],[[[7,7],[5,0]],[[5,5],[5,6]]]]","[[[5,[7,4]],7],1]","[[[[7,7],[7,7]],[[8,7],[8,7]]],[[[7,0],[7,7]],9]]"),
+            Arguments.of("[[[[7,7],[7,7]],[[8,7],[8,7]]],[[[7,0],[7,7]],9]]","[[[[4,2],2],6],[8,7]]","[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]"),
+            )
+
+    }
+
+    @ParameterizedTest(name = "{index} {0}  {1}  =  {0}")
+    @MethodSource("testData")
+    fun testSum(v1:String, v2: String, expected: String) {
+        val day = Day18()
+        val n1 = day.numberParser(v1) as Day18.SnailPair
+        val n2 = day.numberParser(v2)as Day18.SnailPair
+        val expected = day.numberParser(expected)
+
+        val sum = day.sum(listOf(n1, n2))
+        assertEquals(expected, sum)
+    }
+
     @Test
     fun parseSimplePair() {
         val day = Day18()
@@ -26,6 +58,14 @@ class Day18Test {
         val init = day.numberParser("[[[[[9,8],1],2],3],4]") as Day18.SnailPair
 
         val expected = day.numberParser("[9,8]")
+        assertEquals(expected, init.firstLevel4()!!)
+    }
+    @Test
+    fun XXXX() {
+        val day = Day18()
+        val init = day.numberParser("[[[[0,[[17,8],0]],[[[5,6],3],[0,6]]],[[[7,0],[6,6]],[[7,7],[0,9]]]],[6,[[[6,2],[5,6]],[[7,6],[4,7]]]]]") as Day18.SnailPair
+
+        val expected = day.numberParser("[17,8]")
         assertEquals(expected, init.firstLevel4()!!)
     }
 
@@ -104,12 +144,13 @@ class Day18Test {
             Day18.SnailPair(Day18.SnailPair.of(5,6), Day18.SnailPair.of(7,8)),
         ), Day18.SnailNumber(9)), day.numberParser("[[[[1,2],[3,4]],[[5,6],[7,8]]],9]"))
     }
+
     @Test
     fun test_compute_should_sum() {
         val day = Day18("day18/inputTest")
         val v = day.parsedData()
         val sum = day.sum(v)
-        val exprected = day.numberParser("[[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]")
+        val exprected = day.numberParser("[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]")
         assertEquals(exprected, sum)
     }
 

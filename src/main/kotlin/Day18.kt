@@ -27,13 +27,12 @@ class Day18(path: String = "day18/input") {
             p = SnailPair(p, s)
             var action = false
             do {
-                action = p.explode()
-                if (action) {
-                    continue
-                }
-                action = p.split()
+              action = p.explode()
+              if(!action){
+                action=  p.split()
+              }
+            }while (action)
 
-            } while (action)
         }
         return p
     }
@@ -199,6 +198,9 @@ class Day18(path: String = "day18/input") {
                 val rightValue = firstLevel4.firstRightValue()
 
                 if(leftValue!=null){
+                    if(firstLevel4.left.javaClass.name.contains("Pair")){
+                        System.err.println("AZOIEIOAZOIEAZOIEAOIZE")
+                    }
                     leftValue.v=leftValue.v+(firstLevel4.left as SnailNumber).v
                 }
                 if(rightValue!=null){
@@ -256,10 +258,10 @@ class Day18(path: String = "day18/input") {
 
         override fun firstLevel(level: Int): SnailValue? {
             if (level == 1) {
-                if (left is SnailPair) {
+                if (left is SnailPair && (left as SnailPair).onlyLeaf()) {
                     return left
                 }
-                if (right is SnailPair) {
+                if (right is SnailPair  && (right as SnailPair).onlyLeaf()) {
                     return right
                 }
 
@@ -268,7 +270,7 @@ class Day18(path: String = "day18/input") {
             }
             return null
         }
-
+        fun onlyLeaf():Boolean = right is SnailNumber && left is SnailNumber
         override fun toString(): String {
             return "[$left,$right]"
         }
