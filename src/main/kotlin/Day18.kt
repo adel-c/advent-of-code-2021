@@ -60,7 +60,7 @@ class Day18(path: String = "day18/input") {
         return result
     }
 
-    open class SnailValue( open var parent: SnailPair? = null) {
+    open class SnailValue( var parent: SnailPair? = null) {
         open fun firstLevel(level: Int): SnailValue? {
             return null
         }
@@ -70,13 +70,32 @@ class Day18(path: String = "day18/input") {
         }
     }
 
-    data class SnailNumber(val v: Int, override var parent: SnailPair? = null) : SnailValue(parent){
+    class SnailNumber(val v: Int, parent_: SnailPair? = null) : SnailValue(parent_){
         override fun toString(): String {
             return "$v"
         }
-    }
-    data class SnailPair( var left: SnailValue,var right: SnailValue, override var parent: SnailPair? = null) : SnailValue(parent) {
 
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as SnailNumber
+
+            if (v != other.v) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return v
+        }
+
+    }
+    class SnailPair( var left: SnailValue,var right: SnailValue,  parent_: SnailPair? = null) : SnailValue(parent_) {
+        init {
+            left.parent = this
+            right.parent = this
+        }
         companion object {
             fun of(a: Int, b: Int) = SnailPair(SnailNumber(a), SnailNumber(b))
         }
@@ -114,5 +133,24 @@ class Day18(path: String = "day18/input") {
         override fun toString(): String {
             return "[$left,$right]"
         }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as SnailPair
+
+            if (left != other.left) return false
+            if (right != other.right) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = left.hashCode()
+            result = 31 * result + right.hashCode()
+            return result
+        }
+
     }
 }
