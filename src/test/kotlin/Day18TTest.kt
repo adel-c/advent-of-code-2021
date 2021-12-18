@@ -123,8 +123,8 @@ class Day18TTest {
     @MethodSource("sumTestData")
     fun testSum(v1: String, v2: String, expected: String) {
         val day = Day18T()
-        val n1 = day.numberParser(v1) as Day18T.SnailPair
-        val n2 = day.numberParser(v2) as Day18T.SnailPair
+        val n1 = day.numberParser(v1) as Day18T.NodePair
+        val n2 = day.numberParser(v2) as Day18T.NodePair
         val expected = day.numberParser(expected)
 
         val sum = day.sum(listOf(n1, n2))
@@ -134,7 +134,7 @@ class Day18TTest {
     @MethodSource("explodeTestData")
     fun testExplode(v1: String, expected: String) {
         val day = Day18T()
-        val init = day.numberParser(v1) as Day18T.SnailPair
+        val init = day.numberParser(v1) as Day18T.NodePair
         val result = init.explode()
         val expected = day.numberParser(expected)
         assertEquals(expected, init)
@@ -145,9 +145,9 @@ class Day18TTest {
     @MethodSource("level4TestData")
     fun testLevel4(v1: String, expected: String) {
         val day = Day18T()
-        val init = day.numberParser(v1) as Day18T.SnailPair
+        val init = day.numberParser(v1) as Day18T.NodePair
         val result = init.firstLevel4()
-        val expected = day.numberParser(expected) as Day18T.SnailPair
+        val expected = day.numberParser(expected) as Day18T.NodePair
         assertEquals(expected, result)
     }
 
@@ -155,7 +155,7 @@ class Day18TTest {
     @Test
     fun testSplit333() {
         val day = Day18T()
-        val init = day.numberParser("[[[[[6,7],[6,7]],[[7,7],[0,7]]],[[[8,7],[7,7]],[[8,8],[8,0]]]],[[[[2,4],7],[6,[0,5]]],[[[6,8],[2,8]],[[2,1],[4,5]]]]]") as Day18T.SnailPair
+        val init = day.numberParser("[[[[[6,7],[6,7]],[[7,7],[0,7]]],[[[8,7],[7,7]],[[8,8],[8,0]]]],[[[[2,4],7],[6,[0,5]]],[[[6,8],[2,8]],[[2,1],[4,5]]]]]") as Day18T.NodePair
         val result = init.firstLevel4()!!
         val expected = day.numberParser("[6,7]")
         val firstLeftValue = result.firstRightValue()!!
@@ -165,7 +165,7 @@ class Day18TTest {
     @Test
     fun testSplit() {
         val day = Day18T()
-        val init = day.numberParser("[[[[0,7],4],[15,[0,13]]],[1,1]]") as Day18T.SnailPair
+        val init = day.numberParser("[[[[0,7],4],[15,[0,13]]],[1,1]]") as Day18T.NodePair
         val result = init.split()
         val expected = day.numberParser("[[[[0,7],4],[[7,8],[0,13]]],[1,1]]")
         assertEquals(expected, init)
@@ -174,7 +174,7 @@ class Day18TTest {
     @Test
     fun testSplit2() {
         val day = Day18T()
-        val init = day.numberParser("[[[[0,7],4],[[7,8],[0,13]]],[1,1]]") as Day18T.SnailPair
+        val init = day.numberParser("[[[[0,7],4],[[7,8],[0,13]]],[1,1]]") as Day18T.NodePair
         val result = init.split()
         val expected = day.numberParser("[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]")
         assertEquals(expected, init)
@@ -212,14 +212,14 @@ class Day18TTest {
     @Test
     fun parseSimplePair() {
         val day = Day18T()
-        assertEquals(Day18T.SnailPair.of(1, 2), day.numberParser("[1,2]"))
+        assertEquals(Day18T.NodePair.of(1, 2), day.numberParser("[1,2]"))
     }
 
     @Test
     fun parseSimplePair2() {
         val day = Day18T()
         val actual = day.numberParser("[[1,2],3]")
-        val expected = Day18T.SnailPair(Day18T.SnailPair.of(1, 2), Day18T.SnailNumber(3))
+        val expected = Day18T.NodePair(Day18T.NodePair.of(1, 2), Day18T.Leaf(3))
         assertEquals(expected, actual)
     }
 
@@ -227,7 +227,7 @@ class Day18TTest {
     fun parseSimplePair3() {
         val day = Day18T()
         assertEquals(
-            Day18T.SnailPair(Day18T.SnailPair.of(1, 9), Day18T.SnailPair.of(8, 5)),
+            Day18T.NodePair(Day18T.NodePair.of(1, 9), Day18T.NodePair.of(8, 5)),
             day.numberParser("[[1,9],[8,5]]")
         )
     }
@@ -236,11 +236,11 @@ class Day18TTest {
     fun parseSimplePair4() {
         val day = Day18T()
         assertEquals(
-            Day18T.SnailPair(
-                Day18T.SnailPair(
-                    Day18T.SnailPair(Day18T.SnailPair.of(1, 2), Day18T.SnailPair.of(3, 4)),
-                    Day18T.SnailPair(Day18T.SnailPair.of(5, 6), Day18T.SnailPair.of(7, 8)),
-                ), Day18T.SnailNumber(9)
+            Day18T.NodePair(
+                Day18T.NodePair(
+                    Day18T.NodePair(Day18T.NodePair.of(1, 2), Day18T.NodePair.of(3, 4)),
+                    Day18T.NodePair(Day18T.NodePair.of(5, 6), Day18T.NodePair.of(7, 8)),
+                ), Day18T.Leaf(9)
             ), day.numberParser("[[[[1,2],[3,4]],[[5,6],[7,8]]],9]")
         )
     }

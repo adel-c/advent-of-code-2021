@@ -8,29 +8,29 @@ class Day18T(path: String = "day18/input") {
         return magnitude(map)
     }
 
-    fun parsedData(): List<SnailPair> {
-        val map = inputData.filter { it.isNotBlank() }.map { numberParser(it) as SnailPair }
+    fun parsedData(): List<NodePair> {
+        val map = inputData.filter { it.isNotBlank() }.map { numberParser(it) as NodePair }
         return map
     }
 
     fun compute2(): Long {
-        val map = inputData.filter { it.isNotBlank() }.map { numberParser(it) as SnailPair }
+        val map = inputData.filter { it.isNotBlank() }.map { numberParser(it) as NodePair }
 
         return permutations(map, length = 2)
             .maxOf {
                 magnitude(it)
             }
     }
-    fun magnitude(v :List<SnailPair>):Long{
+    fun magnitude(v :List<NodePair>):Long{
 
-        var p = sum(v.map { numberParser(it.toString()) as SnailPair})
+        var p = sum(v.map { numberParser(it.toString()) as NodePair})
         return p.magnetude()
     }
 
-    fun sum(v: List<SnailPair>): SnailPair {
+    fun sum(v: List<NodePair>): NodePair {
         var p = v.first()
         for (s in v.drop(1)) {
-            p = SnailPair(p, s)
+            p = NodePair(p, s)
             var action = false
             var i =0
             do {
@@ -48,16 +48,16 @@ class Day18T(path: String = "day18/input") {
 
     fun String.isNumeric() = this.toIntOrNull() != null
 
-    fun numberParser(number: String, parent: SnailPair? = null): SnailValue {
+    fun numberParser(number: String, parent: NodePair? = null): Node {
         if (number.isNumeric()) {
-            return SnailNumber(number.toInt(),parent)
+            return Leaf(number.toInt(),parent)
         }
         val result = splitValues(number)
-        val tmp = SnailNumber(1)
-        val snailPair = SnailPair(tmp, tmp, parent)
-        snailPair.left = numberParser(result.first, snailPair)
-        snailPair.right = numberParser(result.second, snailPair)
-        return snailPair
+        val tmp = Leaf(1)
+        val nodePair = NodePair(tmp, tmp, parent)
+        nodePair.left = numberParser(result.first, nodePair)
+        nodePair.right = numberParser(result.second, nodePair)
+        return nodePair
     }
 
     private fun splitValues(number: String): Pair<String, String> {
@@ -98,25 +98,25 @@ class Day18T(path: String = "day18/input") {
         return result
     }
 
-    sealed abstract class SnailValue( var parent: SnailPair? = null) {
+    sealed class Node(var parent: NodePair? = null) {
         open fun magnetude():Long {
             return when(this){
-                is SnailNumber -> v.toLong()
-                is SnailPair -> left.magnetude() * 3 + right.magnetude() *2
+                is Leaf -> v.toLong()
+                is NodePair -> left.magnetude() * 3 + right.magnetude() *2
             }
         }
-        open fun firstLevel(level: Int): SnailValue? {
+        open fun firstLevel(level: Int): Node? {
             return null
         }
 
         override fun toString(): String {
             return ""
         }
-        fun firstLeftValueDescend(): SnailNumber? {
+        fun firstLeftValueDescend(): Leaf? {
 
-            return if(this is SnailPair){
-                return if(left is SnailNumber){
-                    left as SnailNumber
+            return if(this is NodePair){
+                return if(left is Leaf){
+                    left as Leaf
                 }else{
                     left.firstLeftValueDescend()
                 }
@@ -125,10 +125,10 @@ class Day18T(path: String = "day18/input") {
                 null
             }
         }
-        fun firstRightValueDescend(): SnailNumber? {
-            return if(this is SnailPair){
-                return if(right is SnailNumber){
-                    right as SnailNumber
+        fun firstRightValueDescend(): Leaf? {
+            return if(this is NodePair){
+                return if(right is Leaf){
+                    right as Leaf
                 }else{
                     right.firstRightValueDescend()
                 }
@@ -137,10 +137,10 @@ class Day18T(path: String = "day18/input") {
                 null
             }
         }
-        fun firstLeftValue(): SnailNumber? {
+        fun firstLeftValue(): Leaf? {
             return if(parent != null &&  parent?.left !== this ){
-                return if(parent?.left is SnailNumber) {
-                    parent?.left as SnailNumber
+                return if(parent?.left is Leaf) {
+                    parent?.left as Leaf
                 } else{
                     this.parent?.left?.firstRightValueDescend()
                 }
@@ -149,10 +149,10 @@ class Day18T(path: String = "day18/input") {
                 this.parent?.firstLeftValue()
             }
         }
-        fun firstRightValue(): SnailNumber? {
+        fun firstRightValue(): Leaf? {
             return if(parent != null && parent?.right !== this ){
-                return if(parent?.right is SnailNumber) {
-                    parent?.right as SnailNumber
+                return if(parent?.right is Leaf) {
+                    parent?.right as Leaf
                 } else{
                     this.parent?.right?.firstLeftValueDescend()
                 }
@@ -163,7 +163,7 @@ class Day18T(path: String = "day18/input") {
         }
     }
 
-    class SnailNumber(var v: Int, parent_: SnailPair? = null) : SnailValue(parent_){
+    class Leaf(var v: Int, parent_: NodePair? = null) : Node(parent_){
         override fun toString(): String {
             return "$v"
         }
@@ -172,7 +172,7 @@ class Day18T(path: String = "day18/input") {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
 
-            other as SnailNumber
+            other as Leaf
 
             if (v != other.v) return false
 
@@ -184,13 +184,13 @@ class Day18T(path: String = "day18/input") {
         }
 
     }
-    class SnailPair( var left: SnailValue,var right: SnailValue,  parent_: SnailPair? = null) : SnailValue(parent_) {
+    class NodePair(var left: Node, var right: Node, parent_: NodePair? = null) : Node(parent_) {
         init {
             left.parent = this
             right.parent = this
         }
         companion object {
-            fun of(a: Int, b: Int) = SnailPair(SnailNumber(a), SnailNumber(b))
+            fun of(a: Int, b: Int) = NodePair(Leaf(a), Leaf(b))
         }
 
         fun split():Boolean {
@@ -199,7 +199,7 @@ class Day18T(path: String = "day18/input") {
                 val v = firstMoreThan10.v
                 val leftV = floor(v/2.0).toInt()
                 val rightV=ceil(v/2.0).toInt()
-                val of = SnailPair.of(leftV, rightV)
+                val of = NodePair.of(leftV, rightV)
                 firstMoreThan10.parent?.replaceBy(firstMoreThan10,of)
                 return true
             }
@@ -216,18 +216,18 @@ class Day18T(path: String = "day18/input") {
                     if(firstLevel4.left.javaClass.name.contains("Pair")){
                         System.err.println("AZOIEIOAZOIEAZOIEAOIZE")
                     }
-                    leftValue.v=leftValue.v+(firstLevel4.left as SnailNumber).v
+                    leftValue.v=leftValue.v+(firstLevel4.left as Leaf).v
                 }
                 if(rightValue!=null){
-                    rightValue.v=rightValue.v+(firstLevel4.right as SnailNumber).v
+                    rightValue.v=rightValue.v+(firstLevel4.right as Leaf).v
                 }
 
-                firstLevel4.parent?.replaceBy(firstLevel4,SnailNumber(0,firstLevel4.parent))
+                firstLevel4.parent?.replaceBy(firstLevel4,Leaf(0,firstLevel4.parent))
                 return true
             }
             return false
         }
-        fun replaceBy(a:SnailValue,b:SnailValue){
+        fun replaceBy(a:Node, b:Node){
             if(right=== a){
                 right=b
                 b.parent=this
@@ -239,21 +239,21 @@ class Day18T(path: String = "day18/input") {
         }
 
 
-        fun firstMoreThan10(): SnailNumber? {
-            if(left is SnailNumber && (left as SnailNumber).v >=10){
-                return left as SnailNumber
+        fun firstMoreThan10(): Leaf? {
+            if(left is Leaf && (left as Leaf).v >=10){
+                return left as Leaf
             }
-            if(left is SnailPair){
-                val firstMoreThan10 = (left as SnailPair).firstMoreThan10()
+            if(left is NodePair){
+                val firstMoreThan10 = (left as NodePair).firstMoreThan10()
                 if(firstMoreThan10 != null){
                     return firstMoreThan10
                 }
             }
-            if(right is SnailNumber && (right as SnailNumber).v >=10){
-                return right as SnailNumber
+            if(right is Leaf && (right as Leaf).v >=10){
+                return right as Leaf
             }
-            if (right is SnailPair ){
-                val firstMoreThan10 = (right as SnailPair).firstMoreThan10()
+            if (right is NodePair ){
+                val firstMoreThan10 = (right as NodePair).firstMoreThan10()
                 if(firstMoreThan10 != null){
                     return firstMoreThan10
                 }
@@ -263,20 +263,20 @@ class Day18T(path: String = "day18/input") {
         }
 
 
-        fun firstLevel4(): SnailPair? {
+        fun firstLevel4(): NodePair? {
             val firstLevel = firstLevel(4)
-            if (firstLevel != null && firstLevel is SnailPair) {
+            if (firstLevel != null && firstLevel is NodePair) {
                 return firstLevel
             }
             return null
         }
 
-        override fun firstLevel(level: Int): SnailValue? {
+        override fun firstLevel(level: Int): Node? {
             if (level == 1) {
-                if (left is SnailPair && (left as SnailPair).onlyLeaf()) {
+                if (left is NodePair && (left as NodePair).onlyLeaf()) {
                     return left
                 }
-                if (right is SnailPair  && (right as SnailPair).onlyLeaf()) {
+                if (right is NodePair  && (right as NodePair).onlyLeaf()) {
                     return right
                 }
 
@@ -285,7 +285,7 @@ class Day18T(path: String = "day18/input") {
             }
             return null
         }
-        fun onlyLeaf():Boolean = right is SnailNumber && left is SnailNumber
+        fun onlyLeaf():Boolean = right is Leaf && left is Leaf
         override fun toString(): String {
             return "[$left,$right]"
         }
@@ -294,7 +294,7 @@ class Day18T(path: String = "day18/input") {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
 
-            other as SnailPair
+            other as NodePair
 
             if (left != other.left) return false
             if (right != other.right) return false
