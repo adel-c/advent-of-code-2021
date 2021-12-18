@@ -1,15 +1,41 @@
-import com.sun.org.apache.xpath.internal.operations.Bool
 import kotlin.math.ceil
 import kotlin.math.floor
 
 class Day18(path: String = "day18/input") {
     private val inputData: List<String> = path.fromResource().readLines()
     fun compute(): Long {
-        return 0
+        val map = parsedData()
+        return magnitude(map)
+    }
+
+    fun parsedData(): List<SnailPair> {
+        val map = inputData.filter { it.isNotBlank() }.map { numberParser(it) as SnailPair }
+        return map
     }
 
     fun compute2(): Long {
         return 0
+    }
+    fun magnitude(v :List<SnailPair>):Long{
+        var p = sum(v)
+        return 0
+    }
+
+    fun sum(v: List<SnailPair>): SnailPair {
+        var p = v.first()
+        for (s in v.drop(1)) {
+            p = SnailPair(p, s)
+            var action = false
+            do {
+                action = p.explode()
+                if (action) {
+                    continue
+                }
+                action = p.split()
+
+            } while (action)
+        }
+        return p
     }
 
     fun String.isNumeric() = this.toIntOrNull() != null
@@ -155,7 +181,6 @@ class Day18(path: String = "day18/input") {
 
         fun split():Boolean {
             val firstMoreThan10 = firstMoreThan10()
-            println(firstMoreThan10)
             if(firstMoreThan10 != null){
                 val v = firstMoreThan10.v
                 val leftV = floor(v/2.0).toInt()

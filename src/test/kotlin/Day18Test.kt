@@ -104,6 +104,14 @@ class Day18Test {
             Day18.SnailPair(Day18.SnailPair.of(5,6), Day18.SnailPair.of(7,8)),
         ), Day18.SnailNumber(9)), day.numberParser("[[[[1,2],[3,4]],[[5,6],[7,8]]],9]"))
     }
+    @Test
+    fun test_compute_should_sum() {
+        val day = Day18("day18/inputTest")
+        val v = day.parsedData()
+        val sum = day.sum(v)
+        val exprected = day.numberParser("[[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]")
+        assertEquals(exprected, sum)
+    }
 
     @Test
     fun test_compute_should_be_X() {
