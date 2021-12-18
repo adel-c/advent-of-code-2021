@@ -30,6 +30,47 @@ class Day18Test {
     }
 
     @Test
+    fun pairRight() {
+        val day = Day18()
+        val init = day.numberParser("[[[[[9,8],1],2],3],4]") as Day18.SnailPair
+
+        val expected = day.numberParser("[9,8]")
+        val firstLevel4 = init.firstLevel4()!!
+        assertEquals(Day18.SnailNumber(1), firstLevel4.firstRightValue())
+    }
+
+    @Test
+    fun pairLeft() {
+        val day = Day18()
+        val init = day.numberParser("[7,[6,[5,[4,[3,2]]]]]") as Day18.SnailPair
+
+        val firstLevel4 = init.firstLevel4()!!
+        assertEquals(Day18.SnailNumber(4), firstLevel4.firstLeftValue())
+    }
+    @Test
+    fun both() {
+        val day = Day18()
+        val init = day.numberParser("[[6,[5,[4,[3,2]]]],1]") as Day18.SnailPair
+
+        val firstLevel4 = init.firstLevel4()!!
+        assertEquals(Day18.SnailNumber(4), firstLevel4.firstLeftValue())
+        assertEquals(Day18.SnailNumber(1), firstLevel4.firstRightValue())
+
+    }
+
+    @Test
+    fun both2() {
+        val day = Day18()
+        val init = day.numberParser("[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]") as Day18.SnailPair
+
+        val firstLevel4 = init.firstLevel4()!!
+        assertEquals( day.numberParser("[7,3]"), firstLevel4)
+        assertEquals(Day18.SnailNumber(1), firstLevel4.firstLeftValue())
+        assertEquals(Day18.SnailNumber(6), firstLevel4.firstRightValue())
+
+    }
+
+    @Test
     fun left() {
         val day = Day18()
         val init = day.numberParser("[[[[[9,8],1],2],3],4]") as Day18.SnailPair

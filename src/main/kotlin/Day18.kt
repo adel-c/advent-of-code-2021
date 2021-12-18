@@ -68,6 +68,30 @@ class Day18(path: String = "day18/input") {
         override fun toString(): String {
             return ""
         }
+        fun firstLeftValue(): SnailNumber? {
+            return if(parent != null &&  parent?.left != this ){
+                return if(parent?.left is SnailNumber) {
+                    parent?.left as SnailNumber
+                } else{
+                    this.parent?.left?.firstRightValue()
+                }
+
+            }else{
+                this.parent?.firstLeftValue()
+            }
+        }
+        fun firstRightValue(): SnailNumber? {
+            return if(parent != null && parent?.right != this ){
+                return if(parent?.right is SnailNumber) {
+                    parent?.right as SnailNumber
+                } else{
+                    this.parent?.right?.firstLeftValue()
+                }
+
+            }else{
+                this.parent?.firstRightValue()
+            }
+        }
     }
 
     class SnailNumber(val v: Int, parent_: SnailPair? = null) : SnailValue(parent_){
@@ -118,14 +142,15 @@ class Day18(path: String = "day18/input") {
 
         override fun firstLevel(level: Int): SnailValue? {
             if (level == 1) {
-                if (right is SnailPair) {
-                    return right
-                }
                 if (left is SnailPair) {
                     return left
                 }
+                if (right is SnailPair) {
+                    return right
+                }
+
             } else {
-                return right.firstLevel(level - 1) ?: left.firstLevel(level - 1)
+                return  left.firstLevel(level - 1)?: right.firstLevel(level - 1)
             }
             return null
         }
@@ -151,6 +176,8 @@ class Day18(path: String = "day18/input") {
             result = 31 * result + right.hashCode()
             return result
         }
+
+
 
     }
 }
