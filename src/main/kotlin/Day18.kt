@@ -68,12 +68,37 @@ class Day18(path: String = "day18/input") {
         override fun toString(): String {
             return ""
         }
+        fun firstLeftValueDescend(): SnailNumber? {
+
+            return if(this is SnailPair){
+                return if(left is SnailNumber){
+                    left as SnailNumber
+                }else{
+                    left.firstLeftValueDescend()
+                }
+
+            }else{
+                null
+            }
+        }
+        fun firstRightValueDescend(): SnailNumber? {
+            return if(this is SnailPair){
+                return if(right is SnailNumber){
+                    right as SnailNumber
+                }else{
+                    right.firstRightValueDescend()
+                }
+
+            }else{
+                null
+            }
+        }
         fun firstLeftValue(): SnailNumber? {
             return if(parent != null &&  parent?.left != this ){
                 return if(parent?.left is SnailNumber) {
                     parent?.left as SnailNumber
                 } else{
-                    this.parent?.left?.firstRightValue()
+                    this.parent?.left?.firstRightValueDescend()
                 }
 
             }else{
@@ -85,7 +110,7 @@ class Day18(path: String = "day18/input") {
                 return if(parent?.right is SnailNumber) {
                     parent?.right as SnailNumber
                 } else{
-                    this.parent?.right?.firstLeftValue()
+                    this.parent?.right?.firstLeftValueDescend()
                 }
 
             }else{
