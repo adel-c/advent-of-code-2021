@@ -12,7 +12,8 @@ class Day18Test {
     fun parseSimplePair2() {
         val day = Day18()
         val actual = day.numberParser("[[1,2],3]")
-        assertEquals(Day18.SnailPair(Day18.SnailPair.of(1,2), Day18.SnailNumber(3)), actual)
+        val expected = Day18.SnailPair(Day18.SnailPair.of(1, 2), Day18.SnailNumber(3))
+        assertEquals(expected, actual)
     }
     @Test
     fun parseSimplePair3() {

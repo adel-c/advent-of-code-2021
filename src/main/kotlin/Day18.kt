@@ -12,7 +12,7 @@ class Day18(path: String = "day18/input") {
 
     fun numberParser(number: String, parent: SnailPair? = null): SnailValue {
         if (number.isNumeric()) {
-            return SnailNumber(number.toInt())
+            return SnailNumber(number.toInt(),parent)
         }
         val result = splitValues(number)
         val tmp = SnailNumber(1)
@@ -64,10 +64,19 @@ class Day18(path: String = "day18/input") {
         open fun firstLevel(level: Int): SnailValue? {
             return null
         }
+
+        override fun toString(): String {
+            return ""
+        }
     }
 
-    data class SnailNumber(val v: Int, override var parent: SnailPair? = null) : SnailValue(parent)
+    data class SnailNumber(val v: Int, override var parent: SnailPair? = null) : SnailValue(parent){
+        override fun toString(): String {
+            return "$v"
+        }
+    }
     data class SnailPair( var left: SnailValue,var right: SnailValue, override var parent: SnailPair? = null) : SnailValue(parent) {
+
         companion object {
             fun of(a: Int, b: Int) = SnailPair(SnailNumber(a), SnailNumber(b))
         }
@@ -102,5 +111,8 @@ class Day18(path: String = "day18/input") {
             return null
         }
 
+        override fun toString(): String {
+            return "[$left,$right]"
+        }
     }
 }
