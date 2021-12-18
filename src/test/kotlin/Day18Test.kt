@@ -70,7 +70,23 @@ class Day18Test {
 
     }
 
+    @Test
+    fun testSplit() {
+        val day = Day18()
+        val init = day.numberParser("[[[[0,7],4],[15,[0,13]]],[1,1]]") as Day18.SnailPair
+        init.split()
+        val expected = day.numberParser("[[[[0,7],4],[[7,8],[0,13]]],[1,1]]")
+        assertEquals(expected, init)
+    }
 
+    @Test
+    fun testSplit2() {
+        val day = Day18()
+        val init = day.numberParser("[[[[0,7],4],[[7,8],[0,13]]],[1,1]]") as Day18.SnailPair
+        init.split()
+        val expected = day.numberParser("[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]")
+        assertEquals(expected, init)
+    }
 
     @Test
     fun testExplode() {

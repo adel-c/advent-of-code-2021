@@ -1,3 +1,6 @@
+import kotlin.math.ceil
+import kotlin.math.floor
+
 class Day18(path: String = "day18/input") {
     private val inputData: List<String> = path.fromResource().readLines()
     fun compute(): Long {
@@ -149,6 +152,18 @@ class Day18(path: String = "day18/input") {
             fun of(a: Int, b: Int) = SnailPair(SnailNumber(a), SnailNumber(b))
         }
 
+        fun split() {
+            val firstMoreThan10 = firstMoreThan10()
+            println(firstMoreThan10)
+            if(firstMoreThan10 != null){
+                val v = firstMoreThan10.v
+                val leftV = floor(v/2.0).toInt()
+                val rightV=ceil(v/2.0).toInt()
+                val of = SnailPair.of(leftV, rightV)
+                firstMoreThan10.parent?.replaceBy(firstMoreThan10,of)
+            }
+        }
+
         fun explode() {
             val firstLevel4 = this.firstLevel4()
             if(firstLevel4 != null){
@@ -175,9 +190,31 @@ class Day18(path: String = "day18/input") {
                 b.parent=this
             }
         }
-        fun left4(): SnailValue? {
-            TODO("Not yet implemented")
+
+
+        fun firstMoreThan10(): SnailNumber? {
+            if(left is SnailNumber && (left as SnailNumber).v >=10){
+                return left as SnailNumber
+            }
+            if(left is SnailPair){
+                val firstMoreThan10 = (left as SnailPair).firstMoreThan10()
+                if(firstMoreThan10 != null){
+                    return firstMoreThan10
+                }
+            }
+            if(right is SnailNumber && (right as SnailNumber).v >=10){
+                return right as SnailNumber
+            }
+            if (right is SnailPair ){
+                val firstMoreThan10 = (right as SnailPair).firstMoreThan10()
+                if(firstMoreThan10 != null){
+                    return firstMoreThan10
+                }
+            }
+
+            return null
         }
+
 
         fun firstLevel4(): SnailPair? {
             val firstLevel = firstLevel(4)
