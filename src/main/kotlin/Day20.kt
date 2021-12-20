@@ -1,38 +1,91 @@
 class Day20(path: String = "day20/input") {
     private val inputData: List<String> = path.fromResource().readLines()
-    val dataLine = inputData[0].map { if (it == '#') 1 else 0 }
+    val dataLine: List<Int> = inputData[0].map { if (it == '#') 1 else 0 }
 
-    fun parseMatrix(): Matrix {
-        return Matrix(inputData.drop(1).filter(String::isNotBlank).map { l -> l.map { if (it == '#') 1 else 0 } })
+    fun parseMatrix(): Set<Point> {
+        return inputData.drop(1).filter(String::isNotBlank)
+            .flatMapIndexed { i, r ->
+                r.mapIndexed { j, c -> if (c == '#') Point(i, j) else Point(-1, -1) }.filter { it != Point(-1, -1) }
+            }.toSet()
     }
 
     fun compute(): Long {
-        println(dataLine)
-        var matrix = parseMatrix()
-        (0..2).forEach {
-            var temp = Matrix(matrix.data.map { it.toList() })
-            temp.map { dataPoint ->
-                val binValue =
-                    dataPoint.point().aroundMatrix().joinToString("") { matrix.getOrDefault(it, 0).value.toString() }
-                val index = binValue.toInt(2)
-                val newValue = dataLine[index]
-                newValue
+
+        var set = parseMatrix()
+        //print(set)
+        println("---------------")
+        repeat(2) {
+
+           val defautValue= if (it%2 ==0) {
+                dataLine[0].toString()
+            } else {
+               dataLine.last().toString()
             }
-            matrix = temp
+            set = step(set, dataLine,defautValue)
+            print(set)
+            println("---------------")
         }
-        matrix.print()
-        return matrix.eachData().filter { it.value ==1 }.count().toLong()
+        println(set)
+        return set.count().toLong()
+    }
+
+    fun step(points: Set<Point>, dataLine: List<Int>, defaultValue:String): Set<Point> {
+        val (minI, maxI) = points.map { it.i }.fold((Int.MAX_VALUE to Int.MIN_VALUE)) { acc, v -> v.minMax(acc) }
+        val (minJ, maxJ) = points.map { it.j }.fold((Int.MAX_VALUE to Int.MIN_VALUE)) { acc, v -> v.minMax(acc) }
+        val newSet = points.toMutableSet()
+        for (i in minI - 1..maxI +1) {
+            for (j in minJ - 1..maxJ +1) {
+                val currentPoint = Point(i, j)
+                val aroundMatrix = currentPoint.aroundMatrix()
+                val binValue =
+                    aroundMatrix.joinToString("") { p ->
+                        pixelValue(p, minI.. maxI, minJ .. maxJ, defaultValue, points)
+                    }
+                val dataIndex = binValue.toInt(2)
+                if (dataLine[dataIndex] == 1) {
+                    newSet.add(currentPoint)
+                }else{
+                    newSet.remove(currentPoint)
+                }
+
+            }
+        }
+        return newSet
+    }
+
+    private fun pixelValue(
+        p: Point,
+        iRange: IntRange,
+        jRange: IntRange,
+        defaultValue: String,
+        points: Set<Point>
+    ): String {
+        return if (p.i in iRange && p.j in jRange ) {
+            if (points.contains(p))  "1" else  "0"
+
+        } else defaultValue
     }
 
     fun compute2(): Long {
         return 0
     }
-    fun Matrix.print(){
-        val print = this.data.joinToString("\n") { line ->
-            line.map { if (it == 1) '#' else '.' }.joinToString("")
+
+    fun print(points:Set<Point>) {
+        val (minI, maxI) = points.map { it.i }.fold((Int.MAX_VALUE to Int.MIN_VALUE)) { acc, v -> v.minMax(acc) }
+        val (minJ, MaxJ) = points.map { it.j }.fold((Int.MAX_VALUE to Int.MIN_VALUE)) { acc, v -> v.minMax(acc) }
+        for (i in minI - 2..maxI + 2) {
+            for (j in minJ - 2..MaxJ + 2) {
+                if(points.contains(Point(i,j))){
+                    print("#")
+                }else{
+                    print(".")
+                }
+
+            }
+            println()
         }
-        println(print)
     }
+
     fun Point.aroundMatrix(): List<Point> =
         listOf(
             this.copy(i = i - 1, j = j - 1),
