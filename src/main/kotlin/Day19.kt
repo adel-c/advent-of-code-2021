@@ -1,104 +1,106 @@
-import kotlin.math.pow
-import kotlin.math.roundToInt
+import kotlin.math.absoluteValue
 
 class Day19(path: String = "day19/input") {
     private val inputData: List<String> = path.fromResource().readLines()
-    fun compute(): Long {
+    private val scanners: List<Set<Point3d>> = parseInput(path.fromResource().readText())
 
-        val parse = parse()
+    fun compute(): Int =
+        solve().beacons.size
 
-        println(parse)
-        val scanner1 = parse[0]
-        val scanner2 = parse[1]
-        val doubles = scanner1.relativeDistances() - scanner2.relativeDistances()
-        val size = doubles.size
-        println(size)
-        println(size > (12 * 13) / 2)
-        val listP = mutableListOf<Pair<Point3d, Point3d>>()
-        for (p1 in scanner1.points) {
-            val distances1 = (scanner1.points - p1).map { p1.distanceTo(it) }
+    fun compute2(): Int =
+        solve().scanners.pairs().maxOf { it.first distanceTo it.second }
 
-            for (p2 in scanner2.points) {
-
-                val distances2 = (scanner2.points - p2).map { p2.distanceTo(it) }
-                val doubles1 = distances1.toSet() - distances2.toSet()
-                //println("$p1 and $p2 have relate distance ${doubles1.size}")
-                if (doubles1.size < 15) {
-                    println("$p1 and $p2 have relate distance ${p1.distanceTo(p2)}")
-                    listP.add(p1 to p2)
+    private fun solve(): Solution {
+        val baseSector = scanners.first().toMutableSet()
+        val foundScanners = mutableSetOf(Point3d(0, 0, 0))
+        val unmappedSectors = ArrayDeque<Set<Point3d>>().apply { addAll(scanners.drop(1)) }
+        while (unmappedSectors.isNotEmpty()) {
+            val thisSector = unmappedSectors.removeFirst()
+            when (val transform = findTransformIfIntersects(baseSector, thisSector)) {
+                null -> unmappedSectors.add(thisSector)
+                else -> {
+                    baseSector.addAll(transform.beacons)
+                    foundScanners.add(transform.scanner)
                 }
+            }
+        }
+        return Solution(foundScanners, baseSector)
+    }
 
+    private fun findTransformIfIntersects(left: Set<Point3d>, right: Set<Point3d>): Transform? =
+        (0 until 6).firstNotNullOfOrNull { face ->
+            (0 until 4).firstNotNullOfOrNull { rotation ->
+                val rightReoriented = right.map { it.face(face).rotate(rotation) }.toSet()
+                left.firstNotNullOfOrNull { s1 ->
+                    rightReoriented.firstNotNullOfOrNull { s2 ->
+                        val difference = s1 - s2
+                        val moved = rightReoriented.map { it + difference }.toSet()
+                        if (moved.intersect(left).size >= 12) {
+                            Transform(difference, moved)
+                        } else null
+                    }
+                }
             }
         }
 
-        listP.forEach {
-            val p1 = it.first
-            val p2 = it.second
-            println("$p1 -> $p2 | ${p1 - p2} | ${p1 - p2.rotateX()} | ${p1 - p2.rotate()} |  ${p1 - p2.flip()}")
+    private class Transform(val scanner: Point3d, val beacons: Set<Point3d>)
+    private class Solution(val scanners: Set<Point3d>, val beacons: Set<Point3d>)
+
+    private fun parseInput(input: String): List<Set<Point3d>> =
+        input.split("\n\n").map { singleScanner ->
+            singleScanner
+                .lines()
+                .drop(1)
+                .filter (String::isNotBlank)
+                .map { Point3d.of(it) }
+                .toSet()
         }
-        println()
-        return 0
-    }
-
-    fun compute2(): Long {
-        return 0
-    }
-
-    fun parse(): List<Scanner> {
-        val scans = mutableListOf<Scanner>()
-        val currentListPoint = mutableListOf<Point3d>()
-        inputData.filter { it.isNotBlank() }.drop(1).forEach { l ->
-            if (l.startsWith("---")) {
-                scans.add(Scanner(currentListPoint.toList()))
-                currentListPoint.clear()
-            } else {
-                val (x, y, z) = l.split(",").map { it.toInt() }
-                currentListPoint.add(Point3d(x, y, z))
-                // currentListPoint.add(Point3d(x, z, y))
-                // currentListPoint.add(Point3d(-y, z, -x))
-            }
-
-        }
-        scans.add(Scanner(currentListPoint.toList()))
-        return scans
-    }
-
-    data class Scanner(val points: List<Point3d>) {
-        /*
-        n(n−1)/2
-         */
-        fun relativeDistances(): Set<Int> {
-            return permutations(points, 2).map { it[0].distanceTo(it[1]) }.toSet()
-        }
-    }
 
     data class Point3d(val x: Int, val y: Int, val z: Int) {
-        fun distanceTo(p: Point3d): Int {
-            val d = (p.x - x).toDouble().pow(2) + (p.y - y).toDouble().pow(2) + (p.z - z).toDouble().pow(2)
-            val pow = d.pow(1.0 / 2)
-            return pow.roundToInt()
 
-        }
-        // currentListPoint.add(Point3d(x, z, y))
-        // currentListPoint.add(Point3d(-y, z, -x))
-        operator fun minus(p: Point3d): Point3d {
-            return Point3d(x - p.x, y - p.y, z - p.z)
-        }
-        fun rotate(): Point3d {
-            return Point3d(x, z , y )
-        }
-        fun flip(): Point3d {
-            return Point3d(-y, z , -x )
-        }
-        fun rotateX(): Point3d {
-            return Point3d(-x, y , z)
-        }
-        override fun toString(): String {
-            return "($x,$y,$z)"
-        }
+        infix fun distanceTo(other: Point3d): Int =
+            (this.x - other.x).absoluteValue + (this.y - other.y).absoluteValue + (this.z - other.z).absoluteValue
 
+        operator fun plus(other: Point3d): Point3d =
+            Point3d(x + other.x, y + other.y, z + other.z)
+
+        operator fun minus(other: Point3d): Point3d =
+            Point3d(x - other.x, y - other.y, z - other.z)
+
+        fun face(facing: Int): Point3d =
+            when (facing) {
+                0 -> this
+                1 -> Point3d(x, -y, -z)
+                2 -> Point3d(x, -z, y)
+                3 -> Point3d(-y, -z, x)
+                4 -> Point3d(y, -z, -x)
+                5 -> Point3d(-x, -z, -y)
+                else -> error("Invalid facing")
+            }
+
+        fun rotate(rotating: Int): Point3d =
+            when (rotating) {
+                0 -> this
+                1 -> Point3d(-y, x, z)
+                2 -> Point3d(-x, -y, z)
+                3 -> Point3d(y, -x, z)
+                else -> error("Invalid rotation")
+            }
+
+        companion object {
+            fun of(rawInput: String): Point3d =
+                rawInput.split(",").let { part ->
+                    Point3d(part[0].toInt(), part[1].toInt(), part[2].toInt())
+                }
+        }
 
     }
+
+    fun <T> Collection<T>.pairs(): List<Pair<T, T>> =
+        this.flatMapIndexed { index, a ->
+            this.drop(index).map { b -> a to b }
+        }
+
 }
 /*
 --- scanner 0 ---
