@@ -11,25 +11,26 @@ class Day20(path: String = "day20/input") {
 
     fun compute(): Long {
 
-        var set = parseMatrix()
-        //print(set)
-        println("---------------")
-        repeat(2) {
+        return enhance(2)
+    }
 
-           val defautValue= if (it%2 ==0) {
+    private fun enhance(iterations: Int): Long {
+        var set = parseMatrix()
+        var outsideValue = "0"
+        repeat(iterations) {
+            set = step(set, dataLine, outsideValue)
+
+            outsideValue = if (outsideValue == "0") {
                 dataLine[0].toString()
             } else {
-               dataLine.last().toString()
+                dataLine.last().toString()
             }
-            set = step(set, dataLine,defautValue)
-            print(set)
-            println("---------------")
+
         }
-        println(set)
         return set.count().toLong()
     }
 
-    fun step(points: Set<Point>, dataLine: List<Int>, defaultValue:String): Set<Point> {
+    fun step(points: Set<Point>, dataLine: List<Int>, outsideValue:String): Set<Point> {
         val (minI, maxI) = points.map { it.i }.fold((Int.MAX_VALUE to Int.MIN_VALUE)) { acc, v -> v.minMax(acc) }
         val (minJ, maxJ) = points.map { it.j }.fold((Int.MAX_VALUE to Int.MIN_VALUE)) { acc, v -> v.minMax(acc) }
         val newSet = points.toMutableSet()
@@ -39,7 +40,7 @@ class Day20(path: String = "day20/input") {
                 val aroundMatrix = currentPoint.aroundMatrix()
                 val binValue =
                     aroundMatrix.joinToString("") { p ->
-                        pixelValue(p, minI.. maxI, minJ .. maxJ, defaultValue, points)
+                        pixelValue(p, minI.. maxI, minJ .. maxJ, outsideValue, points)
                     }
                 val dataIndex = binValue.toInt(2)
                 if (dataLine[dataIndex] == 1) {
@@ -62,12 +63,11 @@ class Day20(path: String = "day20/input") {
     ): String {
         return if (p.i in iRange && p.j in jRange ) {
             if (points.contains(p))  "1" else  "0"
-
         } else defaultValue
     }
 
     fun compute2(): Long {
-        return 0
+        return enhance(50)
     }
 
     fun print(points:Set<Point>) {
