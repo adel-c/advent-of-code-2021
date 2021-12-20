@@ -90,6 +90,15 @@ data class Matrix(private val oData: List<List<Int>>) {
         return DataPoint(i, j, data[i][j])
     }
 
+    fun getOrDefault(p:Point, defaultValue:Int=Int.MIN_VALUE): DataPoint {
+        return if(sizeX()>p.i && sizeY()>p.j && p.i>=0 && p.j>=0){
+            DataPoint(p.i,p.j, data[p.i][p.j])
+        }else{
+            DataPoint(p.i,p.j, defaultValue)
+        }
+
+    }
+
     fun last(): DataPoint {
         return get(data.lastIndex, data[0].lastIndex)
     }
