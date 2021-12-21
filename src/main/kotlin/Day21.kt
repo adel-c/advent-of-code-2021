@@ -8,33 +8,36 @@ class Day21(path: String = "day21/input") {
     }
 
     fun compute2(): Long {
+        val playerOneStart = inputData[0].split(":")[1].trim().toInt()
+        val playerTwoStart = inputData[1].split(":")[1].trim().toInt()
+        println("$playerOneStart $playerTwoStart")
         return 0
     }
 
-    data class Player(val initialPosition: Int, val winningScore: Int = 1000, val caseCount: Int = 10) {
-        var currentPosition = initialPosition
-        var score: Long = 0
+    data class Player(val position: Int, val score: Int, val winningScore: Int = 1000, val caseCount: Int = 10) {
 
-        fun play(move: Int) {
+        fun play(move: Int): Player {
             val trueMove = move % caseCount
-            currentPosition += trueMove
-            if (currentPosition > 10) currentPosition -= 10
-            score += currentPosition
+            var newPos = position + trueMove
+            if (newPos > 10) newPos -= 10
+            val newScore = score + newPos
+            return Player(newPos, newScore)
         }
 
         fun hasWon() = score >= winningScore
     }
 
+
     data class Game(val playerOneStart: Int, val playerTwoStart: Int) {
         private val dice = Dice(100)
-        private val player1 = Player(playerOneStart)
-        private val player2 = Player(playerTwoStart)
-        fun play(): Long {
-            do {
 
-                player1.play(dice.nextThree())
+        fun play(): Long {
+            var player1 = Player(playerOneStart, 0)
+            var player2 = Player(playerTwoStart, 0)
+            do {
+                player1 = player1.play(dice.nextThree())
                 if (player1.hasWon()) break
-                player2.play(dice.nextThree())
+                player2 = player2.play(dice.nextThree())
                 if (player2.hasWon()) break
             } while (true)
             val winnerScore = if (player1.hasWon()) player2.score else player1.score
@@ -43,9 +46,7 @@ class Day21(path: String = "day21/input") {
             return winnerScore * dice.totalThrows
         }
 
-        fun round() {
 
-        }
     }
 
     data class Dice(val sideCount: Int = 100) {
